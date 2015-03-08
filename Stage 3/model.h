@@ -3,6 +3,8 @@
 #define true 1
 #define false 0
 
+#include "raster.h"
+
 typedef int bool;
 
 typedef struct
@@ -31,13 +33,7 @@ typedef struct
 typedef struct {
 	int x;
 	int y;
-	int height;
-	int width;
 }Paddle;
-
-typedef struct{
-	bool bricks[5][5]; /*figure out how many bricks needed */
-}Brick;
 
 typedef struct{
 	int numLives;
@@ -50,24 +46,24 @@ typedef struct{
 	ScoreNum scoreNum;
     ScoreLabel scoreLabel;
     Paddle paddle;
-    Brick brick;
+    bool bricks[25];
     LifeCounter lifeCounter;
 }Screen;
 
-void moveBall(Ball ball);
-void ballHitV(Ball ball);
-void ballHitH(Ball ball);
-void ballHitB(Ball ball);
+void moveBall(Ball *ball, bool bricks[]);
 void addScore(ScoreNum score, int amount);
 void remScore(ScoreNum score, int amount);
 void scoreLPosition (ScoreLabel label, int x, int y);
-void move_paddle_left(Paddle *paddle);
-void move_paddle_right(Paddle *paddle);
-void paddle_launch_ball(Paddle *paddle);
-void destory_brick(Brick *brick, int x, int y);
-void remove_life(LifeCounter *lifeCounter);
-bool is_broken(Brick *brick, int x, int y);
-int  get_life(LifeCounter *lifeCounter);
-int getScore (ScoreNum score);
+void paddleLeft(Paddle *paddle);
+void paddleRight(Paddle *paddle);
+void launchBall(Paddle *paddle);
+void destroyBrick(int brick);
+void removeLife(LifeCounter *lifeCounter);
+int  getLife(LifeCounter *lifeCounter);
+int  getScore (ScoreNum score);
+void printScreen(Screen screen);
+void ballHitVert(Ball *ball);
+void ballHitHor(Ball *ball);
+void printScreen(Screen screen);
 
 #endif

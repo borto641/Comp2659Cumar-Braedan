@@ -1,11 +1,5 @@
 #include "events.h"
-#include "model.h"
-#include <osbind.h>
-#include <stdio.h>
 
-#define left_arrow  0x004B0000L
-#define right_arrow 0x004D0000L
-#define spacebar    0x00390020L  
 
 
 /****************************************************************************
@@ -47,24 +41,15 @@ void key_press(Paddle *paddle){
 		}
 	
 }
-/*****************************************************************************
-Life Counter
-- when player is unable to bounce the ball back,  then the level is lost
-******************************************************************************/
 
-void level_lost(){
-	LifeCounter *lifeCounter;	
-	remove_life(lifeCounter);
-}
-/******************************************************************************
+/* *****************************************************************************
 Brick
 - when the ball touches the brick from any side
 - up,down, left side and right side
 ******************************************************************************/
 
-void ball_hits_brick(int x, int y){
+void ball_hits_brick(Screen screen, int brick){
 /*If ball touches the brick remove the brick from the level*/
-	Brick *brick;
-	destory_brick(brick, x, y);
+	screen.bricks[brick] = false;
 } 
 

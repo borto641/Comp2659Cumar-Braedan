@@ -3,28 +3,31 @@
 #include "model.h"
 #include "events.h"
 #include "raster.h"
-
+ 
+ 
 
 int main(){
-    void  *base = Physbase();  
-	int choice;
-	Paddle paddle;
-	Brick brick;
-	LifeCounter lifeCounter;
-    Ball ball;
-    ScoreNum scoreNum;
-    ScoreLabel scoreLabel;
-    paddle.x = 200;
-    paddle.y = 300;
-    paddle.width = 20;
-    paddle.height = 20;
-    
-    clrScrn(base);
-    plot_rectangle(base, paddle.x, paddle.y, paddle.width, paddle.height);
-	key_press(paddle);
+    Screen screen;
+	void *base = Physbase();  
+	int i;
 	
-	printf("HELL YAA*************************************");
-	scanf(" %c", &choice);
+	screen.ball.x = 160;
+	screen.ball.y = 300;
+	screen.scoreNum.score = 666;
+	screen.scoreNum.x = 5;
+	screen.scoreNum.y = 350;
+	screen.scoreLabel.x = 5;
+	screen.scoreLabel.y = 370;
+	screen.paddle.x = 200;
+	screen.paddle.y = 600;
+	for (i = 25; i >= 0; i--)
+	{
+		screen.bricks[i] = true;
+	}
+	
+    clrScrn(base);
+    printScreen(screen);
+	
 
 
 return 0;

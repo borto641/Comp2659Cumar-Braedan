@@ -1,44 +1,61 @@
 #include "model.h"
+#include "types.h"
+
+const int ballBitmap[16] = 
+	{ 0x07E0,
+	0x1FF8,
+	0x3FFC,
+	0x7FFE,
+	0x7FFE,
+	0xFFFF,
+	0xFFFF,
+	0xFFFF,
+	0xFFFF,
+	0xFFFF,
+	0xFFFF,
+	0x7FFE,
+	0x7FFE,
+	0x3FFC,
+	0x1FF8,
+	0x07E0};
 
 /*
 moveBall will move the ball on it's respective path.
 Collision detection will be preformed by the event handler
 */
-void moveBall(Ball ball)
+void moveBall(Ball *ball, bool bricks[])
 {
-	ball.x += ball.dX; 
-	ball.y += ball.dY;
+/* ADD COLLISION DETECTION*/
+	ball->x += ball->dX; 
+	ball->y += ball->dY;
 }
 
 /*
 ballHitV will change the path of the ball, flipping the vertical direction, and
 	preserving the horizontal direction
 */
-void ballHitV(Ball ball)
+void ballHitV(Ball *ball)
 {
-	ball.dY -= (ball.dY * 2);
-	moveBall(ball);
+	ball->dY -= (ball->dY + ball->dY);
 }
 
 /*
 ballHitH will change the path of the ball, flipping the horizontal direction, and
 	preserving the vertical direction
 */
-void ballHitH(Ball ball)
+void ballHitH(Ball *ball)
 {
-	ball.dX -= (ball.dX * 2);
-	moveBall(ball);
+	ball->dX -= (ball->dX + ball->dX);
 }
 
 /*
 ballHitB will change the path of the ball, flipping both horizontal and vertical
 	directions
 */
-void ballHitB(Ball ball)
+void ballHitB(Ball *ball)
 {
-	ball.dX -= (ball.dX * 2);
-	ball.dY -= (ball.dY * 2);
-	moveBall(ball);
+	ball->dX -= (ball->dX + ball->dX);
+	ball->dY -= (ball->dY + ball->dY);
 }
 
 /*
@@ -98,18 +115,6 @@ void paddle_launch_ball(Paddle *paddle){
 /*
 
 */
-void destory_brick(Brick *brick, int x, int y){
-	brick->bricks[x][y] =  false;
-}
-/*
-
-*/
-bool is_broken(Brick *brick, int x, int y){
-	return brick->bricks[x][y];
-}
-/*
-
-*/
 int get_life(LifeCounter *lifeCounter){
 	return lifeCounter->numLives;
 }
@@ -120,3 +125,24 @@ void remove_life(LifeCounter *lifeCounter){
 	lifeCounter->numLives -= 1;
 }
 
+void printScreen (Screen screen)
+{
+	UINT16 *base = Physbase();
+	UINT8 *base8 = Physbase();
+	int i;
+	plot_bitmap_16(base, screen.ball.x, screen.ball.y, ballBitmap, 16);
+	for (i = 0; i < 25; i++)
+	{
+		if (screen.bricks[i] == true)
+		{
+			if (((i / 5) % 2) != 0)
+			{
+				plot_rectangle(base8, ((i % 5) * 128) + 64, ((i / 5) * 24), 64, 24);
+			}
+			else 
+			{
+				plot_rectangle(base8, ( (i % 5) * 128), (i / 5) * 24, 64, 24);
+			}
+		}
+	}
+}

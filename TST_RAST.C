@@ -67,6 +67,13 @@ const int invader_bitmap[INVADER_HEIGHT] =
 	plot_rectangle(base8, 320, 72, 64, 24);
 	plot_rectangle(base8, 448, 72, 64, 24);
 	plot_rectangle(base8, 576, 72, 64, 24);
+	/*Row 5*/
+	plot_rectangle(base8, 0, 96, 64, 24);
+	plot_rectangle(base8, 128, 96, 64, 24);
+	plot_rectangle(base8, 256, 96, 64, 24);
+	plot_rectangle(base8, 384, 96, 64, 24);
+	plot_rectangle(base8, 512, 96, 64, 24);
 	
+	plot_rectangle(base8, 400, 300, 16, 16);
 	return 0;
 }
