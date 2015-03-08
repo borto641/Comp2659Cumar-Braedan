@@ -31,7 +31,7 @@ const int invader_bitmap[INVADER_HEIGHT] =
 
 
 	clrScrn(base);
-	plotCircle(base8, 100, 100, 30);
+/*	plotCircle(base8, 100, 100, 30);
 	plotCircle(base8, 100, 100, 40);
 	plotCircle(base8, 100, 100, 50);
 	plotCircle(base8, 100, 100, 60);
@@ -41,7 +41,32 @@ const int invader_bitmap[INVADER_HEIGHT] =
 	plot_bitmap_16(base, 300, 300, invader_bitmap, INVADER_HEIGHT);
 	plot_bitmap_16(base, 500, 10, invader_bitmap, INVADER_HEIGHT);
 	plot_bitmap_16(base, 250, 250, invader_bitmap, INVADER_HEIGHT);
+*/	
+	plot_rectangle(base8, 620, 400, 64, 24);
+	/*Row 1*/
+	plot_rectangle(base8, 0, 0, 64, 24);
+	plot_rectangle(base8, 128, 0, 64, 24);
+	plot_rectangle(base8, 256, 0, 64, 24);
+	plot_rectangle(base8, 384, 0, 64, 24);
+	plot_rectangle(base8, 512, 0, 64, 24);
+	/*Row 2*/
+	plot_rectangle(base8, 64, 24, 64, 24);
+	plot_rectangle(base8, 192, 24, 64, 24);
+	plot_rectangle(base8, 320, 24, 64, 24);
+	plot_rectangle(base8, 448, 24, 64, 24);
+	plot_rectangle(base8, 576, 24, 64, 24);
+	/*Row 3*/
+	plot_rectangle(base8, 0, 48, 64, 24);
+	plot_rectangle(base8, 128, 48, 64, 24);
+	plot_rectangle(base8, 256, 48, 64, 24);
+	plot_rectangle(base8, 384, 48, 64, 24);
+	plot_rectangle(base8, 512, 48, 64, 24);
+	/*Row 4*/
+	plot_rectangle(base8, 64, 72, 64, 24);
+	plot_rectangle(base8, 192, 72, 64, 24);
+	plot_rectangle(base8, 320, 72, 64, 24);
+	plot_rectangle(base8, 448, 72, 64, 24);
+	plot_rectangle(base8, 576, 72, 64, 24);
 	
-	plot_rectangle(base8, 100, 250, 500, 10);
 	return 0;
 }

@@ -2,33 +2,30 @@
 
 /*
 Plots a horizontal line to the screen buffer
+NOTE: Does NOT draw lines less than 8 bits wide properly, 
+	   as no lines this small need to be drawn in game.
 */
 void plot_hor_line(UINT8 *base, int x, int y, int width)
 {
-	UINT8 *draw = base + y * 80 + (x / 8);
-	int lshift = y >> 3; /*amount of shift required on left side of line*/
-	int rshift = ((width - x) << 3); /*amount of shift required on right side of line*/
+	UINT8 *draw = base + (y * 80) + (x >> 3);
+	int lshift = (x % 8);                  /*amount of shift required on left side of line*/
+	int rshift = (8 - ((width - (8 - lshift)) % 8)); /*amount of shift required on right side of line*/
 	int i = 0;
 	
-	if (x < 640 && y < 400)
+	if (x < 640 && y < 400) /* in bounds */
 	{		
-		if (width > 7) /* More at least one whole byte */
-		{
-			if (lshift > 0) /*if left shift needed*/
+		if (lshift > 0) /*if left shift needed*/
 			{
-				*draw |= (256 / (2 ^ lshift)) - 1;
+				*draw |= (0xFF >> lshift);
 				draw++;
 			}
-			for (i = 0; i < (width >> 3) && (draw < (base + ((y + 1) * 80))); i++) /* for each full byte draw FF */
+			for (i = 0; i < ((width - lshift) >> 3) && (draw < (base + ((y + 1) * 80))); i++) /* for each full byte draw FF */
 			{
-				*draw = 0xFF;
+				*draw = (0xFF);
 				draw++;
 			}		
 			if (draw < base + ((y + 1) * 80 && rshift > 0)) /*if right shift needed*/
-				*draw |= (1 << rshift);
-		}
-		else	
-			*draw |= (2 ^ lshift) << (4-width);
+				*draw |= (0xFF << rshift);
 	}
 	else
 		/* error? */
