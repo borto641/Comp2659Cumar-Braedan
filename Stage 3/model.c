@@ -24,10 +24,182 @@ moveBall will move the ball on it's respective path.
 Collision detection will be preformed by the event handler
 */
 void moveBall(Ball *ball, bool bricks[])
-{
-/* ADD COLLISION DETECTION*/
+{	
+	checkCollision(ball, bricks);
 	ball->x += ball->dX; 
 	ball->y += ball->dY;
+}
+
+void checkCollision(Ball *ball, bool bricks[])
+{
+	
+	if (ballY > 120)/*bricks may be hit*/
+	{
+
+			if (ball->dX > 0) /*moving right*/
+			{
+				if (ball-> dY < 0) /*moving up*/
+				{
+					uRCollDetect(ball, bricks);
+				}
+				else /*moving down*/
+				{
+					dRCollDetect(ball, bricks);
+				}
+			}
+			else if (ball->dX < 0) /*left*/
+			{
+				if (ball->dY > 0) /*moving up*/
+				{
+					uLCollDetect(ball,bricks);
+				}
+				else /*down*/
+				{
+					dLCollDetect(ball,bricks);
+				}
+			}
+			else /*vertical*/
+			{
+				if (ball->dY > 0) /*down*/
+				{
+					downCollDetect(ball, bricks);
+				}
+				else /*up*/
+				{
+					upCollDetect(ball,bricks);
+				}
+			}
+			
+	}
+	else /*cannot hit bricks*/
+	{
+		if (ball->x == 0 || ballY == 639)
+			ballHitH(ball);
+	}
+}
+
+void upCollDetect (Ball *ball, bool bricks[])
+{
+	int i;
+	int pixel;
+	for (i = 0; i < 25; i++)
+	{
+		if (bricks[i] == true)
+		{
+			if (((i / 5) 2) == 0) /*Even row*/
+			{
+				if ( ball->x >= ((i % 5) * 128) && ball->x < (((i%5) * 128) + 64) /* within the valid x range of brick*/
+				{
+					if (ball->y < (((i / 5) * 24) + 24) && (ball->y + ball->dY) > (((i / 5) * 24) + 24)
+					{
+						destroyBrick(bricks[i]);
+						ballHitV(ball);
+					}						
+				}					
+			}
+			else /*odd row*/
+			{
+				if ( ball->x >= ((i % 5) * 128) + 64 && ball->x < (((i%5) * 128) + 128) /* within the valid x range of brick*/
+				{
+					if (ball->y < (((i / 5) * 24) + 24) && (ball->y + ball->dY) > (((i / 5) * 24) + 24)
+					{
+						destroyBrick(bricks[i]);
+						ballHitV(ball);
+					}						
+				}		
+			}
+		}		
+	}
+	if ((ball->y + ball->dY) < 20)
+	{
+		
+		ballHitV(ball);
+	}
+}
+
+void downCollDetect (Ball *ball, bool bricks[])
+{
+	int i;
+	for (i = 0; i < 25; i++)
+	{
+		if (bricks[i] == true)
+		{
+			if (((i / 5) 2) == 0) /*Even row*/
+			{ 
+				if ((ball->x + 16) >= ((i % 5) * 128) && ball->x < (((i%5) * 128) + 64) /* within the valid x range of brick*/
+				{
+					if ((ball->x + ball->dX + 16) - ((i % 5) * 128) > 0)
+					{
+						if ((ball->x + ball->dX + 16) - ((i % 5) * 128) < dX && ball->y + 1) - )
+						{
+							
+					}
+					if (ball->y < (((i / 5) * 24)) && (ball->y + ball->dY) > (((i / 5) * 24))
+					{
+						destroyBrick(bricks[i]);
+						ballHitV(ball);
+					}						
+				}					
+			}
+			else /*odd row*/
+			{
+				if ((ball->x + 16) >= ((i % 5) * 128) + 64 && ball->x < (((i%5) * 128) + 128) /* within the valid x range of brick*/
+				{
+					if (ball->y < (((i / 5) * 24)) && (ball->y + ball->dY) > (((i / 5) * 24))
+					{
+						destroyBrick(bricks[i]);
+						ballHitV(ball);
+					}						
+				}		
+			}
+		}		
+	}
+	if ((ball->y + ball->dY) < 20)
+	{
+		
+		ballHitV(ball);
+	}
+}
+
+
+
+dRCollDetect(Ball *ball, bool bricks[])
+{
+	int i;
+	for (i = 0; i < 25; i++)
+	{
+		if (bricks[i] == true)
+		{
+			if (((i / 5) 2) == 0) /*Even row*/
+			{
+				if ((ball->x + ball->dX + ) >= ((i % 5) * 128) && (ball->x + ball->dX) < (((i%5) * 128) + 64) /* within the valid x range of brick*/
+				{
+					
+					if (ball->y < (((i / 5) * 24)) && (ball->y + ball->dY) > (((i / 5) * 24))
+					{
+						destroyBrick(bricks[i]);
+						ballHitV(ball);
+					}						
+				}					
+			}
+			else /*odd row*/
+			{
+				if ( ball->x >= ((i % 5) * 128) + 64 && ball->x < (((i%5) * 128) + 128) /* within the valid x range of brick*/
+				{
+					if (ball->y < (((i / 5) * 24)) && (ball->y + ball->dY) > (((i / 5) * 24))
+					{
+						destroyBrick(bricks[i]);
+						ballHitV(ball);
+					}						
+				}		
+			}
+		}		
+	}
+	if ((ball->y + ball->dY) < 20)
+	{
+		
+		ballHitV(ball);
+	}
 }
 
 /*
@@ -130,6 +302,7 @@ void printScreen (Screen screen)
 	UINT16 *base = Physbase();
 	UINT8 *base8 = Physbase();
 	int i;
+	plot_hor_line(base8, 0, 20, 640);
 	plot_bitmap_16(base, screen.ball.x, screen.ball.y, ballBitmap, 16);
 	for (i = 0; i < 25; i++)
 	{
@@ -137,11 +310,11 @@ void printScreen (Screen screen)
 		{
 			if (((i / 5) % 2) != 0)
 			{
-				plot_rectangle(base8, ((i % 5) * 128) + 64, ((i / 5) * 24), 64, 24);
+				plot_rectangle(base8, ((i % 5) << 7) + 64, ( 20 + ((i / 5) * 24) ), 64, 24);
 			}
 			else 
 			{
-				plot_rectangle(base8, ( (i % 5) * 128), (i / 5) * 24, 64, 24);
+				plot_rectangle(base8, ( (i % 5) << 7), (20 + (i / 5) * 24), 64, 24);
 			}
 		}
 	}

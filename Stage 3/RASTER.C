@@ -62,20 +62,6 @@ void plot_pixel(UINT8 *base, int x, int y)
 	return;
 }
 
-void plot_vert_line(UINT8 *base, int x, int y, int length)
-{
-	UINT8 *draw = base;
-	int i = 0;
-	
-	for (i = 0; i < length; i++)
-	{
-		plot_pixel(draw, x, y);
-		length--;
-	}
-	return;
-}
-
-
 /*
 Plots a 16 bit wide bitmap to a specific location on the screen
 */

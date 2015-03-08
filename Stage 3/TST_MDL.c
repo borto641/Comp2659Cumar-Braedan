@@ -11,8 +11,8 @@ int main(){
 	void *base = Physbase();  
 	int i;
 	
-	screen.ball.x = 160;
-	screen.ball.y = 300;
+	screen.ball.x = 600;
+	screen.ball.y = 320;
 	screen.scoreNum.score = 666;
 	screen.scoreNum.x = 5;
 	screen.scoreNum.y = 350;
