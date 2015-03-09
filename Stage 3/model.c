@@ -1,7 +1,7 @@
 #include "model.h"
 #include "types.h"
 
-const int ballBitmap[16] = 
+const unsigned int ballBitmap[16] = 
 	{ 0x07E0,
 	0x1FF8,
 	0x3FFC,

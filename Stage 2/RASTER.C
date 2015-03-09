@@ -62,11 +62,25 @@ void plot_pixel(UINT8 *base, int x, int y)
 	return;
 }
 
+void plot_vert_line(UINT8 *base, int x, int y, int length)
+{
+	UINT8 *draw = base;
+	int i = 0;
+	
+	for (i = 0; i < length; i++)
+	{
+		plot_pixel(draw, x, y);
+		length--;
+	}
+	return;
+}
+
+
 /*
 Plots a 16 bit wide bitmap to a specific location on the screen
 */
 
-void plot_bitmap_16(UINT16 *base, int x, int y, const unsigned int *bitmap, unsigned int height)
+void plot_bitmap_16(UINT16 *base, int x, int y, const int *bitmap, unsigned int height)
 {
 	UINT16 *draw = base + y * 40 + (x / 16);
 	int shift = x % 16; /*amount of shift required*/
@@ -104,43 +118,6 @@ void plot_bitmap_16(UINT16 *base, int x, int y, const unsigned int *bitmap, unsi
 return;
 }
 
-void plot_bitmap_8(UINT8 *base, int x, int y, const unsigned int *bitmap, unsigned int height)
-{
-	UINT16 *draw = base + y * 80 + (x / 8);
-	int shift = x % 8; /*amount of shift required*/
-	unsigned int i;
-	
-	if (x <= 640 && y <= 400)
-	{
-		if (shift > 0) /*if shift needed*/
-		{
-			for (i = 0; i < height && draw < base + 32000; i++)
-			{
-				*draw |= (bitmap[i] >> shift);
-				draw += 80;
-			}
-			draw = draw - (80 * height) + 1;
-/*			draw = (base + y * 40 + (x / 16)) + 1;*/
-			for (i = 0; i < height && draw < base + 32000; i++)
-			{
-				*draw = (bitmap[i] << 8 - shift);
-				draw += 80;
-			}
-		}
-		else /* No shift needed*/
-		{
-			for  (i = 0; i < height; i++)
-			{
-				*draw |= bitmap[i];
-				draw += 80;
-			}
-		
-		}
-	}
-	
-	
-return;
-}
 /*
  *	Clears the screen.
  *
