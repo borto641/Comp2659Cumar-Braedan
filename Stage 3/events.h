@@ -8,7 +8,7 @@
 #define right_arrow 0x004D0000L
 #define spacebar    0x00390020L  
 
-void key_press(Paddle *paddle);
+void key_press(Screen *screen);
 void level_lost();
 void ball_hits_brick(Screen screen, int brick);
 

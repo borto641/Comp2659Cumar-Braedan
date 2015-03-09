@@ -1,8 +1,10 @@
 #include "model.h"
 #include "types.h"
+#include "font.c"
 
 const int ballBitmap[16] = 
-	{ 0x07E0,
+	{ 
+    0x07E0,
 	0x1FF8,
 	0x3FFC,
 	0x7FFE,
@@ -17,217 +19,54 @@ const int ballBitmap[16] =
 	0x7FFE,
 	0x3FFC,
 	0x1FF8,
-	0x07E0};
-
+	0x07E0
+    };  
+    
+const int fontS[8] = {0x00,0x78,0x80,0x78,0x04,0x84,0x78,0x00};  /* S */
+const int fontC[8] = {0x00,0x00,0x1C,0x20,0x20,0x20,0x1C,0x00};
+const int fontO[8] = {0x00,0x00,0x38,0x44,0x44,0x44,0x38,0x00};
+const int fontR[8] = {0x00,0x00,0x1C,0x20,0x20,0x20,0x20,0x00};
+const int fontE[8] = {0x00,0x00,0x38,0x44,0x78,0x40,0x3C,0x00};
+const int fontZero[8] = {0x00,0x78,0x8C,0x94,0xA4,0xC4,0x78,0x00};
+const int fontColon[8] = {0x00,0x00,0x00,0x10,0x00,0x00,0x10,0x00};
+                      
 /*
 moveBall will move the ball on it's respective path.
 Collision detection will be preformed by the event handler
 */
-void moveBall(Ball *ball, bool bricks[])
-{	
-	checkCollision(ball, bricks);
-	ball->x += ball->dX; 
-	ball->y += ball->dY;
-}
-
-void checkCollision(Ball *ball, bool bricks[])
+void moveBall(Ball ball, bool bricks[])
 {
-	
-	if (ballY > 120)/*bricks may be hit*/
-	{
-
-			if (ball->dX > 0) /*moving right*/
-			{
-				if (ball-> dY < 0) /*moving up*/
-				{
-					uRCollDetect(ball, bricks);
-				}
-				else /*moving down*/
-				{
-					dRCollDetect(ball, bricks);
-				}
-			}
-			else if (ball->dX < 0) /*left*/
-			{
-				if (ball->dY > 0) /*moving up*/
-				{
-					uLCollDetect(ball,bricks);
-				}
-				else /*down*/
-				{
-					dLCollDetect(ball,bricks);
-				}
-			}
-			else /*vertical*/
-			{
-				if (ball->dY > 0) /*down*/
-				{
-					downCollDetect(ball, bricks);
-				}
-				else /*up*/
-				{
-					upCollDetect(ball,bricks);
-				}
-			}
-			
-	}
-	else /*cannot hit bricks*/
-	{
-		if (ball->x == 0 || ballY == 639)
-			ballHitH(ball);
-	}
-}
-
-void upCollDetect (Ball *ball, bool bricks[])
-{
-	int i;
-	int pixel;
-	for (i = 0; i < 25; i++)
-	{
-		if (bricks[i] == true)
-		{
-			if (((i / 5) 2) == 0) /*Even row*/
-			{
-				if ( ball->x >= ((i % 5) * 128) && ball->x < (((i%5) * 128) + 64) /* within the valid x range of brick*/
-				{
-					if (ball->y < (((i / 5) * 24) + 24) && (ball->y + ball->dY) > (((i / 5) * 24) + 24)
-					{
-						destroyBrick(bricks[i]);
-						ballHitV(ball);
-					}						
-				}					
-			}
-			else /*odd row*/
-			{
-				if ( ball->x >= ((i % 5) * 128) + 64 && ball->x < (((i%5) * 128) + 128) /* within the valid x range of brick*/
-				{
-					if (ball->y < (((i / 5) * 24) + 24) && (ball->y + ball->dY) > (((i / 5) * 24) + 24)
-					{
-						destroyBrick(bricks[i]);
-						ballHitV(ball);
-					}						
-				}		
-			}
-		}		
-	}
-	if ((ball->y + ball->dY) < 20)
-	{
-		
-		ballHitV(ball);
-	}
-}
-
-void downCollDetect (Ball *ball, bool bricks[])
-{
-	int i;
-	for (i = 0; i < 25; i++)
-	{
-		if (bricks[i] == true)
-		{
-			if (((i / 5) 2) == 0) /*Even row*/
-			{ 
-				if ((ball->x + 16) >= ((i % 5) * 128) && ball->x < (((i%5) * 128) + 64) /* within the valid x range of brick*/
-				{
-					if ((ball->x + ball->dX + 16) - ((i % 5) * 128) > 0)
-					{
-						if ((ball->x + ball->dX + 16) - ((i % 5) * 128) < dX && ball->y + 1) - )
-						{
-							
-					}
-					if (ball->y < (((i / 5) * 24)) && (ball->y + ball->dY) > (((i / 5) * 24))
-					{
-						destroyBrick(bricks[i]);
-						ballHitV(ball);
-					}						
-				}					
-			}
-			else /*odd row*/
-			{
-				if ((ball->x + 16) >= ((i % 5) * 128) + 64 && ball->x < (((i%5) * 128) + 128) /* within the valid x range of brick*/
-				{
-					if (ball->y < (((i / 5) * 24)) && (ball->y + ball->dY) > (((i / 5) * 24))
-					{
-						destroyBrick(bricks[i]);
-						ballHitV(ball);
-					}						
-				}		
-			}
-		}		
-	}
-	if ((ball->y + ball->dY) < 20)
-	{
-		
-		ballHitV(ball);
-	}
-}
-
-
-
-dRCollDetect(Ball *ball, bool bricks[])
-{
-	int i;
-	for (i = 0; i < 25; i++)
-	{
-		if (bricks[i] == true)
-		{
-			if (((i / 5) 2) == 0) /*Even row*/
-			{
-				if ((ball->x + ball->dX + ) >= ((i % 5) * 128) && (ball->x + ball->dX) < (((i%5) * 128) + 64) /* within the valid x range of brick*/
-				{
-					
-					if (ball->y < (((i / 5) * 24)) && (ball->y + ball->dY) > (((i / 5) * 24))
-					{
-						destroyBrick(bricks[i]);
-						ballHitV(ball);
-					}						
-				}					
-			}
-			else /*odd row*/
-			{
-				if ( ball->x >= ((i % 5) * 128) + 64 && ball->x < (((i%5) * 128) + 128) /* within the valid x range of brick*/
-				{
-					if (ball->y < (((i / 5) * 24)) && (ball->y + ball->dY) > (((i / 5) * 24))
-					{
-						destroyBrick(bricks[i]);
-						ballHitV(ball);
-					}						
-				}		
-			}
-		}		
-	}
-	if ((ball->y + ball->dY) < 20)
-	{
-		
-		ballHitV(ball);
-	}
+/* ADD COLLISION DETECTION*/
+	ball.x += ball.dX; 
+	ball.y += ball.dY;
 }
 
 /*
 ballHitV will change the path of the ball, flipping the vertical direction, and
 	preserving the horizontal direction
 */
-void ballHitV(Ball *ball)
+void ballHitV(Ball ball)
 {
-	ball->dY -= (ball->dY + ball->dY);
+	ball.dY -= (ball.dY + ball.dY);
 }
 
 /*
 ballHitH will change the path of the ball, flipping the horizontal direction, and
 	preserving the vertical direction
 */
-void ballHitH(Ball *ball)
+void ballHitH(Ball ball)
 {
-	ball->dX -= (ball->dX + ball->dX);
+	ball.dX -= (ball.dX + ball.dX);
 }
 
 /*
 ballHitB will change the path of the ball, flipping both horizontal and vertical
 	directions
 */
-void ballHitB(Ball *ball)
+void ballHitB(Ball ball)
 {
-	ball->dX -= (ball->dX + ball->dX);
-	ball->dY -= (ball->dY + ball->dY);
+	ball.dX -= (ball.dX + ball.dX);
+	ball.dY -= (ball.dY + ball.dY);
 }
 
 /*
@@ -268,45 +107,65 @@ void scoreLPosition (ScoreLabel label, int x, int y)
 /*
 
 */
-void move_paddle_left(Paddle *paddle){
-	paddle->x += 1;
+void paddleRight(Screen *screen){
+     if ((screen->paddle.x + 72 + 30) <= 639 ){
+	screen->paddle.x += 30;
+    }
 }
 /*
 
 */
-void move_paddle_right(Paddle *paddle){
-	paddle->x -= 1;
+void paddleLeft(Screen *screen){
+     if ((screen->paddle.x - 30) >= 0 ){
+            screen->paddle.x -= 30;
+    }
 }
 /*
 
 */
-void paddle_launch_ball(Paddle *paddle){
+void paddle_launch_ball(Screen *screen){
 	/* release the ball */
 
 }
 /*
 
 */
-int get_life(LifeCounter *lifeCounter){
-	return lifeCounter->numLives;
+int get_life(LifeCounter lifeCounter){
+	return lifeCounter.numLives;
 }
 /*
 
 */
-void remove_life(LifeCounter *lifeCounter){
-	lifeCounter->numLives -= 1;
+void remove_life(LifeCounter lifeCounter){
+	lifeCounter.numLives -= 1;
 }
 
-void printScreen (Screen screen)
+void printScreen (Screen *screen)
 {
 	UINT16 *base = Physbase();
 	UINT8 *base8 = Physbase();
 	int i;
-	plot_hor_line(base8, 0, 20, 640);
-	plot_bitmap_16(base, screen.ball.x, screen.ball.y, ballBitmap, 16);
-	for (i = 0; i < 25; i++)
+     
+    plot_hor_line(base8, 0, 20, 640);
+	plot_bitmap_16(base, screen->ball.x, screen->ball.y, ballBitmap, 16);
+    plot_bitmap_16(base, 0, 0, ballBitmap, 16);
+    plot_bitmap_16(base, 16,0, ballBitmap, 16);
+    plot_bitmap_16(base, 32,0, ballBitmap, 16);
+    plot_bitmap_8(base8, 500, 5, fontS, 8, 0);
+    plot_bitmap_8(base8, 508, 5, fontC, 8, 0) ;
+    plot_bitmap_8(base8, 516, 5, fontO, 8, 0);
+    plot_bitmap_8(base8, 524, 5, fontR, 8 , 0);
+    plot_bitmap_8(base8, 532, 5, fontE, 8,   0);
+    plot_bitmap_8(base8, 540, 5, fontColon, 8, 0);
+    plot_bitmap_8(base8, 548, 5, fontZero, 8, 0);
+    plot_bitmap_8(base8, 556, 5, fontZero, 8, 0);
+    plot_bitmap_8(base8, 564, 5, fontZero, 8, 0);
+    plot_bitmap_8(base8, 572, 5, fontZero, 8, 0);
+	plot_rectangle(base8, screen->paddle.x, screen->paddle.y, 72, 10);
+ 
+    for (i = 0; i < 25; i++)
 	{
-		if (screen.bricks[i] == true)
+		if (screen->bricks[i] == true)
 		{
 			if (((i / 5) % 2) != 0)
 			{
