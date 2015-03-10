@@ -1,16 +1,5 @@
 #include "model.h"
 
-
-/*
-moveBall will move the ball on it's respective path.
-Collision detection will be preformed by the event handler
-*/
-void moveBall(Ball *ball, bool bricks[])
-{	
-	/*checkCollision(ball, bricks);*/
-	ball->x += ball->dX; 
-	ball->y += ball->dY;
-}
 /*
 void checkCollision(Ball *ball, bool bricks[])
 {
@@ -278,3 +267,5 @@ int get_life(LifeCounter *lifeCounter){
 void remove_life(LifeCounter *lifeCounter){
 	lifeCounter->numLives -= 1;
 }
+
+
