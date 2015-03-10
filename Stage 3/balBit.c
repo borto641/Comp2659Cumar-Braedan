@@ -1,4 +1,6 @@
-const int ballBitmap[16] = 
+#include "ballBitmap.h"
+
+const UINT16 ballBitmap[16] = 
 { 0x07E0,
   0x1FF8,
   0x3FFC,

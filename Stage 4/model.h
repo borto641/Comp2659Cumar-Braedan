@@ -2,16 +2,10 @@
 #define MODEL_H
 #define true 1
 #define false 0
-#define BRICK_HEIGHT 24
-#define BRICK_WIDTH 64
-#define TOP_BAR_HEIGHT 12
-#define PADDLE_HEIGHT 16
-#define PADDLE_WIDTH  72
+
 
 #include "raster.h"
 #include "types.h"
-#include "font.h"
-#include "balBit.h"
 typedef int bool;
 
 typedef struct
