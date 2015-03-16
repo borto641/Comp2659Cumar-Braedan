@@ -14,6 +14,9 @@ typedef struct
 	int y;
 	int dX;
 	int dY;
+	bool ballMovingUp;
+	bool ballMovingRight;
+	bool ballMovingLeft;
 	int size;
 } Ball;
 
@@ -50,7 +53,7 @@ typedef struct{
     LifeCounter lifeCounter;
 }Screen;
 
-void moveBall(Ball *ball, bool bricks[]);
+void moveBall(Ball *ball, bool bricks[], Paddle *paddle);
 void addScore(ScoreNum score, int amount);
 void remScore(ScoreNum score, int amount);
 void scoreLPosition (ScoreLabel label, int x, int y);
@@ -65,5 +68,6 @@ void printScreen(Screen screen);
 void ballHitVert(Ball *ball);
 void ballHitHor(Ball *ball);
 void printScreen(Screen screen);
+void ballDirection(Ball *ball, Paddle *paddle);
 
 #endif

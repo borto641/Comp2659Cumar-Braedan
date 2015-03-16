@@ -131,6 +131,7 @@ void printScreen(Screen screen)
 	char label[] = "Score:";
 	char lives[] = "Lives:";
 	char score[] = "666";
+	
 	plot_hor_line(base8, 0, TOP_BAR_HEIGHT, 640);
 	bitmap16(base, screen.ball.x, screen.ball.y, ballBitmap, 16);
 	plot_rectangle(base8, screen.paddle.x, screen.paddle.y, PADDLE_WIDTH, PADDLE_HEIGHT);

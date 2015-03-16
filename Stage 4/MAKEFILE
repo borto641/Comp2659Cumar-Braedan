@@ -1,5 +1,5 @@
-tst_rndr: tst_rndr.o events.o raster.o model.o render.o
-	cc68x -g tst_rndr.o events.o raster.o model.o render.o -o tst_rndr
+tst_rndr: tst_rndr.o events.o raster.o model.o render.o clear_qk.o
+	cc68x -g tst_rndr.o events.o raster.o model.o clear_qk.o render.o -o tst_rndr
 
 tst_rndr.o: tst_rndr.c events.h model.h raster.h 
 	cc68x -g -c tst_rndr.c
@@ -15,4 +15,8 @@ render.o: render.c render.h
 	
 model.o: model.c model.h
 	cc68x -g -c model.c
+	
+clear_qk.o: clear_qk.s
+	gen -D -L2 clear_qk.s
+	
 

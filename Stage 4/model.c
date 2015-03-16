@@ -173,6 +173,113 @@ dRCollDetect(Ball *ball, bool bricks[])
 	}
 }
 
+*/
+void moveBall(Ball *ball, bool bricks[], Paddle * paddle)
+{
+/* ADD COLLISION DETECTION */
+	ballDirection(ball,  paddle);
+	if(ball->ballMovingUp == true){
+		if(ball->ballMovingRight == true){
+			ball->x += ball->dX;
+			ball->y -= ball->dY;
+		}
+		else {
+			ball->x -= ball->dX;
+			ball->y -= ball->dY;
+		}
+	}
+	else if(ball->ballMovingUp == false){
+		if(ball->ballMovingLeft == true){
+			ball->x -= ball->dX;
+			ball->y += ball->dY;
+		}
+		else {
+			ball->x += ball->dX;
+			ball->y += ball->dY;
+		}
+	}
+	
+	
+		
+}
+void ballDirection(Ball *ball, Paddle *paddle){
+	int x = ball->x;
+	int y = ball->y;
+	int dx = ball->dX;
+	int dy = ball->dY;
+	
+	if(((ball->ballMovingUp) == true)&&((y -= dy) <= 0)){
+		ball->ballMovingUp = false;	
+	}
+	else if(((ball->ballMovingUp) == false)  && (((y += dy) +16) >= 399)
+	||
+		((((ball->ballMovingUp) == false) 
+						&& ((((y += dy)+16) >= (paddle->y) ) 
+						&&  ((((x += dx)+16) >=(paddle->x)) 
+						&& (((x += dx)) <=(paddle->x + 72))))))){
+	
+	
+		ball->ballMovingUp = true;	 
+	}
+	else if((((ball->ballMovingUp) == true) && ((ball->ballMovingLeft) == true)) && ((x -= dx) <= 0)){
+		ball->ballMovingRight = true;
+		ball->ballMovingLeft = false;
+	}
+	else if ((((ball->ballMovingUp) == true) && ((ball->ballMovingRight) == true)) && (((x += dx) + 16) >= 639)){
+		ball->ballMovingRight = false;
+		ball->ballMovingLeft =true;
+	}
+	else if((((ball->ballMovingUp) == false) && ((ball->ballMovingLeft) == true)) && (((x -= dx)) <= 1)){
+		ball->ballMovingRight = true;
+		ball->ballMovingLeft = false;
+	}
+	else if ((((ball->ballMovingUp) == false) && ((ball->ballMovingRight) == true)) && (((x += dx) + 16) >= 639)){
+		ball->ballMovingRight = false;
+		ball->ballMovingLeft = true;
+	}
+	
+	
+	
+	
+	
+	/*
+	if(((ball->ballMovingUp) == true)&&((ball->y -= ball->dY) <= 0)){
+		ball->ballMovingUp = false;	
+	}
+	else if(((ball->ballMovingUp) == false)  && (((ball->y += ball->dY)+16) >= 400)){ 
+	/*
+	||
+		((((ball->ballMovingUp) == false) 
+						&& ((((ball->y += ball->dY)+16) >= (paddle->y) ) 
+						&&  ((((ball->x += ball->dX)+16) >=(paddle->x)) 
+						&& (((ball->x += ball->dX)+16) <=(paddle->x + 72))))))){
+		
+	
+		ball->ballMovingUp = true;
+		 
+			
+	}
+	
+	
+	else if((((ball->ballMovingUp) == true) && ((ball->ballMovingLeft) == true)) && ((ball->x -= ball->dX) <= 0)){
+		ball->ballMovingRight = true;
+		ball->ballMovingLeft = false;
+	}
+	else if ((((ball->ballMovingUp) == true) && ((ball->ballMovingRight) == true)) && (((ball->x += ball->dX) + 16) >= 639)){
+		ball->ballMovingRight = false;
+		ball->ballMovingLeft =true;
+	}
+	else if((((ball->ballMovingUp) == false) && ((ball->ballMovingLeft) == true)) && (((ball->x -= ball->dX)) <= 0)){
+		ball->ballMovingRight = true;
+		ball->ballMovingLeft = false;
+	}
+	else if ((((ball->ballMovingUp) == false) && ((ball->ballMovingRight) == true)) && (((ball->x += ball->dX) + 16) >= 639)){
+		ball->ballMovingRight = false;
+		ball->ballMovingLeft = true;
+	}
+	*/
+}
+
 /*
 ballHitV will change the path of the ball, flipping the vertical direction, and
 	preserving the horizontal direction
@@ -240,13 +347,17 @@ void scoreLPosition (ScoreLabel label, int x, int y)
 
 */
 void move_paddle_left(Paddle *paddle){
-	paddle->x += 1;
+	  if ((paddle->x - 5) >= 0 ){
+            paddle->x -= 5;
+    }
 }
 /*
 
 */
 void move_paddle_right(Paddle *paddle){
-	paddle->x -= 1;
+	 if ((paddle->x + 72) <= 640 ){
+		paddle->x += 5;
+    }
 }
 /*
 

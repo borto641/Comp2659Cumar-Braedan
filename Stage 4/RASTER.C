@@ -199,10 +199,11 @@ void plotPoints(UINT8 *base, int cx, int cy, int x, int y){
 	*(base + (cy + y) * 80 + ((cx - x) >> 3)) |= 1 << 7 -((cx - x) & 7);
 	*(base + (cy + y) * 80 + ((cx + x) >> 3)) |= 1 << 7 -((cx + x) & 7);
 }
-
 void plotVertLine(UINT8 *base, int startX, int startY, int height){
 	int i;
 	for(i = 0; i < height; i++){
 		*(base + (startY + i) * 80 + (startX >> 3)) |= 1 << 7 -((startX & 7));
 	}
+	
+
 }

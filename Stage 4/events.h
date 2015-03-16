@@ -6,7 +6,8 @@
 
 #define left_arrow  0x004B0000L
 #define right_arrow 0x004D0000L
-#define spacebar    0x00390020L  
+#define spacebar    0x00390020L 
+#define ESC         0x0001001BL 
 
 void key_press(Paddle *paddle);
 void level_lost();
