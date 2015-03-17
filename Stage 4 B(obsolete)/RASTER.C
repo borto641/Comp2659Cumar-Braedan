@@ -27,8 +27,6 @@ void plot_hor_line(UINT8 *base, int x, int y, int width)
 			if (draw < base + ((y + 1) * 80 && rshift > 0)) /*if right shift needed*/
 				*draw |= (0xFF << rshift);
 	}
-	else
-		/* error? */
 
 	return;
 }

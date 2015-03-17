@@ -21,10 +21,10 @@ void key_press(Paddle *paddle)
 	int choice;
 	long key_pressed = Cnecin();
 		if(key_pressed == left_arrow){
-			move_paddle_left(paddle);
+			paddleLeft(paddle);
 		}
 		else if(key_pressed == right_arrow){
-			move_paddle_right(paddle);
+			paddleRight(paddle);
 		}
 		else if(key_pressed == spacebar){
 			/*paddle_launch_ball(paddle);*/

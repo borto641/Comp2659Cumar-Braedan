@@ -15,6 +15,8 @@
 void printScreen(Screen screen);
 void clrBall(Ball ball, UINT16 *base);
 void drwBall(Ball ball, UINT16 *base);
+void clrPaddle(Paddle paddle);
+void drwPaddle(Paddle paddle);
 void drawChunk(UINT32 *base, int x, int y, UINT32 *saved, int height);
 void saveChunk(UINT32 *base, int x, int y, UINT32 *saved, int height);
 #endif

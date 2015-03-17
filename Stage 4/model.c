@@ -346,36 +346,36 @@ void scoreLPosition (ScoreLabel label, int x, int y)
 /*
 
 */
-void move_paddle_left(Paddle *paddle){
+void paddleLeft(Paddle *paddle){
 	  if ((paddle->x - 5) >= 0 ){
-            paddle->x -= 5;
+            paddle->x -= 20;
     }
 }
 /*
 
 */
-void move_paddle_right(Paddle *paddle){
+void paddleRight(Paddle *paddle){
 	 if ((paddle->x + 72) <= 640 ){
-		paddle->x += 5;
+		paddle->x += 20;
     }
 }
 /*
 
 */
-void paddle_launch_ball(Paddle *paddle){
+void launch_ball(Paddle *paddle){
 	/* release the ball */
 
 }
 /*
 
 */
-int get_life(LifeCounter *lifeCounter){
+int getLife(LifeCounter *lifeCounter){
 	return lifeCounter->numLives;
 }
 /*
 
 */
-void remove_life(LifeCounter *lifeCounter){
+void removeLife(LifeCounter *lifeCounter){
 	lifeCounter->numLives -= 1;
 }
 

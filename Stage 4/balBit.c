@@ -1,4 +1,4 @@
-#include "ballBitmap.h"
+#include "balBit.h"
 
 const UINT16 ballBitmap[16] = 
 { 0x07E0,

@@ -36,6 +36,7 @@ typedef struct
 typedef struct {
 	int x;
 	int y;
+	/*PADDLE IS HARD CODED TO 72x16*/
 }Paddle;
 
 typedef struct{

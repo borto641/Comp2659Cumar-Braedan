@@ -21,20 +21,15 @@ void plot_hor_line(UINT8 *base, int x, int y, int width)
 			}
 			for (i = 0; i < ((width - lshift) >> 3) && (draw < (base + ((y + 1) * 80))); i++) /* for each full byte draw FF */
 			{
-				*draw = (0xFF);
+				*draw |= (0xFF);
 				draw++;
 			}		
 			if (draw < base + ((y + 1) * 80 && rshift > 0)) /*if right shift needed*/
 				*draw |= (0xFF << rshift);
 	}
-	else
-		/* error? */
-
 	return;
 }
 				
-				
-
 /*Plots a rectangle by calling plot_hor_line "height" times*/
 void plot_rectangle(UINT8 *base, int x, int y, int width, int height)
 {
@@ -50,6 +45,33 @@ void plot_rectangle(UINT8 *base, int x, int y, int width, int height)
 	return;	
 }
 
+void clearRectangle(UINT8 *base, int x, int y, int width, int height)
+{
+	UINT8 *draw = base;
+	int i = 0;
+	
+	for (i = 0; i < height; i++)
+	{
+		clrHorLine(draw, x, y, width);
+		draw += 80;
+	}
+
+	return;	
+}
+
+/*May need to address clearing only part of a byte if required
+  by more than clear paddle*/
+void clrHorLine(UINT8 *base, int x, int y, int width)
+{
+	UINT8 *draw = base + (y * 80) + (x >> 3);
+	int i = 0;
+	for (i = 0; i < (width >> 3) && (draw < (base + ((y + 1) * 80))); i++) /* for each full byte draw 00 */
+		{
+			*draw = (0x00);
+			draw++;
+		}		
+	return;
+}
 /*
 plots a single pixel to the correct location
 Formula supplied by Paul Pospisil
@@ -85,7 +107,7 @@ void bitmap16(UINT16 *base, int x, int y, const UINT16 *bitmap, unsigned int hei
 /*			draw = (base + y * 40 + (x / 16)) + 1;*/
 			for (i = 0; i < height && draw < base + 16000; i++)
 			{
-				*draw = (bitmap[i] << 16 - shift);
+				*draw |= (bitmap[i] << 16 - shift);
 				draw += 40;
 			}
 		}
@@ -120,10 +142,9 @@ void bitmap8(UINT8 *base, int x, int y, const UINT8 *bitmap, unsigned int height
 				draw += 80;
 			}
 			draw = draw - (80 * height) + 1;
-/*			draw = (base + y * 40 + (x / 16)) + 1;*/
 			for (i = 0; i < height && draw < base + 32000; i++)
 			{
-				*draw = (bitmap[i] << 8 - shift);
+				*draw |= (bitmap[i] << 8 - shift);
 				draw += 80;
 			}
 		}
@@ -143,8 +164,6 @@ return;
 }
 /*
  *	Clears the screen.
- *
- *
  */
 void clrScrn(UINT16 *base){
 	int x, y;
@@ -204,6 +223,4 @@ void plotVertLine(UINT8 *base, int startX, int startY, int height){
 	for(i = 0; i < height; i++){
 		*(base + (startY + i) * 80 + (startX >> 3)) |= 1 << 7 -((startX & 7));
 	}
-	
-
 }

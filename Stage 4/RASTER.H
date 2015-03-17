@@ -9,7 +9,9 @@ void plot_hor_line(UINT8 *base, int x, int y, int width);
 void plot_rectangle(UINT8 *base, int x, int y, int width, int height);						/*Replaced horiz*/
 void plot_pixel(UINT8 *base, int x, int y);
 void clrScrn(UINT16 *base);
-void plotVertLine(UINT8 *base, int x, int y, int length); 																		/*Renamed from vert*/
+void plotVertLine(UINT8 *base, int x, int y, int length); 									/*Renamed from vert*/
 void plotPoints(UINT8 *base ,int cx, int cy, int x, int y);	
 void plotCircle(UINT8 *base, int cx, int cy, int r);
+void clearRectangle(UINT8 *base, int x, int y, int width, int height);
+void clrHorLine(UINT8 *base, int x, int y, int width);
 #endif

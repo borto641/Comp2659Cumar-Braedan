@@ -7,12 +7,17 @@
 
 int main(){
     Screen screen;
-	void *base = Physbase();  
+	/*void *base = Physbase();  */
 	int i;
 	long key_pressed = Cnecin();
 	long *timer = 0x462;
 	long c_time;
 	long old_ssp;
+	UINT8 *base8 = Physbase();
+	UINT16 *base16 = Physbase();
+	UINT32 *base32 = Physbase();
+	UINT32 savedBallChunk[32];
+	UINT32 savedPaddleChunk[32];
 	
 	screen.ball.x = 85;
 	screen.ball.y =  290;
@@ -33,14 +38,17 @@ int main(){
 	screen.lifeCounter.x = 4;
 	screen.lifeCounter.y = 4;
 	screen.lifeCounter.numLives = 3;
-	/*
 	for (i = 25; i >= 0; i--)
 	{
 		screen.bricks[i] = true;
 	}
-	*/
 	
 	printf("\033E\033f\n");
+	printScreen(screen);
+	saveChunk(base32, screen.ball.x, screen.ball.y, savedBallChunk, BALL_HEIGHT);
+	saveChunk(base32, screen.paddle.x, screen.paddle.y, savedPaddleChunk, PADDLE_HEIGHT);
+	drwBall(screen.ball, base16);
+	drwPaddle(base8, screen.paddle);
 	old_ssp = Super(0);
 	c_time = *timer;
  
@@ -48,27 +56,25 @@ int main(){
 	  while (!Cconis()){
 		while (c_time == *timer)
 		;
+		drawChunk(base32, screen.ball.x, screen.ball.y, savedBallChunk, BALL_HEIGHT);
 		moveBall(&screen.ball, &screen.bricks, &screen.paddle);
+		saveChunk(base32, screen.ball.x, screen.ball.y, savedBallChunk, BALL_HEIGHT);
+		drwBall(screen.ball, base16);
+		Vsync();
+		
+		/*moveBall(&screen.ball, &screen.bricks, &screen.paddle);
 		printf("\033E\033f\n");
 		printScreen(screen);
-		c_time = *timer;
+		c_time = *timer;*/
 	  }  
+	clrPaddle(base8, screen.paddle);
 	key_press(&screen.paddle);
-	printf("\033E\033f\n");
-	printScreen(screen);
+	drwPaddle(base8, screen.paddle);
+	/*printScreen(screen);*/
   }
 
   Super(old_ssp);
-	/* SUPER SLOW */
-	/*
-	for (i = 0; i < 2000; i++)
-	{	
-		printf("\033E\033f\n");
-		moveBall(&screen.ball, &screen.bricks, &screen.paddle);
-		printScreen(screen);
-	}
-	*/
-
+	
 
 return 0;
 }
