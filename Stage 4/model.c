@@ -1,312 +1,334 @@
 #include "model.h"
+#include "events.h"
 
-/*
-void checkCollision(Ball *ball, bool bricks[])
+void moveBall(Ball *ball, Brick *bricks, Paddle paddle)
+{	
+	checkBounces(ball);
+	checkBallCollision(ball, bricks, paddle);
+	ball->x += (ball->dX * ball->speed);
+	ball->y += (ball->dY * ball->speed);
+}
+
+void checkBounces(Ball *ball)
 {
-	
-	if (ballY > 120)/*bricks may be hit
+	if (ball->totalBounces > 100)
+	{
+		ball->speed = 5;
+	}
+	else if (ball->totalBounces > 75)
+	{
+		ball->speed = 4;
+	}
+	else if (ball->totalBounces > 50)
+	{
+		ball->speed = 3;
+	}
+	else if (ball->totalBounces > 15)
+	{
+		ball->speed = 2;
+	}
+	else
+	{
+		ball->speed = 1;
+	}
+}
+
+void checkBallCollision(Ball *ball, Brick bricks[], Paddle paddle)
+{
+	if (ball->y < 125)/*bricks may be hit*/
 	{
 
-			if (ball->dX > 0) /*moving right
+			if (ball->dX > 0) /*moving right*/
 			{
-				if (ball-> dY < 0) /*moving up
+				if (ball-> dY < 0) /*moving up*/
 				{
 					uRCollDetect(ball, bricks);
 				}
-				else /*moving down
+				else /*moving down*/
 				{
 					dRCollDetect(ball, bricks);
 				}
 			}
-			else if (ball->dX < 0) /*left
+			else if (ball->dX < 0) /*left*/
 			{
-				if (ball->dY > 0) /*moving up
+				if (ball->dY < 0) /*moving up*/
 				{
 					uLCollDetect(ball,bricks);
 				}
-				else /*down
+				else /*down*/
 				{
 					dLCollDetect(ball,bricks);
 				}
 			}
-			else /*vertical
+			else /*vertical*/
 			{
-				if (ball->dY > 0) /*down
+				if (ball->dY > 0) /*down*/
 				{
 					downCollDetect(ball, bricks);
 				}
-				else /*up
+				else /*up*/
 				{
-					upCollDetect(ball,bricks);
+					upCollDetect(ball, bricks);
 				}
 			}
 			
 	}
-	else /*cannot hit bricks
+	else if (ball->y > 360)
 	{
-		if (ball->x == 0 || ballY == 639)
-			ballHitH(ball);
+		paddleCollDetect(ball, paddle);
+	}		
+	else /*cannot hit bricks or the paddle*/
+	{
+		if ((ball->x + ball->dX + BALL_WIDTH - 1 >= 639) 
+		|| (ball->x + ball->dX < 0))
+		{
+			ballHitHor(ball);
+		}	
 	}
 }
 
-void upCollDetect (Ball *ball, bool bricks[])
+void upCollDetect(Ball *ball, Brick bricks[])
 {
 	int i;
-	int pixel;
 	for (i = 0; i < 25; i++)
 	{
-		if (bricks[i] == true)
+		if (bricks[i].alive == TRUE)
 		{
-			if (((i / 5) 2) == 0) /*Even row
-			{
-				if ( ball->x >= ((i % 5) * 128) && ball->x < (((i%5) * 128) + 64) /* within the valid x range of brick
+			if ( ball->x + 15 >= bricks[i].x 
+				&& ball->x < bricks[i].x + 64) /* within the valid x range of brick*/
 				{
-					if (ball->y < (((i / 5) * 24) + 24) && (ball->y + ball->dY) > (((i / 5) * 24) + 24)
+					if (ball->y + ball->dY < (bricks[i].y + 24) 
+						&& (ball->y + ball->dY) >= (bricks[i].y))
 					{
-						destroyBrick(bricks[i]);
-						ballHitV(ball);
+						brickSmashed(&bricks[i]);
+						ballHitVert(ball);
 					}						
 				}					
-			}
-			else /*odd row
-			{
-				if ( ball->x >= ((i % 5) * 128) + 64 && ball->x < (((i%5) * 128) + 128) /* within the valid x range of brick
-				{
-					if (ball->y < (((i / 5) * 24) + 24) && (ball->y + ball->dY) > (((i / 5) * 24) + 24)
-					{
-						destroyBrick(bricks[i]);
-						ballHitV(ball);
-					}						
-				}		
-			}
 		}		
 	}
-	if ((ball->y + ball->dY) < 20)
-	{
-		
-		ballHitV(ball);
-	}
+	if ((ball->y + ball->dY) < 12)	/*checks for roof hits*/
+		ballHitVert(ball);
 }
 
-void downCollDetect (Ball *ball, bool bricks[])
+
+void downCollDetect(Ball *ball, Brick bricks[])
 {
 	int i;
 	for (i = 0; i < 25; i++)
 	{
-		if (bricks[i] == true)
+		if (bricks[i].alive == TRUE)
 		{
-			if (((i / 5) 2) == 0) /*Even row
-			{ 
-				if ((ball->x + 16) >= ((i % 5) * 128) && ball->x < (((i%5) * 128) + 64) /* within the valid x range of brick
+			if ( ball->x + 15 >= bricks[i].x && ball->x < bricks[i].x + 64) /* within the valid x range of brick*/
+			{
+				if (ball->y + ball->dY >= (bricks[i].y) && (ball->y + ball->dY) <= (bricks[i].y + 24))
 				{
-					if ((ball->x + ball->dX + 16) - ((i % 5) * 128) > 0)
+					brickSmashed(&bricks[i]);
+					ballHitVert(ball);
+				}						
+			}					
+		}		
+	}
+	if (ball->x + ball->dX <= 0 || ball->x + ball->dX >= 639) /*checks for wall hits*/
+			ballHitHor(ball);
+}
+
+void dRCollDetect(Ball *ball, Brick bricks[])
+{
+	int i;
+	
+	for (i = 0; i < 25; i++)
+	{
+		if (bricks[i].alive == TRUE)
+		{
+			if ((ball->x + ball->dX + BALL_WIDTH - 1) >= bricks[i].x 
+				&& (ball->x + ball->dX) <= (bricks[i].x + BRICK_WIDTH - 1)) /*In x range*/
+			{
+				if ((ball->y + ball->dY + BALL_HEIGHT - 1) >= (bricks[i].y)
+					&& (ball->y + ball->dY) <= (bricks[i].y + BRICK_HEIGHT))/* in Y range*/
+				{
+					if ((ball->x + ball->dX + BALL_WIDTH - 1) - bricks[i].x 
+						> 
+					   (ball->y + ball->dY + BALL_HEIGHT - 1) - bricks[i].y) /*ball entered from top*/
 					{
-						if ((ball->x + ball->dX + 16) - ((i % 5) * 128) < dX && ball->y + 1) - )
-						{
-							
+						ballHitVert(ball);
+						brickSmashed(&bricks[i]);
 					}
-					if (ball->y < (((i / 5) * 24)) && (ball->y + ball->dY) > (((i / 5) * 24))
+					else /*ball entered from side*/
 					{
-						destroyBrick(bricks[i]);
-						ballHitV(ball);
-					}						
-				}					
+						ballHitHor(ball);
+						brickSmashed(&bricks[i]);
+					}
+				}
 			}
-			else /*odd row
-			{
-				if ((ball->x + 16) >= ((i % 5) * 128) + 64 && ball->x < (((i%5) * 128) + 128) /* within the valid x range of brick
-				{
-					if (ball->y < (((i / 5) * 24)) && (ball->y + ball->dY) > (((i / 5) * 24))
-					{
-						destroyBrick(bricks[i]);
-						ballHitV(ball);
-					}						
-				}		
-			}
-		}		
-	}
-	if ((ball->y + ball->dY) < 20)
+		}
+	}	
+	if ((ball->x + ball->dX + BALL_WIDTH - 1 >= 639) 
+		|| (ball->x + ball->dX < 0))
 	{
-		
-		ballHitV(ball);
-	}
-}
+		ballHitHor(ball);
+	}		
+}				
+			
 
-
-
-dRCollDetect(Ball *ball, bool bricks[])
+void dLCollDetect(Ball *ball, Brick bricks[])
 {
 	int i;
+	
 	for (i = 0; i < 25; i++)
 	{
-		if (bricks[i] == true)
+		if (bricks[i].alive == TRUE)
 		{
-			if (((i / 5) 2) == 0) /*Even row
+			if ((ball->x + ball->dX + BALL_WIDTH - 1) >= bricks[i].x 
+				&& (ball->x + ball->dX) <= (bricks[i].x + BRICK_WIDTH - 1)) /*In x range*/
 			{
-				if ((ball->x + ball->dX + ) >= ((i % 5) * 128) && (ball->x + ball->dX) < (((i%5) * 128) + 64) /* within the valid x range of brick
+				if ((ball->y + ball->dY + BALL_HEIGHT - 1) >= (bricks[i].y)
+					&& (ball->y + ball->dY) <= (bricks[i].y + BRICK_HEIGHT) - 1)/* in Y range*/
 				{
-					
-					if (ball->y < (((i / 5) * 24)) && (ball->y + ball->dY) > (((i / 5) * 24))
+					if ((bricks[i].x + BRICK_WIDTH - 1) - (ball->x + ball->dX)
+						> 
+					   (ball->y + ball->dY + BALL_HEIGHT - 1) - bricks[i].y) /*ball entered from top*/
 					{
-						destroyBrick(bricks[i]);
-						ballHitV(ball);
-					}						
-				}					
-			}
-			else /*odd row
-			{
-				if ( ball->x >= ((i % 5) * 128) + 64 && ball->x < (((i%5) * 128) + 128) /* within the valid x range of brick
-				{
-					if (ball->y < (((i / 5) * 24)) && (ball->y + ball->dY) > (((i / 5) * 24))
+						ballHitVert(ball);
+						brickSmashed(&bricks[i]);
+					}
+					else /*ball entered from side*/
 					{
-						destroyBrick(bricks[i]);
-						ballHitV(ball);
-					}						
-				}		
+						ballHitHor(ball);
+						brickSmashed(&bricks[i]);
+					}
+				}
 			}
-		}		
-	}
-	if ((ball->y + ball->dY) < 20)
+		}
+	}	
+	if ((ball->x + ball->dX + BALL_WIDTH - 1) >= 639 
+		|| (ball->x + ball->dX) < 0)
 	{
-		
-		ballHitV(ball);
+		ballHitHor(ball);
+	}		
+}	
+	
+void uLCollDetect(Ball *ball, Brick bricks[])
+{
+	int i;
+	
+	for (i = 0; i < 25; i++)
+	{
+		if (bricks[i].alive == TRUE)
+		{
+			if ((ball->x + ball->dX + BALL_WIDTH - 1) >= bricks[i].x 
+				&& (ball->x + ball->dX) <= (bricks[i].x + BRICK_WIDTH - 1)) /*In x range*/
+			{
+				if ((ball->y + ball->dY) < (bricks[i].y + 24) 
+						&& (ball->y + ball->dY + BALL_HEIGHT - 1) >= (bricks[i].y))/* in Y range*/
+				{
+					if ((bricks[i].x + BRICK_WIDTH  - 1) - (ball->x + ball->dX)
+						> 
+					   ((bricks[i].y + BRICK_HEIGHT - 1) - ball->y + ball->dY)) /*ball entered from bottom*/
+					{
+						ballHitVert(ball);
+						brickSmashed(&bricks[i]);
+					}
+					else /*ball entered from side*/
+					{
+						ballHitHor(ball);
+						brickSmashed(&bricks[i]);
+					}
+				}
+			}
+		}
+	}	
+	if ((ball->x + ball->dX + BALL_WIDTH - 1) >= 639 
+		|| (ball->x + ball->dX) < 0)
+	{
+		ballHitHor(ball);
+	}	
+	if ((ball->y + ball->dY) <= 12)
+	{
+		ballHitVert(ball);
 	}
 }
 
-*/
-void moveBall(Ball *ball, bool bricks[], Paddle * paddle)
+void uRCollDetect(Ball *ball, Brick bricks[])
 {
-/* ADD COLLISION DETECTION */
-	ballDirection(ball,  paddle);
-	if(ball->ballMovingUp == true){
-		if(ball->ballMovingRight == true){
-			ball->x += ball->dX;
-			ball->y -= ball->dY;
+	int i;
+	
+	for (i = 0; i < 25; i++)
+	{
+		if (bricks[i].alive == TRUE)
+		{
+			if ((ball->x + ball->dX + BALL_WIDTH - 1) >= bricks[i].x 
+				&& (ball->x + ball->dX) <= (bricks[i].x + BRICK_WIDTH - 1)) /*In x range*/
+			{
+				if ((ball->y + ball->dY) < (bricks[i].y + 24) 
+						&& (ball->y + ball->dY + BALL_HEIGHT - 1) >= (bricks[i].y))/* in Y range*/
+				{
+					if ((ball->x + ball->dX + BALL_WIDTH - 1) - bricks[i].x
+						> 
+					   ((bricks[i].y + BRICK_HEIGHT - 1) - ball->y + ball->dY)) /*ball entered from bottom*/
+					{
+						ballHitVert(ball);
+						brickSmashed(&bricks[i]);
+					}
+					else /*ball entered from side*/
+					{
+						ballHitHor(ball);
+						brickSmashed(&bricks[i]);
+					}
+				}
+			}
 		}
-		else {
-			ball->x -= ball->dX;
-			ball->y -= ball->dY;
-		}
+	}	
+	if ((ball->x + ball->dX + BALL_WIDTH - 1) >= 639 
+		|| (ball->x + ball->dX) < 0)
+	{
+		ballHitHor(ball);
 	}
-	else if(ball->ballMovingUp == false){
-		if(ball->ballMovingLeft == true){
-			ball->x -= ball->dX;
-			ball->y += ball->dY;
-		}
-		else {
-			ball->x += ball->dX;
-			ball->y += ball->dY;
-		}
-	}
-	
-	
-		
-}
-void ballDirection(Ball *ball, Paddle *paddle){
-	int x = ball->x;
-	int y = ball->y;
-	int dx = ball->dX;
-	int dy = ball->dY;
-	
-	if(((ball->ballMovingUp) == true)&&((y -= dy) <= 0)){
-		ball->ballMovingUp = false;	
-	}
-	else if(((ball->ballMovingUp) == false)  && (((y += dy) +16) >= 399)
-	||
-		((((ball->ballMovingUp) == false) 
-						&& ((((y += dy)+16) >= (paddle->y) ) 
-						&&  ((((x += dx)+16) >=(paddle->x)) 
-						&& (((x += dx)) <=(paddle->x + 72))))))){
-	
-	
-		ball->ballMovingUp = true;	 
-	}
-	else if((((ball->ballMovingUp) == true) && ((ball->ballMovingLeft) == true)) && ((x -= dx) <= 0)){
-		ball->ballMovingRight = true;
-		ball->ballMovingLeft = false;
-	}
-	else if ((((ball->ballMovingUp) == true) && ((ball->ballMovingRight) == true)) && (((x += dx) + 16) >= 639)){
-		ball->ballMovingRight = false;
-		ball->ballMovingLeft =true;
-	}
-	else if((((ball->ballMovingUp) == false) && ((ball->ballMovingLeft) == true)) && (((x -= dx)) <= 1)){
-		ball->ballMovingRight = true;
-		ball->ballMovingLeft = false;
-	}
-	else if ((((ball->ballMovingUp) == false) && ((ball->ballMovingRight) == true)) && (((x += dx) + 16) >= 639)){
-		ball->ballMovingRight = false;
-		ball->ballMovingLeft = true;
-	}
-	
-	
-	
-	
-	
-	/*
-	if(((ball->ballMovingUp) == true)&&((ball->y -= ball->dY) <= 0)){
-		ball->ballMovingUp = false;	
-	}
-	else if(((ball->ballMovingUp) == false)  && (((ball->y += ball->dY)+16) >= 400)){ 
-	/*
-	||
-		((((ball->ballMovingUp) == false) 
-						&& ((((ball->y += ball->dY)+16) >= (paddle->y) ) 
-						&&  ((((ball->x += ball->dX)+16) >=(paddle->x)) 
-						&& (((ball->x += ball->dX)+16) <=(paddle->x + 72))))))){
-		
-	
-		ball->ballMovingUp = true;
-		 
-			
-	}
-	
-	
-	else if((((ball->ballMovingUp) == true) && ((ball->ballMovingLeft) == true)) && ((ball->x -= ball->dX) <= 0)){
-		ball->ballMovingRight = true;
-		ball->ballMovingLeft = false;
-	}
-	else if ((((ball->ballMovingUp) == true) && ((ball->ballMovingRight) == true)) && (((ball->x += ball->dX) + 16) >= 639)){
-		ball->ballMovingRight = false;
-		ball->ballMovingLeft =true;
-	}
-	else if((((ball->ballMovingUp) == false) && ((ball->ballMovingLeft) == true)) && (((ball->x -= ball->dX)) <= 0)){
-		ball->ballMovingRight = true;
-		ball->ballMovingLeft = false;
-	}
-	else if ((((ball->ballMovingUp) == false) && ((ball->ballMovingRight) == true)) && (((ball->x += ball->dX) + 16) >= 639)){
-		ball->ballMovingRight = false;
-		ball->ballMovingLeft = true;
-	}
-	*/
+	if ((ball->y + ball->dY) <= 12)
+	{
+		ballHitVert(ball);
+	}	
 }
 
-/*
-ballHitV will change the path of the ball, flipping the vertical direction, and
-	preserving the horizontal direction
-*/
-void ballHitV(Ball *ball)
+/*BASIC paddle collision with no angle change. IMPROVE*/
+void paddleCollDetect(Ball *ball, Paddle paddle)
 {
-	ball->dY -= (ball->dY + ball->dY);
-}
 
-/*
-ballHitH will change the path of the ball, flipping the horizontal direction, and
-	preserving the vertical direction
-*/
-void ballHitH(Ball *ball)
-{
-	ball->dX -= (ball->dX + ball->dX);
-}
+	int paddleHitPosition;
+	if ((ball->x + ball->dX + BALL_WIDTH - 1) >= paddle.x 
+				&& (ball->x + ball->dX) <= (paddle.x + 71))
+				{			
+					if ((ball->y + ball->dY + BALL_HEIGHT - 1) >= paddle.y)
+						{
+							paddleHitPosition = paddle.x - (ball->x + ball->dX);
+							if (paddleHitPosition > 0)
+							{
+								/*far left*/
+								farLeftPaddleHit(ball);
+							}
+							else if (paddleHitPosition > -14)
+							{
+								/*mid left*/
+								midLeftPaddleHit(ball);
+							}
+							else if (paddleHitPosition > -29)
+							{
+								/*centre*/
+								centrePaddleHit(ball);
+							}
+							else if (paddleHitPosition > 43)
+							{
+								/*mid right*/
+								midRightPaddleHit(ball);
+							}
+							else
+							{
+								/*far right*/
+								farRightPaddleHit(ball);
+							}
+						}
+				}
+}	
 
-/*
-ballHitB will change the path of the ball, flipping both horizontal and vertical
-	directions
-*/
-void ballHitB(Ball *ball)
-{
-	ball->dX -= (ball->dX + ball->dX);
-	ball->dY -= (ball->dY + ball->dY);
-}
 
 /*
 addScore will increase the numerical score value by a given amount

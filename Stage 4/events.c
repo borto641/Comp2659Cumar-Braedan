@@ -37,8 +37,63 @@ Brick
 - up,down, left side and right side
 ******************************************************************************/
 
-void ball_hits_brick(Screen screen, int brick){
+void brickSmashed(Brick *brick){
 /*If ball touches the brick remove the brick from the level*/
-	screen.bricks[brick] = false;
-} 
+	brick->alive = FALSE;
+	brick->undraw = TRUE;
+	} 
 
+/*
+ballHitV will change the path of the ball, flipping the vertical direction, and
+	preserving the horizontal direction
+*/
+void ballHitVert(Ball *ball)
+{
+	ball->totalBounces++;
+	ball->dY -= (ball->dY + ball->dY);
+}
+
+/*
+ballHitH will change the path of the ball, flipping the horizontal direction, and
+	preserving the vertical direction
+*/
+void ballHitHor(Ball *ball)
+{
+	ball->totalBounces++;
+	ball->dX -= (ball->dX + ball->dX);
+}
+
+void farLeftPaddleHit(Ball *ball)
+{
+	ball->totalBounces++;
+	ball->dX = -3;
+	ball->dY = -1;
+}
+
+void midLeftPaddleHit(Ball *ball)
+{
+	ball->totalBounces++;
+	ball->dX = -1;
+	ball->dY = -3;
+}
+
+void centrePaddleHit(Ball *ball)
+{
+	ball->totalBounces++;
+	ball->dX = 0;
+	ball->dY = -4;
+}
+
+void midRightPaddleHit(Ball *ball)
+{
+	ball->totalBounces++;
+	ball->dX = 1;
+	ball->dY = -3;
+}
+
+void farRightPaddleHit(Ball *ball)
+{
+	ball->totalBounces++;
+	ball->dX = 3;
+	ball->dY = -1;
+}

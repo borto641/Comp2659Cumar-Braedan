@@ -1,12 +1,12 @@
 #ifndef MODEL_H
 #define MODEL_H
-#define true 1
-#define false 0
-
-
 #include "raster.h"
 #include "types.h"
-typedef int bool;
+
+#define BALL_HEIGHT 16
+#define BALL_WIDTH 16
+#define BRICK_WIDTH 64
+#define BRICK_HEIGHT 24
 
 typedef struct
 {
@@ -14,11 +14,19 @@ typedef struct
 	int y;
 	int dX;
 	int dY;
-	bool ballMovingUp;
-	bool ballMovingRight;
-	bool ballMovingLeft;
-	int size;
+	int totalBounces;
+	int speed;
+	bool ballOut;
+	
 } Ball;
+
+typedef struct
+{
+	int x;
+	int y;
+	bool alive;
+	bool undraw;
+} Brick;
 
 typedef struct 
 {
@@ -50,11 +58,11 @@ typedef struct{
 	ScoreNum scoreNum;
     ScoreLabel scoreLabel;
     Paddle paddle;
-    bool bricks[25];
+    Brick bricks[25];
     LifeCounter lifeCounter;
 }Screen;
 
-void moveBall(Ball *ball, bool bricks[], Paddle *paddle);
+void moveBall(Ball *ball, Brick bricks[], Paddle paddle);
 void addScore(ScoreNum score, int amount);
 void remScore(ScoreNum score, int amount);
 void scoreLPosition (ScoreLabel label, int x, int y);
@@ -66,9 +74,16 @@ void removeLife(LifeCounter *lifeCounter);
 int  getLife(LifeCounter *lifeCounter);
 int  getScore (ScoreNum score);
 void printScreen(Screen screen);
-void ballHitVert(Ball *ball);
-void ballHitHor(Ball *ball);
 void printScreen(Screen screen);
 void ballDirection(Ball *ball, Paddle *paddle);
+void checkBallCollision(Ball *ball, Brick bricks[], Paddle paddle);
+void upCollDetect(Ball *ball, Brick bricks[]);
+void downCollDetect(Ball *ball, Brick bricks[]);
+void dRCollDetect(Ball *ball, Brick bricks[]);
+void dLCollDetect(Ball *ball, Brick bricks[]);
+void uLCollDetect(Ball *ball, Brick bricks[]);
+void uRCollDetect(Ball *ball, Brick bricks[]);
+void paddleCollDetect(Ball *ball, Paddle paddle);
+void checkBounces(Ball *ball);
 
 #endif

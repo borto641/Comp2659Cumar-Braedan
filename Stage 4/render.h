@@ -19,4 +19,5 @@ void clrPaddle(UINT8 *base, Paddle paddle);
 void drwPaddle(UINT8 *base, Paddle paddle);
 void drawChunk(UINT32 *base, int x, int y, UINT32 *saved, int height);
 void saveChunk(UINT32 *base, int x, int y, UINT32 *saved, int height);
+void clrBrick(Brick *brick, UINT8 *base);
 #endif

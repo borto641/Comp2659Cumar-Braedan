@@ -11,7 +11,15 @@
 
 void key_press(Paddle *paddle);
 void level_lost();
-void ball_hits_brick(Screen screen, int brick);
+void brickSmashed(Brick *brick);
+void ballHitVert(Ball *ball);
+void ballHitHor(Ball *ball);
+void farRightPaddleHit(Ball *ball);
+void midRightPaddleHit(Ball *ball);
+void centrePaddleHit(Ball *ball);
+void midLeftPaddleHit(Ball *ball);
+void farLeftPaddleHit(Ball *ball);
+
 
 #endif
 

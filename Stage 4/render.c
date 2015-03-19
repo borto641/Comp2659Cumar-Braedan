@@ -13,16 +13,9 @@ void printScreen(Screen screen)
 
 	for (i = 0; i < 25; i++)
 	{
-		if (screen.bricks[i] == true)
+		if (screen.bricks[i].alive == TRUE)
 		{
-			if (((i / 5) % 2) != 0)
-			{
-				plot_rectangle(base8, ((i % 5) << 7) + 64, (TOP_BAR_HEIGHT + ((i / 5) * BRICK_HEIGHT) ), BRICK_WIDTH, BRICK_HEIGHT);
-			}
-			else 
-			{
-				plot_rectangle(base8, ( (i % 5) << 7), (TOP_BAR_HEIGHT + (i / 5) * BRICK_HEIGHT), BRICK_WIDTH, BRICK_HEIGHT);
-			}
+			plot_rectangle(base8, screen.bricks[i].x, screen.bricks[i].y, BRICK_WIDTH, BRICK_HEIGHT);
 		}
 	}
 	
@@ -94,6 +87,10 @@ void drwPaddle(UINT8 *base, Paddle paddle)
 	plot_rectangle(base, paddle.x, paddle.y, PADDLE_WIDTH, PADDLE_HEIGHT);
 }
 
+void clrBrick(Brick *brick, UINT8 *base)
+{
+	clearRectangle(base, brick->x, brick->y, BRICK_WIDTH, BRICK_HEIGHT);
+}
 
 
 
