@@ -19,7 +19,7 @@ void midRightPaddleHit(Ball *ball);
 void centrePaddleHit(Ball *ball);
 void midLeftPaddleHit(Ball *ball);
 void farLeftPaddleHit(Ball *ball);
-
+void ballHitBottom(Screen *screen);
 
 #endif
 

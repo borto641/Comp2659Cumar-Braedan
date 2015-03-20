@@ -33,7 +33,7 @@ int main(){
 	screen.paddle.y = 370;
 	screen.lifeCounter.x = 4;
 	screen.lifeCounter.y = 4;
-	screen.lifeCounter.numLives = 3;
+	screen.lifeCount = 3;
 	
 	/*next two loops for testing purposes*/
 	for (i = 0; i <= 19; i++)
@@ -79,7 +79,7 @@ int main(){
 			}
 		}
 		drawChunk(base32, screen.ball.x, screen.ball.y, savedBallChunk, BALL_HEIGHT);
-		moveBall(&screen.ball, &screen.bricks, screen.paddle);
+		moveBall(&screen);
 		saveChunk(base32, screen.ball.x, screen.ball.y, savedBallChunk, BALL_HEIGHT);
 		drwBall(screen.ball, base16);
 		if (Cconis())

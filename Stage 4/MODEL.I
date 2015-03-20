@@ -229,10 +229,9 @@ typedef struct {
 }Paddle;
 
 typedef struct{
-	int numLives;
 	int x;
 	int y;
-}LifeCounter;
+}LifeCounterLabel;
 
 typedef struct{
 	Ball ball;
@@ -240,10 +239,12 @@ typedef struct{
     ScoreLabel scoreLabel;
     Paddle paddle;
     Brick bricks[25];
-    LifeCounter lifeCounter;
+    LifeCounterLabel lifeCounter;
+	int lifeCount;
+	bool resetBall;
 }Screen;
 
-void moveBall(Ball *ball, Brick bricks[], Paddle paddle);
+void moveBall(Screen *screen);
 void addScore(ScoreNum score, int amount);
 void remScore(ScoreNum score, int amount);
 void scoreLPosition (ScoreLabel label, int x, int y);
@@ -251,20 +252,18 @@ void paddleLeft(Paddle *paddle);
 void paddleRight(Paddle *paddle);
 void launchBall(Paddle *paddle);
 void destroyBrick(int brick);
-void removeLife(LifeCounter *lifeCounter);
-int  getLife(LifeCounter *lifeCounter);
 int  getScore (ScoreNum score);
 void printScreen(Screen screen);
 void printScreen(Screen screen);
 void ballDirection(Ball *ball, Paddle *paddle);
-void checkBallCollision(Ball *ball, Brick bricks[], Paddle paddle);
-void upCollDetect(Ball *ball, Brick bricks[]);
-void downCollDetect(Ball *ball, Brick bricks[]);
-void dRCollDetect(Ball *ball, Brick bricks[]);
-void dLCollDetect(Ball *ball, Brick bricks[]);
-void uLCollDetect(Ball *ball, Brick bricks[]);
-void uRCollDetect(Ball *ball, Brick bricks[]);
-void paddleCollDetect(Ball *ball, Paddle paddle);
+void checkBallCollision(Screen *screen);
+void upCollDetect(Screen *screen);
+void downCollDetect(Screen *screen);
+void dRCollDetect(Screen *screen);
+void dLCollDetect(Screen *screen);
+void uLCollDetect(Screen *screen);
+void uRCollDetect(Screen *screen);
+void paddleCollDetect(Screen *screen);
 void checkBounces(Ball *ball);
 # 1 "model.c" 2
 # 1 "./events.h" 1
@@ -379,15 +378,23 @@ void midRightPaddleHit(Ball *ball);
 void centrePaddleHit(Ball *ball);
 void midLeftPaddleHit(Ball *ball);
 void farLeftPaddleHit(Ball *ball);
+void ballHitBottom(Screen *screen);
 # 2 "model.c" 2
 
 
-void moveBall(Ball *ball, Brick *bricks, Paddle paddle)
+void moveBall(Screen *screen)
 {
-	checkBounces(ball);
-	checkBallCollision(ball, bricks, paddle);
-	ball->x += (ball->dX * ball->speed);
-	ball->y += (ball->dY * ball->speed);
+	checkBounces(&screen->ball);
+	checkBallCollision(screen);
+	if (!screen->resetBall)
+	{
+		screen->ball.x += (screen->ball.dX * screen->ball.speed);
+		screen->ball.y += (screen->ball.dY * screen->ball.speed);
+	}
+	else
+	{
+
+	}
 }
 
 void checkBounces(Ball *ball)
@@ -414,299 +421,302 @@ void checkBounces(Ball *ball)
 	}
 }
 
-void checkBallCollision(Ball *ball, Brick bricks[], Paddle paddle)
+void checkBallCollision(Screen *screen)
 {
-	if (ball->y < 125)
+	if (screen->ball.y < 125)
 	{
 
-			if (ball->dX > 0)
+			if (screen->ball.dX > 0)
 			{
-				if (ball-> dY < 0)
+				if (screen->ball. dY < 0)
 				{
-					uRCollDetect(ball, bricks);
+					uRCollDetect(screen);
 				}
 				else
 				{
-					dRCollDetect(ball, bricks);
+					dRCollDetect(screen);
 				}
 			}
-			else if (ball->dX < 0)
+			else if (screen->ball.dX < 0)
 			{
-				if (ball->dY < 0)
+				if (screen->ball.dY < 0)
 				{
-					uLCollDetect(ball,bricks);
+					uLCollDetect(screen);
 				}
 				else
 				{
-					dLCollDetect(ball,bricks);
+					dLCollDetect(screen);
 				}
 			}
 			else
 			{
-				if (ball->dY > 0)
+				if (screen->ball.dY > 0)
 				{
-					downCollDetect(ball, bricks);
+					downCollDetect(screen);
 				}
 				else
 				{
-					upCollDetect(ball, bricks);
+					upCollDetect(screen);
 				}
 			}
 
 	}
-	else if (ball->y > 360)
+	else if (screen->ball.y > 360)
 	{
-		paddleCollDetect(ball, paddle);
+		paddleCollDetect(screen);
 	}
 	else
 	{
-		if ((ball->x + ball->dX + 16  - 1 >= 639)
-		|| (ball->x + ball->dX < 0))
+		if ((screen->ball.x + screen->ball.dX + 16  - 1 >= 639)
+		|| (screen->ball.x + screen->ball.dX < 0))
 		{
-			ballHitHor(ball);
+			ballHitHor(&screen->ball);
 		}
 	}
 }
 
-void upCollDetect(Ball *ball, Brick bricks[])
+void upCollDetect(Screen *screen)
 {
 	int i;
 	for (i = 0; i < 25; i++)
 	{
-		if (bricks[i].alive == 1 )
+		if (screen->bricks[i].alive == 1 )
 		{
-			if ( ball->x + 15 >= bricks[i].x
-				&& ball->x < bricks[i].x + 64)
-				{
-					if (ball->y + ball->dY < (bricks[i].y + 24)
-						&& (ball->y + ball->dY) >= (bricks[i].y))
-					{
-						brickSmashed(&bricks[i]);
-						ballHitVert(ball);
-					}
-				}
-		}
-	}
-	if ((ball->y + ball->dY) < 12)
-		ballHitVert(ball);
-}
-
-
-void downCollDetect(Ball *ball, Brick bricks[])
-{
-	int i;
-	for (i = 0; i < 25; i++)
-	{
-		if (bricks[i].alive == 1 )
-		{
-			if ( ball->x + 15 >= bricks[i].x && ball->x < bricks[i].x + 64)
+			if ( screen->ball.x + 15 >= screen->bricks[i].x
+				&& screen->ball.x < screen->bricks[i].x + 64)
 			{
-				if (ball->y + ball->dY >= (bricks[i].y) && (ball->y + ball->dY) <= (bricks[i].y + 24))
+				if (screen->ball.y + screen->ball.dY < (screen->bricks[i].y + 24)
+					&& (screen->ball.y + screen->ball.dY) >= (screen->bricks[i].y))
 				{
-					brickSmashed(&bricks[i]);
-					ballHitVert(ball);
+					brickSmashed(&screen->bricks[i]);
+					ballHitVert(&screen->ball);
 				}
 			}
 		}
 	}
-	if (ball->x + ball->dX <= 0 || ball->x + ball->dX >= 639)
-			ballHitHor(ball);
+	if ((screen->ball.y + screen->ball.dY) < 12)
+		ballHitVert(&screen->ball);
 }
 
-void dRCollDetect(Ball *ball, Brick bricks[])
+
+void downCollDetect(Screen *screen)
+{
+	int i;
+	for (i = 0; i < 25; i++)
+	{
+		if (screen->bricks[i].alive == 1 )
+		{
+			if ( screen->ball.x + 15 >= screen->bricks[i].x && screen->ball.x < screen->bricks[i].x + 64)
+			{
+				if (screen->ball.y + screen->ball.dY >= (screen->bricks[i].y) && (screen->ball.y + screen->ball.dY) <= (screen->bricks[i].y + 24))
+				{
+					brickSmashed(&screen->bricks[i]);
+					ballHitVert(&screen->ball);
+				}
+			}
+		}
+	}
+	if (screen->ball.x + screen->ball.dX <= 0 || screen->ball.x + screen->ball.dX >= 639)
+			ballHitHor(&screen->ball);
+}
+
+void dRCollDetect(Screen *screen)
 {
 	int i;
 
 	for (i = 0; i < 25; i++)
 	{
-		if (bricks[i].alive == 1 )
+		if (screen->bricks[i].alive == 1 )
 		{
-			if ((ball->x + ball->dX + 16  - 1) >= bricks[i].x
-				&& (ball->x + ball->dX) <= (bricks[i].x + 64  - 1))
+			if ((screen->ball.x + screen->ball.dX + 16  - 1) >= screen->bricks[i].x
+				&& (screen->ball.x + screen->ball.dX) <= (screen->bricks[i].x + 64  - 1))
 			{
-				if ((ball->y + ball->dY + 16  - 1) >= (bricks[i].y)
-					&& (ball->y + ball->dY) <= (bricks[i].y + 24 ))
+				if ((screen->ball.y + screen->ball.dY + 16  - 1) >= (screen->bricks[i].y)
+					&& (screen->ball.y + screen->ball.dY) <= (screen->bricks[i].y + 24 ))
 				{
-					if ((ball->x + ball->dX + 16  - 1) - bricks[i].x
+					if ((screen->ball.x + screen->ball.dX + 16  - 1) - screen->bricks[i].x
 						>
-					   (ball->y + ball->dY + 16  - 1) - bricks[i].y)
+					   (screen->ball.y + screen->ball.dY + 16  - 1) - screen->bricks[i].y)
 					{
-						ballHitVert(ball);
-						brickSmashed(&bricks[i]);
+						ballHitVert(&screen->ball);
+						brickSmashed(&screen->bricks[i]);
 					}
 					else
 					{
-						ballHitHor(ball);
-						brickSmashed(&bricks[i]);
+						ballHitHor(&screen->ball);
+						brickSmashed(&screen->bricks[i]);
 					}
 				}
 			}
 		}
 	}
-	if ((ball->x + ball->dX + 16  - 1 >= 639)
-		|| (ball->x + ball->dX < 0))
+	if ((screen->ball.x + screen->ball.dX + 16  - 1 >= 639)
+		|| (screen->ball.x + screen->ball.dX < 0))
 	{
-		ballHitHor(ball);
+		ballHitHor(&screen->ball);
 	}
 }
 
 
-void dLCollDetect(Ball *ball, Brick bricks[])
+void dLCollDetect(Screen *screen)
 {
 	int i;
 
 	for (i = 0; i < 25; i++)
 	{
-		if (bricks[i].alive == 1 )
+		if (screen->bricks[i].alive == 1 )
 		{
-			if ((ball->x + ball->dX + 16  - 1) >= bricks[i].x
-				&& (ball->x + ball->dX) <= (bricks[i].x + 64  - 1))
+			if ((screen->ball.x + screen->ball.dX + 16  - 1) >= screen->bricks[i].x
+				&& (screen->ball.x + screen->ball.dX) <= (screen->bricks[i].x + 64  - 1))
 			{
-				if ((ball->y + ball->dY + 16  - 1) >= (bricks[i].y)
-					&& (ball->y + ball->dY) <= (bricks[i].y + 24 ) - 1)
+				if ((screen->ball.y + screen->ball.dY + 16  - 1) >= (screen->bricks[i].y)
+					&& (screen->ball.y + screen->ball.dY) <= (screen->bricks[i].y + 24 ) - 1)
 				{
-					if ((bricks[i].x + 64  - 1) - (ball->x + ball->dX)
+					if ((screen->bricks[i].x + 64  - 1) - (screen->ball.x + screen->ball.dX)
 						>
-					   (ball->y + ball->dY + 16  - 1) - bricks[i].y)
+					   (screen->ball.y + screen->ball.dY + 16  - 1) - screen->bricks[i].y)
 					{
-						ballHitVert(ball);
-						brickSmashed(&bricks[i]);
+						ballHitVert(&screen->ball);
+						brickSmashed(&screen->bricks[i]);
 					}
 					else
 					{
-						ballHitHor(ball);
-						brickSmashed(&bricks[i]);
+						ballHitHor(&screen->ball);
+						brickSmashed(&screen->bricks[i]);
 					}
 				}
 			}
 		}
 	}
-	if ((ball->x + ball->dX + 16  - 1) >= 639
-		|| (ball->x + ball->dX) < 0)
+	if ((screen->ball.x + screen->ball.dX + 16  - 1) >= 639
+		|| (screen->ball.x + screen->ball.dX) < 0)
 	{
-		ballHitHor(ball);
+		ballHitHor(&screen->ball);
 	}
 }
 
-void uLCollDetect(Ball *ball, Brick bricks[])
+void uLCollDetect(Screen *screen)
 {
 	int i;
 
 	for (i = 0; i < 25; i++)
 	{
-		if (bricks[i].alive == 1 )
+		if (screen->bricks[i].alive == 1 )
 		{
-			if ((ball->x + ball->dX + 16  - 1) >= bricks[i].x
-				&& (ball->x + ball->dX) <= (bricks[i].x + 64  - 1))
+			if ((screen->ball.x + screen->ball.dX + 16  - 1) >= screen->bricks[i].x
+				&& (screen->ball.x + screen->ball.dX) <= (screen->bricks[i].x + 64  - 1))
 			{
-				if ((ball->y + ball->dY) < (bricks[i].y + 24)
-						&& (ball->y + ball->dY + 16  - 1) >= (bricks[i].y))
+				if ((screen->ball.y + screen->ball.dY) < (screen->bricks[i].y + 24)
+						&& (screen->ball.y + screen->ball.dY + 16  - 1) >= (screen->bricks[i].y))
 				{
-					if ((bricks[i].x + 64   - 1) - (ball->x + ball->dX)
+					if ((screen->bricks[i].x + 64   - 1) - (screen->ball.x + screen->ball.dX)
 						>
-					   ((bricks[i].y + 24  - 1) - ball->y + ball->dY))
+					   ((screen->bricks[i].y + 24  - 1) - screen->ball.y + screen->ball.dY))
 					{
-						ballHitVert(ball);
-						brickSmashed(&bricks[i]);
+						ballHitVert(&screen->ball);
+						brickSmashed(&screen->bricks[i]);
 					}
 					else
 					{
-						ballHitHor(ball);
-						brickSmashed(&bricks[i]);
+						ballHitHor(&screen->ball);
+						brickSmashed(&screen->bricks[i]);
 					}
 				}
 			}
 		}
 	}
-	if ((ball->x + ball->dX + 16  - 1) >= 639
-		|| (ball->x + ball->dX) < 0)
+	if ((screen->ball.x + screen->ball.dX + 16  - 1) >= 639
+		|| (screen->ball.x + screen->ball.dX) < 0)
 	{
-		ballHitHor(ball);
+		ballHitHor(&screen->ball);
 	}
-	if ((ball->y + ball->dY) <= 12)
+	if ((screen->ball.y + screen->ball.dY) <= 12)
 	{
-		ballHitVert(ball);
+		ballHitVert(&screen->ball);
 	}
 }
 
-void uRCollDetect(Ball *ball, Brick bricks[])
+void uRCollDetect(Screen *screen)
 {
 	int i;
 
 	for (i = 0; i < 25; i++)
 	{
-		if (bricks[i].alive == 1 )
+		if (screen->bricks[i].alive == 1 )
 		{
-			if ((ball->x + ball->dX + 16  - 1) >= bricks[i].x
-				&& (ball->x + ball->dX) <= (bricks[i].x + 64  - 1))
+			if ((screen->ball.x + screen->ball.dX + 16  - 1) >= screen->bricks[i].x
+				&& (screen->ball.x + screen->ball.dX) <= (screen->bricks[i].x + 64  - 1))
 			{
-				if ((ball->y + ball->dY) < (bricks[i].y + 24)
-						&& (ball->y + ball->dY + 16  - 1) >= (bricks[i].y))
+				if ((screen->ball.y + screen->ball.dY) < (screen->bricks[i].y + 24)
+						&& (screen->ball.y + screen->ball.dY + 16  - 1) >= (screen->bricks[i].y))
 				{
-					if ((ball->x + ball->dX + 16  - 1) - bricks[i].x
+					if ((screen->ball.x + screen->ball.dX + 16  - 1) - screen->bricks[i].x
 						>
-					   ((bricks[i].y + 24  - 1) - ball->y + ball->dY))
+					   ((screen->bricks[i].y + 24  - 1) - screen->ball.y + screen->ball.dY))
 					{
-						ballHitVert(ball);
-						brickSmashed(&bricks[i]);
+						ballHitVert(&screen->ball);
+						brickSmashed(&screen->bricks[i]);
 					}
 					else
 					{
-						ballHitHor(ball);
-						brickSmashed(&bricks[i]);
+						ballHitHor(&screen->ball);
+						brickSmashed(&screen->bricks[i]);
 					}
 				}
 			}
 		}
 	}
-	if ((ball->x + ball->dX + 16  - 1) >= 639
-		|| (ball->x + ball->dX) < 0)
+	if ((screen->ball.x + screen->ball.dX + 16  - 1) >= 639
+		|| (screen->ball.x + screen->ball.dX) < 0)
 	{
-		ballHitHor(ball);
+		ballHitHor(&screen->ball);
 	}
-	if ((ball->y + ball->dY) <= 12)
+	if ((screen->ball.y + screen->ball.dY) <= 12)
 	{
-		ballHitVert(ball);
+		ballHitVert(&screen->ball);
 	}
 }
 
 
-void paddleCollDetect(Ball *ball, Paddle paddle)
+void paddleCollDetect(Screen *screen)
 {
-
 	int paddleHitPosition;
-	if ((ball->x + ball->dX + 16  - 1) >= paddle.x
-				&& (ball->x + ball->dX) <= (paddle.x + 71))
+	if ((screen->ball.x + screen->ball.dX + 16  - 1) >= screen->paddle.x
+				&& (screen->ball.x + screen->ball.dX) <= (screen->paddle.x + 71))
 				{
-					if ((ball->y + ball->dY + 16  - 1) >= paddle.y)
+					if ((screen->ball.y + screen->ball.dY + 16  - 1) >= screen->paddle.y)
 						{
-							paddleHitPosition = paddle.x - (ball->x + ball->dX);
+							paddleHitPosition = screen->paddle.x - (screen->ball.x + screen->ball.dX);
 							if (paddleHitPosition > 0)
 							{
 
-								farLeftPaddleHit(ball);
+								farLeftPaddleHit(&screen->ball);
 							}
 							else if (paddleHitPosition > -14)
 							{
 
-								midLeftPaddleHit(ball);
+								midLeftPaddleHit(&screen->ball);
 							}
 							else if (paddleHitPosition > -29)
 							{
 
-								centrePaddleHit(ball);
+								centrePaddleHit(&screen->ball);
 							}
 							else if (paddleHitPosition > 43)
 							{
 
-								midRightPaddleHit(ball);
+								midRightPaddleHit(&screen->ball);
 							}
 							else
 							{
 
-								farRightPaddleHit(ball);
+								farRightPaddleHit(&screen->ball);
 							}
 						}
+				}
+				else if (screen->ball.x + screen->ball.dX >= 399)
+				{
+					ballHitBottom(screen);
 				}
 }
 
@@ -726,7 +736,7 @@ void remScore(ScoreNum score, int amount)
 {
 	score.score -= amount;
 }
-# 355 "model.c"
+# 365 "model.c"
 int getScore (ScoreNum score)
 {
 	return score.score;
@@ -762,16 +772,4 @@ void paddleRight(Paddle *paddle){
 void launch_ball(Paddle *paddle){
 
 
-}
-
-
-
-int getLife(LifeCounter *lifeCounter){
-	return lifeCounter->numLives;
-}
-
-
-
-void removeLife(LifeCounter *lifeCounter){
-	lifeCounter->numLives -= 1;
 }

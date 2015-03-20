@@ -48,10 +48,9 @@ typedef struct {
 }Paddle;
 
 typedef struct{
-	int numLives;
 	int x;
 	int y;
-}LifeCounter;
+}LifeCounterLabel;
 
 typedef struct{
 	Ball ball;
@@ -59,10 +58,12 @@ typedef struct{
     ScoreLabel scoreLabel;
     Paddle paddle;
     Brick bricks[25];
-    LifeCounter lifeCounter;
+    LifeCounterLabel lifeCounter;
+	int lifeCount;
+	bool resetBall;
 }Screen;
 
-void moveBall(Ball *ball, Brick bricks[], Paddle paddle);
+void moveBall(Screen *screen);
 void addScore(ScoreNum score, int amount);
 void remScore(ScoreNum score, int amount);
 void scoreLPosition (ScoreLabel label, int x, int y);
@@ -70,20 +71,18 @@ void paddleLeft(Paddle *paddle);
 void paddleRight(Paddle *paddle);
 void launchBall(Paddle *paddle);
 void destroyBrick(int brick);
-void removeLife(LifeCounter *lifeCounter);
-int  getLife(LifeCounter *lifeCounter);
 int  getScore (ScoreNum score);
 void printScreen(Screen screen);
 void printScreen(Screen screen);
 void ballDirection(Ball *ball, Paddle *paddle);
-void checkBallCollision(Ball *ball, Brick bricks[], Paddle paddle);
-void upCollDetect(Ball *ball, Brick bricks[]);
-void downCollDetect(Ball *ball, Brick bricks[]);
-void dRCollDetect(Ball *ball, Brick bricks[]);
-void dLCollDetect(Ball *ball, Brick bricks[]);
-void uLCollDetect(Ball *ball, Brick bricks[]);
-void uRCollDetect(Ball *ball, Brick bricks[]);
-void paddleCollDetect(Ball *ball, Paddle paddle);
+void checkBallCollision(Screen *screen);
+void upCollDetect(Screen *screen);
+void downCollDetect(Screen *screen);
+void dRCollDetect(Screen *screen);
+void dLCollDetect(Screen *screen);
+void uLCollDetect(Screen *screen);
+void uRCollDetect(Screen *screen);
+void paddleCollDetect(Screen *screen);
 void checkBounces(Ball *ball);
 
 #endif

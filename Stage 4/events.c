@@ -97,3 +97,9 @@ void farRightPaddleHit(Ball *ball)
 	ball->dX = 3;
 	ball->dY = -1;
 }
+
+void ballHitBottom(Screen *screen)
+{
+		screen->resetBall = TRUE;
+		screen->lifeCount--;
+}
