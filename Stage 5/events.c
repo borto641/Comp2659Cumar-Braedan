@@ -40,14 +40,14 @@ Brick
 void brickSmashed(Brick *brick){
 /*If ball touches the brick remove the brick from the level*/
 	brick->alive = FALSE;
-	clrBrick(brick);
+	brick->undraw = TRUE;
 	} 
 
 /*
 ballHitV will change the path of the ball, flipping the vertical direction, and
 	preserving the horizontal direction
 */
-void ballHitVert(Ball *ball, Brick *brick)
+void ballHitVert(Ball *ball)
 {
 	ball->totalBounces++;
 	ball->dY -= (ball->dY + ball->dY);
@@ -61,8 +61,6 @@ void ballHitHor(Ball *ball)
 {
 	ball->totalBounces++;
 	ball->dX -= (ball->dX + ball->dX);
-	clrBrick(&screen.bricks[i], base8);
-	screen.bricks[i].undraw = FALSE;
 }
 
 void farLeftPaddleHit(Ball *ball)

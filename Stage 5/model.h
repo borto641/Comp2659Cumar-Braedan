@@ -7,6 +7,7 @@
 #define BALL_WIDTH 16
 #define BRICK_WIDTH 64
 #define BRICK_HEIGHT 24
+#define ZERO 48
 
 typedef struct
 {
@@ -16,7 +17,8 @@ typedef struct
 	int dY;
 	int totalBounces;
 	int speed;
-	bool resetBall;
+	bool ballOut;
+	
 } Ball;
 
 typedef struct
@@ -24,6 +26,7 @@ typedef struct
 	int x;
 	int y;
 	bool alive;
+	bool undraw;
 } Brick;
 
 typedef struct 
@@ -37,7 +40,7 @@ typedef struct
 {
 	int x;
 	int y;
-	char[] label;
+	char[6] label;
 } ScoreLabel;
 
 typedef struct {
@@ -49,15 +52,15 @@ typedef struct {
 typedef struct{
 	int x;
 	int y;
-	char[] label;
+	char[6] label;
 }LifeCounterLabel;
 
-typedef struct{
+typedef struct[
 	int x;
 	int y;
-	int amount;
-}LifeCount
-		
+	int lives;
+}LifeCounterNum
+
 typedef struct{
 	Ball ball;
 	ScoreNum scoreNum;
@@ -65,7 +68,7 @@ typedef struct{
     Paddle paddle;
     Brick bricks[25];
     LifeCounterLabel lifeCounter;
-	LifeCount lifeCount;
+	LifeCounterNum lifeCount;
 	bool resetBall;
 }Screen;
 
@@ -90,7 +93,6 @@ void uLCollDetect(Screen *screen);
 void uRCollDetect(Screen *screen);
 void paddleCollDetect(Screen *screen);
 void checkBounces(Ball *ball);
-void initialize(Screen *screen);
-void resetBall(Screen *screen);
+int scoreToChars (ScoreNum score);
 
 #endif
