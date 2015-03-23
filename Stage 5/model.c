@@ -17,7 +17,7 @@ void moveBall(Screen *screen)
 {	
 	checkBounces(&screen->ball);
 	checkBallCollision(screen);
-	if (!screen->resetBall)
+	if (!screen->holdBall)
 	{
 		screen->ball.x += (screen->ball.dX * screen->ball.speed);
 		screen->ball.y += (screen->ball.dY * screen->ball.speed);
@@ -467,15 +467,11 @@ void paddleCollDetect(Screen *screen)
 *
 *	Return: An array characters representing the numerical score of the current game
 */
-int scoreToChars (ScoreNum score)
+void scoreToChars (ScoreNum score, char scoreChars[3])
 {
-	char[3] string;
-	
-	string[0] = ((score.number % 1000) / 100) + ZERO; /*hundreds*/
-	string[1] = ((score.number % 100) / 10) + ZERO;   /*tens*/
-	string[2] = (score.number % 10) + ZERO;;		  /*ones*/
-	
-	return string;
+	scoreChars[0] = ((score.score % 1000) / 100) + ZERO; 	/*hundreds*/
+	scoreChars[1] = ((score.score % 100)  / 10)  + ZERO;  	/*tens*/
+	scoreChars[2] = (score.score % 10)           + ZERO;    /*ones*/
 }
 
 /* 
@@ -502,17 +498,19 @@ void paddleRight(Paddle *paddle){
 		paddle->x += 20;
     }
 }
+
 /*
 
 */
-void launch_ball(Paddle *paddle){
-	/* release the ball */
-
+void launchBall(Screen *screen)
+{
+	 screen->holdBall = FALSE;
 }
 
-void initialize(Screen *screen);
+void initialize(Screen *screen)
 {
-	screen->ball.x = 314;
+	int i;
+	screen->ball.x = 312;
 	screen->ball.y = 355;
 	screen->ball.dX = 0;
 	screen->ball.dY = 3;
@@ -520,36 +518,46 @@ void initialize(Screen *screen);
 	screen->ball.totalBounces = 0;
 	screen->ball.ballOut = FALSE;
 	
-	screen->scoreNum.score = 666;
-	screen->scoreNum.x = 610;
-	screen->scoreNum.y = 4;
+	screen->scoreNum.score = 667;
+	screen->scoreNum.x = 600;
+	screen->scoreNum.y = 2;
 	
-	screen->scoreLabel.x = 550;
-	screen->scoreLabel.y = 4;
-	screen->scoreLabel.label = "Score:";
+	screen->scoreLabel.x = 552;
+	screen->scoreLabel.y = 2;
+	screen->scoreLabel.label[0] = 'S';
+	screen->scoreLabel.label[1] = 'c';
+	screen->scoreLabel.label[2] = 'o';
+	screen->scoreLabel.label[3] = 'r';
+	screen->scoreLabel.label[4] = 'e';
+	screen->scoreLabel.label[5] = ':';
+	
+	screen->lifeLabel.x = 16;
+	screen->lifeLabel.y = 2;
+	screen->lifeLabel.label[0] = 'L';
+	screen->lifeLabel.label[1] = 'i';
+	screen->lifeLabel.label[2] = 'v';
+	screen->lifeLabel.label[3] = 'e';
+	screen->lifeLabel.label[4] = 's';
+	screen->lifeLabel.label[5] = ':';
 	
 	screen->paddle.x = 284;
 	screen->paddle.y = 370;
 	
-	screen->lifeCounter.x = 4;
-	screen->lifeCounter.y = 4;
-	screen->lifeCounter.label = "Lives: ";
-	
-	screen->lifeCount.amount = 3;
-	screen->lifeCount.x = 52;
-	screen->lifeCount.y = 4;
+	screen->lifeCount.lives = 3;
+	screen->lifeCount.x = 64;
+	screen->lifeCount.y = 2;
 
-	bool holdBall = TRUE;
+	screen->holdBall = TRUE;
 	
-	for (i = 0; i <= 25; i++)
+	for (i = 0; i < 25; i++)
 	{
-		screen.bricks[i].alive = TRUE;
-		screen.bricks[i].y = (i / 5) * 24 + 13;
+		screen->bricks[i].alive = TRUE;
+		screen->bricks[i].y = (i / 5) * 24 + 13;
 		
 		if ((i / 5) % 2 == 0)
-			screen.bricks[i].x = (i % 5) * 128;
+			screen->bricks[i].x = (i % 5) * 128;
 		else 
-			screen.bricks[i].x = (i % 5) * 128 + 64;
+			screen->bricks[i].x = (i % 5) * 128 + 64;
 	}
 }
 

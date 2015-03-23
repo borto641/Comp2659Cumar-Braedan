@@ -4,12 +4,12 @@
 #include <osbind.h>
 #include <stdio.h>
 
-#define left_arrow  0x004B0000L
-#define right_arrow 0x004D0000L
-#define spacebar    0x00390020L 
+#define LEFT_ARROW 0x004B0000L
+#define RIGHT_ARROW 0x004D0000L
+#define SPACEBAR    0x00390020L 
 #define ESC         0x0001001BL 
 
-void key_press(Paddle *paddle);
+void keyPress(Screen *screen, long choice);
 void level_lost();
 void brickSmashed(Brick *brick);
 void ballHitVert(Ball *ball);

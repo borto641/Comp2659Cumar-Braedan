@@ -8,7 +8,7 @@ Paddle:
 - left  key: 		move paddle left
 - space bar key:    launch ball if beginning of level
 ****************************************************************************/
-void key_press(Paddle *paddle)
+void keyPress(Screen *screen, long choice)
 {
 /*do appropriate actions corresponding to key pressed*/
 	/*Cconis(); check status of standard input*/
@@ -18,16 +18,14 @@ void key_press(Paddle *paddle)
 		4D00 - Right arrow
 		3920 - Space key
 	*/
-	int choice;
-	long key_pressed = Cnecin();
-		if(key_pressed == left_arrow){
-			paddleLeft(paddle);
+		if(choice == LEFT_ARROW){
+			paddleLeft(&(screen->paddle));
 		}
-		else if(key_pressed == right_arrow){
-			paddleRight(paddle);
+		else if(choice == RIGHT_ARROW){
+			paddleRight(&(screen->paddle));
 		}
-		else if(key_pressed == spacebar){
-			/*paddle_launch_ball(paddle);*/
+		else if(choice == SPACEBAR && screen->holdBall){
+			launchBall(screen);
 		}
 }
 
@@ -100,6 +98,6 @@ void farRightPaddleHit(Ball *ball)
 
 void ballHitBottom(Screen *screen)
 {
-		screen->resetBall = TRUE;
-		screen->lifeCount--;
+		screen->holdBall = TRUE;
+		screen->lifeCount.lives--;
 }

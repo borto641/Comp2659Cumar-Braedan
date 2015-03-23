@@ -1,8 +1,8 @@
-tst_rndr: tst_rndr.o events.o raster.o model.o render.o clear_qk.o balBit.o font.o
-	cc68x -g tst_rndr.o events.o raster.o model.o balBit.o clear_qk.o render.o font.o -o tst_rndr
+BBreaker: brick.o events.o raster.o model.o render.o clear_qk.o balBit.o font.o
+	cc68x -g brick.o events.o raster.o model.o balBit.o clear_qk.o render.o font.o -o BBreaker
 
-tst_rndr.o: tst_rndr.c events.h model.h raster.h 
-	cc68x -g -c tst_rndr.c
+brick.o: brick.c render.h events.h model.h
+	cc68x -g -c brick.c
 
 events.o: events.c events.h model.h
 	cc68x -g -c events.c

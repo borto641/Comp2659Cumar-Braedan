@@ -11,6 +11,8 @@
 
 typedef struct
 {
+	int oldX;
+	int oldY;
 	int x;
 	int y;
 	int dX;
@@ -40,36 +42,40 @@ typedef struct
 {
 	int x;
 	int y;
-	char[6] label;
+	char label[6];
 } ScoreLabel;
 
 typedef struct {
 	int x;
 	int y;
+	int oldX;
+	int oldY;
 	/*PADDLE IS HARD CODED TO 72x16*/
 }Paddle;
 
 typedef struct{
 	int x;
 	int y;
-	char[6] label;
-}LifeCounterLabel;
+	char label[6];
+}LifeLabel;
 
-typedef struct[
+typedef struct{
 	int x;
 	int y;
 	int lives;
-}LifeCounterNum
+}LifeCount;
 
 typedef struct{
 	Ball ball;
 	ScoreNum scoreNum;
     ScoreLabel scoreLabel;
     Paddle paddle;
+	LifeLabel lifeLabel;
+	LifeCount lifeCount;
     Brick bricks[25];
-    LifeCounterLabel lifeCounter;
-	LifeCounterNum lifeCount;
-	bool resetBall;
+	bool holdBall;
+	UINT32 ballChunk[32];
+	UINT32 paddleChunk[32];
 }Screen;
 
 void moveBall(Screen *screen);
@@ -78,11 +84,9 @@ void remScore(ScoreNum score, int amount);
 void scoreLPosition (ScoreLabel label, int x, int y);
 void paddleLeft(Paddle *paddle);
 void paddleRight(Paddle *paddle);
-void launchBall(Paddle *paddle);
+void launchBall(Screen *screen);
 void destroyBrick(int brick);
 int  getScore (ScoreNum score);
-void printScreen(Screen screen);
-void printScreen(Screen screen);
 void ballDirection(Ball *ball, Paddle *paddle);
 void checkBallCollision(Screen *screen);
 void upCollDetect(Screen *screen);
@@ -93,6 +97,7 @@ void uLCollDetect(Screen *screen);
 void uRCollDetect(Screen *screen);
 void paddleCollDetect(Screen *screen);
 void checkBounces(Ball *ball);
-int scoreToChars (ScoreNum score);
+void scoreToChars (ScoreNum score, char scoreChars[]);
+void initialize(Screen *screen);
 
 #endif

@@ -50,7 +50,7 @@ void clearRectangle(UINT8 *base, int x, int y, int width, int height)
 	UINT8 *draw = base;
 	int i = 0;
 	
-	for (i = 0; i < height; i++)
+	for (i = 0; i < (height - 1); i++)
 	{
 		clrHorLine(draw, x, y, width);
 		draw += 80;
@@ -87,7 +87,6 @@ void plot_pixel(UINT8 *base, int x, int y)
 /*
 Plots a 16 bit wide bitmap to a specific location on the screen
 */
-
 void bitmap16(UINT16 *base, int x, int y, const UINT16 *bitmap, unsigned int height)
 {
 	UINT16 *draw = base + y * 40 + (x / 16);
@@ -96,34 +95,22 @@ void bitmap16(UINT16 *base, int x, int y, const UINT16 *bitmap, unsigned int hei
 	
 	if (x <= 640 && y <= 400)
 	{
-		if (shift > 0) /*if shift needed*/
+		for (i = 0; i < height && draw < base + 16000; i++)
 		{
-			for (i = 0; i < height && draw < base + 16000; i++)
-			{
-				*draw |= (bitmap[i] >> shift);
-				draw += 40;
-			}
-			draw = draw - (40 * height) + 1;
-/*			draw = (base + y * 40 + (x / 16)) + 1;*/
+			*draw |= (bitmap[i] >> shift);
+			draw += 40;
+		}
+		draw = draw - (40 * height) + 1;
+		if (shift > 0)
+		{
 			for (i = 0; i < height && draw < base + 16000; i++)
 			{
 				*draw |= (bitmap[i] << 16 - shift);
 				draw += 40;
 			}
 		}
-		else /* No shift needed*/
-		{
-			for  (i = 0; i < height; i++)
-			{
-				*draw |= bitmap[i];
-				draw += 40;
-			}
-		
-		}
 	}
-	
-	
-return;
+	return;
 }
 
 void bitmap8(UINT8 *base, int x, int y, const UINT8 *bitmap, unsigned int height)
@@ -134,33 +121,22 @@ void bitmap8(UINT8 *base, int x, int y, const UINT8 *bitmap, unsigned int height
 	
 	if (x <= 640 && y <= 400)
 	{
-		if (shift > 0) /*if shift needed*/
+		for (i = 0; i < height && draw < base + 32000; i++)
 		{
-			for (i = 0; i < height && draw < base + 32000; i++)
-			{
-				*draw |= (bitmap[i] >> shift);
-				draw += 80;
-			}
-			draw = draw - (80 * height) + 1;
+			*draw |= (bitmap[i] >> shift);
+			draw += 80;
+		}
+		draw = draw - (80 * height) + 1;
+		if (shift > 0)
+		{
 			for (i = 0; i < height && draw < base + 32000; i++)
 			{
 				*draw |= (bitmap[i] << 8 - shift);
 				draw += 80;
 			}
 		}
-		else /* No shift needed*/
-		{
-			for  (i = 0; i < height; i++)
-			{
-				*draw |= bitmap[i];
-				draw += 80;
-			}
-		
-		}
 	}
-	
-	
-return;
+	return;
 }
 /*
  *	Clears the screen.

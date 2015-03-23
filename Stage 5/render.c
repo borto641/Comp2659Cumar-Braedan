@@ -8,46 +8,82 @@
 *	Input: A Screen structure representing the state of the game
 *		   A UINT16 pointer representing the physical base of the screen buffer
 */
-void printScreen(Screen screen, UINT16 *base)
+void printScreen(Screen screen, UINT32 *base)
 {
-	UINT8 *base8 = (UINT8*)(base)
 	int i;
-	
-	plot_hor_line(base8, 0, TOP_BAR_HEIGHT, 640);
+	plot_hor_line((UINT8*)(base), 0, TOP_BAR_HEIGHT, 640);
 	for (i = 0; i < 25; i++)
 	{
 		if (screen.bricks[i].alive == TRUE)
 		{
-			plot_rectangle(base8, screen.bricks[i].x, screen.bricks[i].y, BRICK_WIDTH, BRICK_HEIGHT);
+			plot_rectangle((UINT8*)(base), screen.bricks[i].x, screen.bricks[i].y, BRICK_WIDTH, BRICK_HEIGHT);
 		}
 	}
-	/*prints the score to the screen*/
-	printString(base8, screen.scoreNum.x, screen.scoreNum.y, 3, scoreToChars(screen.scoreNum.score));
-	/*prints the score label to the screen*/
-	printString(base8, screen.scoreLabel.x, screen.scoreLabel.y, 6, screen.scoreLabel.label);
-	/*prints the life counter label to the screen*/
-	printString(base8, screen.lifeCounterLabel.x, screen.lifeCounterLabel.y, 6, screen.lifeCounterLabel.label);
-	/*prints the remaining lives to the screen*/
-	bitmap8(base8, screen.lifeCounterNumber.x, screen.lifeCounterNumber.y, GLYPH_START((char)((screen.lifeCounterNumb.lives) + ZERO)));
+	drawScore(screen.scoreNum, (UINT8*)(base));
+	drawLives(screen.lifeCount, (UINT8*)(base));
+	printScoreLabel(screen.scoreLabel, (UINT8*)(base));
+	printLifeLabel(screen.lifeLabel, (UINT8*)(base));
 	
+	/*saves the contents of the buffer where the ball will be printed to an array, as well as it's location*/
+	saveChunk(base, screen.ball.x, screen.ball.y, screen.ballChunk, BALL_HEIGHT);
+	screen.ball.oldX = screen.ball.x;
+	screen.ball.oldY = screen.ball.y;
+	drawBall(screen.ball, (UINT16*)(base));
+	/*saves the contents of the buffer where the paddle will be printed to an array, as well as it's location*/
+	saveChunk(base, screen.paddle.x, screen.paddle.y, screen.paddleChunk, PADDLE_HEIGHT);
+	screen.paddle.oldX = screen.paddle.x;
+	screen.paddle.oldY = screen.paddle.y;
+	drawPaddle(screen.paddle, (UINT8*)(base));
 }
 
+void refreshScreen(Screen *screen, UINT32 *base)
+{
+	int i;
+	for (i = 0; i < 25; i++)
+	{
+		if (screen->bricks[i].undraw)
+		{ /*if any bricks have been hit since the last refresh, clear them from the buffer*/
+			screen->bricks[i].undraw = FALSE;
+			clearRectangle((UINT8*)(base), screen->bricks[i].x, screen->bricks[i].y, BRICK_WIDTH, BRICK_HEIGHT);
+		}
+	}
+	
+	/*Ball and paddle refresh*/
+	drawChunk(base, screen->ball.oldX, screen->ball.oldY, screen->ballChunk, BALL_HEIGHT); /*erase ball*/
+	saveChunk(base, screen->ball.x, screen->ball.y, screen->ballChunk, BALL_HEIGHT); /*save ball's new background*/
+	screen->ball.oldX = screen->ball.x;
+	screen->ball.oldY = screen->ball.y;
+	drawBall(screen->ball, (UINT16*)(base));
+	
+	if (screen->paddle.oldX != screen->paddle.x)
+	{
+		drawChunk(base, screen->paddle.oldX, screen->paddle.oldY, screen->ballChunk, BALL_HEIGHT); /*erase paddle*/
+		saveChunk(base, screen->paddle.x, screen->paddle.y, screen->paddleChunk, PADDLE_HEIGHT); /*save paddle's new background*/
+		screen->paddle.oldX = screen->paddle.x;
+		screen->paddle.oldY = screen->paddle.y;
+		drawPaddle(screen->paddle, (UINT8*)(base));
+	}
+	
+	drawScore(screen->scoreNum, (UINT8*)(base));
+	drawLives(screen->lifeCount, (UINT8*)(base));
+}
 /*
 *	Function: printChars
 *
 *	Purpose: To print a given array of characters to a location in the screen buffer
 *
 *	Input: A UINT8 representing the physical base of the screen buffer
-*		   An integer representing the beggining x location of the string
+*		   An integer representing the beginning x location of the string
 *		   An integer representing the y location of the string
 *		   An integer representing the length of the array
 *		   A character array
 */
-void printChars(UINT8 *base, int x, int y, int length, char[] string)
+void printChars(UINT8 *base, int x, int y, int length, char string[])
 {
-	for (i = 0; i < 6; i++)
+	int i;
+	for (i = 0; i < length; i++)
 	{
-		bitmap8(base8, (x + (i * 8)), y, GLYPH_START(string[i]), FONT_HEIGHT);
+		bitmap8(base, (x + (i * 8)), y, GLYPH_START(string[i]), FONT_HEIGHT);
 	}
 }
 
@@ -61,7 +97,7 @@ void printChars(UINT8 *base, int x, int y, int length, char[] string)
 *	
 *	Output: A UINT32 array by reference
 */
-void saveChunk (UINT32 *base, int x, int y, UINT32 *saved, int height)
+void saveChunk (UINT32 *base, int x, int y, UINT32 saved[], int height)
 {
 	int i;
 	int arraySize = height *2;
@@ -103,55 +139,53 @@ void drawChunk (UINT32 *base, int x, int y, UINT32 *saved, int height)
 }
 
 /*
-*	Function: drwBall
+*	Function: drawBall
 *
 *	Purpose: To draw the current location of the Ball to the screen buffer
 *
 *	Input: A UINT16 representing the physical base of the screen buffer
 *		   A Ball object
 */
-void drwBall(Ball ball, UINT16 *base)
+void drawBall(Ball ball, UINT16 *base)
 {
 	bitmap16(base, ball.x, ball.y, ballBitmap, 16);
 }
 
 /*
-*	Function: clrPaddle
-*
-*	Purpose: To clear the Paddle from the given location on the screen buffer
-*
-*	Input: A UINT8 representing the physical base of the screen buffer
-*		   A Paddle object
-*/
-void clrPaddle(UINT8 *base, Paddle paddle)
-{
-	clearRectangle(base, paddle.x, paddle.y, PADDLE_WIDTH, PADDLE_HEIGHT);
-}
-
-/*
-*	Function: drwPaddle
+*	Function: drawPaddle
 *
 *	Purpose: To draw the current location of the Paddle to the screen buffer
 *
 *	Input: A UINT8 representing the physical base of the screen buffer
 *		   A Paddle object
 */
-void drwPaddle(UINT8 *base, Paddle paddle)
+void drawPaddle(Paddle paddle, UINT8 *base)
 {
 	plot_rectangle(base, paddle.x, paddle.y, PADDLE_WIDTH, PADDLE_HEIGHT);
 }
 
-/*
-*	Function: clrBrick
-*
-*	Purpose: To clear a brick from the screen buffer
-*
-*	Input: A Brick object
-*/
-void clrBrick(Brick brick)
+void drawScore(ScoreNum scoreNum, UINT8 *base)
 {
-	UINT8 *base = Physbase();
-	clearRectangle(base, brick->x, brick->y, BRICK_WIDTH, BRICK_HEIGHT);
+	char score[3];
+	scoreToChars(scoreNum, score);
+	clearRectangle(base, scoreNum.x, scoreNum.y, SCORE_WIDTH, SCORE_HEIGHT);
+	printChars(base, scoreNum.x, scoreNum.y, 3, score);
+}
+
+void drawLives(LifeCount lives, UINT8 *base)
+{
+	clearRectangle(base, lives.x, lives.y, 8, FONT_HEIGHT);
+	bitmap8(base, lives.x, lives.y, GLYPH_START((char)(lives.lives + ZERO)), FONT_HEIGHT);
+}
+
+void printScoreLabel(ScoreLabel scoreLabel, UINT8 *base)
+{
+	printChars(base, scoreLabel.x, scoreLabel.y, 6, scoreLabel.label);
+}
+
+void printLifeLabel(LifeLabel lifeLabel, UINT8 *base)
+{
+	printChars(base, lifeLabel.x, lifeLabel.y, 6, lifeLabel.label);
 }
 
 

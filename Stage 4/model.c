@@ -538,6 +538,7 @@ void initialize(Screen *screen);
 	for (i = 0; i <= 25; i++)
 	{
 		screen.bricks[i].alive = TRUE;
+		screen.bricks[i].undraw = FALSE;
 		screen.bricks[i].y = (i / 5) * 24 + 13;
 		
 		if ((i / 5) % 2 == 0)

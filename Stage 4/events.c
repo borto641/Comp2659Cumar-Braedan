@@ -40,7 +40,7 @@ Brick
 void brickSmashed(Brick *brick){
 /*If ball touches the brick remove the brick from the level*/
 	brick->alive = FALSE;
-	clrBrick(brick);
+	brick->undraw = TRUE;
 	} 
 
 /*

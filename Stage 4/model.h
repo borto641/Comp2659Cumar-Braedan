@@ -24,6 +24,7 @@ typedef struct
 	int x;
 	int y;
 	bool alive;
+	bool undraw;
 } Brick;
 
 typedef struct 
