@@ -1,0 +1,31 @@
+BBreaker: brick.o input.o events.o raster.o model.o render.o clear_qk.o balBit.o font.o
+	cc68x -g brick.o input.o events.o raster.o model.o balBit.o clear_qk.o render.o font.o -o BBreaker
+
+brick.o: brick.c brick.h
+	cc68x -g -c brick.c
+
+input.o: input.c input.h
+	cc68x -g -c input.c
+	
+events.o: events.c events.h
+	cc68x -g -c events.c
+	
+raster.o: raster.c raster.h
+	cc68x -g -c raster.c
+
+render.o: render.c render.h
+	cc68x -g -c render.c    
+	
+model.o: model.c model.h
+	cc68x -g -c model.c
+	
+balBit.o: balBit.c balBit.h
+	cc68x -g -c balBit.c
+	
+font.o: font.c font.h
+	cc68x -g -c font.c
+	
+clear_qk.o: clear_qk.s
+	gen -D -L2 clear_qk.s
+	
+	

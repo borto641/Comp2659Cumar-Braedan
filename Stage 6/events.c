@@ -8,7 +8,7 @@ Paddle:
 - left  key: 		move paddle left
 - space bar key:    launch ball if beginning of level
 ****************************************************************************/
-void key_press(Paddle *paddle)
+void keyPress(Screen *screen, long choice)
 {
 /*do appropriate actions corresponding to key pressed*/
 	/*Cconis(); check status of standard input*/
@@ -18,16 +18,14 @@ void key_press(Paddle *paddle)
 		4D00 - Right arrow
 		3920 - Space key
 	*/
-	int choice;
-	long key_pressed = Cnecin();
-		if(key_pressed == left_arrow){
-			paddleLeft(paddle);
+		if(choice == LEFT_ARROW && screen->holdBall == FALSE){
+			paddleLeft(&(screen->paddle));
 		}
-		else if(key_pressed == right_arrow){
-			paddleRight(paddle);
+		else if(choice == RIGHT_ARROW && screen->holdBall == FALSE){
+			paddleRight(&(screen->paddle));
 		}
-		else if(key_pressed == spacebar){
-			/*paddle_launch_ball(paddle);*/
+		else if(choice == SPACEBAR && screen->holdBall == TRUE){
+			launchBall(screen);
 		}
 }
 
@@ -37,17 +35,18 @@ Brick
 - up,down, left side and right side
 ******************************************************************************/
 
-void brickSmashed(Brick *brick){
+void brickSmashed(Screen *screen, int i){
 /*If ball touches the brick remove the brick from the level*/
-	brick->alive = FALSE;
-	brick->undraw = TRUE;
+	screen->bricks[i].alive = FALSE;
+	screen->bricks[i].undraw = TRUE;
+	screen->scoreNum.score += 10;
 	} 
 
 /*
 ballHitV will change the path of the ball, flipping the vertical direction, and
 	preserving the horizontal direction
 */
-void ballHitVert(Ball *ball, Brick *brick)
+void ballHitVert(Ball *ball)
 {
 	ball->totalBounces++;
 	ball->dY -= (ball->dY + ball->dY);
@@ -61,8 +60,6 @@ void ballHitHor(Ball *ball)
 {
 	ball->totalBounces++;
 	ball->dX -= (ball->dX + ball->dX);
-	clrBrick(&screen.bricks[i], base8);
-	screen.bricks[i].undraw = FALSE;
 }
 
 void farLeftPaddleHit(Ball *ball)
@@ -102,6 +99,13 @@ void farRightPaddleHit(Ball *ball)
 
 void ballHitBottom(Screen *screen)
 {
-		screen->resetBall = TRUE;
-		screen->lifeCount--;
+	screen->lifeCount.lives--;
+	if (screen->lifeCount.lives > 0)
+	{
+		resetBall(screen);
+	}
+	else
+	{
+		screen->gameOver = TRUE;
+	}
 }
