@@ -28,9 +28,9 @@ int main()
 			refreshScreen(&screen, base);
 		}
 		
-		if (checkInputBuffer())
+		if (Cconis())
 		{
-			input = getInput();
+			input = Cnecin();
 			if (input == ESC)
 				quit = TRUE;
 			else

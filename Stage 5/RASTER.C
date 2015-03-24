@@ -50,7 +50,7 @@ void clearRectangle(UINT8 *base, int x, int y, int width, int height)
 	UINT8 *draw = base;
 	int i = 0;
 	
-	for (i = 0; i < (height - 1); i++)
+	for (i = 0; i < height; i++)
 	{
 		clrHorLine(draw, x, y, width);
 		draw += 80;

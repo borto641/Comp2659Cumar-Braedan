@@ -11,7 +11,7 @@
 
 void keyPress(Screen *screen, long choice);
 void level_lost();
-void brickSmashed(Brick *brick);
+void brickSmashed(Screen *screen, int i);
 void ballHitVert(Ball *ball);
 void ballHitHor(Ball *ball);
 void farRightPaddleHit(Ball *ball);

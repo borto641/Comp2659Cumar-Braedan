@@ -18,13 +18,13 @@ void keyPress(Screen *screen, long choice)
 		4D00 - Right arrow
 		3920 - Space key
 	*/
-		if(choice == LEFT_ARROW){
+		if(choice == LEFT_ARROW && screen->holdBall == FALSE){
 			paddleLeft(&(screen->paddle));
 		}
-		else if(choice == RIGHT_ARROW){
+		else if(choice == RIGHT_ARROW && screen->holdBall == FALSE){
 			paddleRight(&(screen->paddle));
 		}
-		else if(choice == SPACEBAR && screen->holdBall){
+		else if(choice == SPACEBAR && screen->holdBall == TRUE){
 			launchBall(screen);
 		}
 }
@@ -35,10 +35,11 @@ Brick
 - up,down, left side and right side
 ******************************************************************************/
 
-void brickSmashed(Brick *brick){
+void brickSmashed(Screen *screen, int i){
 /*If ball touches the brick remove the brick from the level*/
-	brick->alive = FALSE;
-	brick->undraw = TRUE;
+	screen->bricks[i].alive = FALSE;
+	screen->bricks[i].undraw = TRUE;
+	screen->scoreNum.score += 10;
 	} 
 
 /*
@@ -98,6 +99,13 @@ void farRightPaddleHit(Ball *ball)
 
 void ballHitBottom(Screen *screen)
 {
-		screen->holdBall = TRUE;
-		screen->lifeCount.lives--;
+	screen->lifeCount.lives--;
+	if (screen->lifeCount.lives > 0)
+	{
+		resetBall(screen);
+	}
+	else
+	{
+		screen->gameOver = TRUE;
+	}
 }

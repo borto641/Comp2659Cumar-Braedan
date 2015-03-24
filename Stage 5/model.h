@@ -20,7 +20,6 @@ typedef struct
 	int totalBounces;
 	int speed;
 	bool ballOut;
-	
 } Ball;
 
 typedef struct
@@ -73,12 +72,13 @@ typedef struct{
 	LifeLabel lifeLabel;
 	LifeCount lifeCount;
     Brick bricks[25];
-	bool holdBall;
 	UINT32 ballChunk[32];
-	UINT32 paddleChunk[32];
+	bool holdBall;
+	bool gameOver;
 }Screen;
 
 void moveBall(Screen *screen);
+void resetBall(Screen *screen);
 void addScore(ScoreNum score, int amount);
 void remScore(ScoreNum score, int amount);
 void scoreLPosition (ScoreLabel label, int x, int y);
