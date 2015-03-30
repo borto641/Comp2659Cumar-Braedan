@@ -11,12 +11,12 @@
 void printScreen(Screen screen, UINT32 *base)
 {
 	int i;
-	plot_hor_line((UINT8*)(base), 0, TOP_BAR_HEIGHT, 640);
-	for (i = 0; i < 25; i++)
+	plot_hor_line(base, 0, TOP_BAR_HEIGHT, 640, 0, 0);
+	for (i = 0; i < NUM_BRICKS; i++)
 	{
 		if (screen.bricks[i].alive == TRUE)
 		{
-			plot_rectangle((UINT8*)(base), screen.bricks[i].x, screen.bricks[i].y, BRICK_WIDTH, BRICK_HEIGHT);
+			plot_rectangle(base, screen.bricks[i].x, screen.bricks[i].y, BRICK_WIDTH, BRICK_HEIGHT);
 		}
 	}
 	drawScore(screen.scoreNum, (UINT8*)(base));
@@ -25,42 +25,53 @@ void printScreen(Screen screen, UINT32 *base)
 	printLifeLabel(screen.lifeLabel, (UINT8*)(base));
 	
 	/*saves the contents of the buffer where the ball will be printed to an array, as well as it's location*/
-	/*saveChunk(base, screen.ball.x, screen.ball.y, screen.ballChunk, BALL_HEIGHT);*/
 	drawBall(screen.ball, (UINT16*)(base));
 	/*saves the contents of the buffer where the paddle will be printed to an array, as well as it's location*/
-	drawPaddle((UINT8*)(base), screen.paddle);
+	drawPaddle(base, screen.paddle);
 }
 
 void refreshScreen(Screen *screen, UINT32 *base)
 {
 	int i;	
 	/*Ball and paddle refresh*/
-	drawChunk(base, screen->ball.oldX, screen->ball.oldY, screen->ballChunk, BALL_HEIGHT); /*erase ball*/
+	for (i = 0; i < NUM_BRICKS; i++)
+	{
+		if (screen->bricks[i].firstUndraw == TRUE)
+		{ /*if any bricks have been hit since the last refresh, clear them from the buffer*/
+			screen->bricks[i].firstUndraw = FALSE;
+			clearRectangle((UINT32*)(base), screen->bricks[i].x, screen->bricks[i].y, BRICK_WIDTH, BRICK_HEIGHT);
+		} else if (screen->bricks[i].secondUndraw == TRUE)
+		{ /*if any bricks have been hit since the last refresh, clear them from the buffer*/
+			screen->bricks[i].secondUndraw = FALSE;
+			clearRectangle((UINT32*)(base), screen->bricks[i].x, screen->bricks[i].y, BRICK_WIDTH, BRICK_HEIGHT);
+		}
+	}
+	drawChunk(base, screen->ball.olderX, screen->ball.olderY, screen->oldBallChunk, BALL_HEIGHT); /*erase ball*/
+	for (i = 0; i < 32; i++)
+	{
+		screen->oldBallChunk[i] = screen->ballChunk[i];
+	}
 	saveChunk(base, screen->ball.x, screen->ball.y, screen->ballChunk, BALL_HEIGHT); /*save ball's new background*/
+	screen->ball.olderX = screen->ball.oldX;
+	screen->ball.olderY = screen->ball.oldY;
 	screen->ball.oldX = screen->ball.x;
 	screen->ball.oldY = screen->ball.y;
 	drawBall(screen->ball, (UINT16*)(base));
 	
-	
-	if (screen->paddle.oldX != screen->paddle.x)
+	if (screen->paddle.olderX != screen->paddle.x)
 	{
-		clearPaddle((UINT8*)(base), screen->paddle);
-		drawPaddle((UINT8*)(base), screen->paddle);
+		clearPaddle(base, screen->paddle);
+		drawPaddle(base, screen->paddle);
+		screen->paddle.olderX = screen->paddle.oldX;
+		screen->paddle.olderY = screen->paddle.oldY;
 		screen->paddle.oldX = screen->paddle.x;
 		screen->paddle.oldY = screen->paddle.y;
-		drawPaddle((UINT8*)(base), screen->paddle);
+		drawPaddle(base, screen->paddle);
 	}
+	
 	drawScore(screen->scoreNum, (UINT8*)(base));
 	drawLives(screen->lifeCount, (UINT8*)(base));
 	
-	for (i = 0; i < 25; i++)
-	{
-		if (screen->bricks[i].undraw == TRUE)
-		{ /*if any bricks have been hit since the last refresh, clear them from the buffer*/
-			screen->bricks[i].undraw = FALSE;
-			clearRectangle((UINT8*)(base), screen->bricks[i].x, screen->bricks[i].y, BRICK_WIDTH, BRICK_HEIGHT);
-		}
-	}
 }
 /*
 *	Function: printChars
@@ -154,14 +165,14 @@ void drawBall(Ball ball, UINT16 *base)
 *	Input: A UINT8 representing the physical base of the screen buffer
 *		   A Paddle object
 */
-void drawPaddle(UINT8 *base, Paddle paddle)
+void drawPaddle(UINT32 *base, Paddle paddle)
 {
 	plot_rectangle(base, paddle.x, paddle.y, PADDLE_WIDTH, PADDLE_HEIGHT);
 }
 
-void clearPaddle(UINT8 *base, Paddle paddle)
+void clearPaddle(UINT32 *base, Paddle paddle)
 {
-	clearRectangle(base, paddle.oldX, paddle.oldY, PADDLE_WIDTH, PADDLE_HEIGHT + 1);
+	clearRectangle(base, paddle.olderX, paddle.olderY, PADDLE_WIDTH, PADDLE_HEIGHT);
 }
 
 
@@ -169,14 +180,13 @@ void drawScore(ScoreNum scoreNum, UINT8 *base)
 {
 	char score[3];
 	scoreToChars(scoreNum, score);
-	/*clearRectangle(base, scoreNum.x, scoreNum.y, SCORE_WIDTH, SCORE_HEIGHT);*/
-	clearRectangle(base, 600, 2, SCORE_WIDTH, SCORE_HEIGHT);
+	clearRectangle((UINT32*)(base), scoreNum.x, scoreNum.y, SCORE_WIDTH, SCORE_HEIGHT);
 	printChars(base, scoreNum.x, scoreNum.y, 3, score);
 }
 
 void drawLives(LifeCount lives, UINT8 *base)
 {
-	clearRectangle(base, lives.x, lives.y, 8, FONT_HEIGHT);
+	clearRectangle((UINT32*)(base), lives.x, lives.y, 8, FONT_HEIGHT);
 	bitmap8(base, lives.x, lives.y, GLYPH_START((char)(lives.lives + ZERO)), FONT_HEIGHT);
 }
 

@@ -22,7 +22,7 @@ int main(){
 	screen.ball.x = 314;
 	screen.ball.y =  355;
 	screen.ball.dX = 1;
-	screen.ball.dY = -3;
+	screen.ball.dY = -8;
 	
 	screen.scoreNum.score = 666;
 	screen.scoreNum.x = 610;

@@ -7,10 +7,15 @@
 #define BALL_WIDTH 16
 #define BRICK_WIDTH 64
 #define BRICK_HEIGHT 24
+#define PADDLE_WIDTH 128
+#define PADDLE_HEIGHT 16
+#define NUM_BRICKS 35
 #define ZERO 48
 
 typedef struct
 {
+	int olderX;
+	int olderY;
 	int oldX;
 	int oldY;
 	int x;
@@ -27,7 +32,8 @@ typedef struct
 	int x;
 	int y;
 	bool alive;
-	bool undraw;
+	bool firstUndraw;
+	bool secondUndraw;
 } Brick;
 
 typedef struct 
@@ -49,6 +55,8 @@ typedef struct {
 	int y;
 	int oldX;
 	int oldY;
+	int olderX;
+	int olderY;
 	/*PADDLE IS HARD CODED TO 72x16*/
 }Paddle;
 
@@ -71,8 +79,9 @@ typedef struct{
     Paddle paddle;
 	LifeLabel lifeLabel;
 	LifeCount lifeCount;
-    Brick bricks[25];
+    Brick bricks[NUM_BRICKS];
 	UINT32 ballChunk[32];
+	UINT32 oldBallChunk[32];
 	bool holdBall;
 	bool gameOver;
 }Screen;

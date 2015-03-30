@@ -41,13 +41,13 @@ int main(){
 		screen.bricks[i].alive = TRUE;
 		screen.bricks[i].undraw = FALSE;
 	}
-	for (i = 20; i < 25; i++)
+	for (i = 20; i < NUM_BRICKS; i++)
 	{
 		screen.bricks[i].alive = TRUE;
 		screen.bricks[i].undraw = FALSE;
 	}
 	
-	for (i = 0; i < 25; i++)
+	for (i = 0; i < NUM_BRICKS; i++)
 	{
 		screen.bricks[i].y = (i / 5) * 24 + 13;
 		
@@ -69,7 +69,7 @@ int main(){
  
 	  while (TRUE)
 	  {		  
-		for (i = 0; i < 25; i++)
+		for (i = 0; i < NUM_BRICKS; i++)
 		{
 			if (screen.bricks[i].undraw)
 			{
