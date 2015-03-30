@@ -277,21 +277,23 @@ extern	FILE	_iob[];
 
 void bitmap16(UINT16 *base, int x, int y, const UINT16 *bitmap, unsigned int height);
 void bitmap8(UINT8 *base, int x, int y, const UINT8 *bitmap, unsigned int height);
-void plot_hor_line(UINT8 *base, int x, int y, int width);
-void plot_rectangle(UINT8 *base, int x, int y, int width, int height);
+void plot_hor_line(UINT32 *base, int x, int y, int width, int lshift, int rshift);
+void plot_rectangle(UINT32 *base, int x, int y, int width, int height);
 void plot_pixel(UINT8 *base, int x, int y);
 void clrScrn(UINT16 *base);
 void plotVertLine(UINT8 *base, int x, int y, int length);
 void plotPoints(UINT8 *base ,int cx, int cy, int x, int y);
 void plotCircle(UINT8 *base, int cx, int cy, int r);
-void clearRectangle(UINT8 *base, int x, int y, int width, int height);
-void clrHorLine(UINT8 *base, int x, int y, int width);
+void clearRectangle(UINT32 *base, int x, int y, int width, int height);
+void clrHorLine(UINT32 *base, int x, int y, int width);
 # 3 "./model.h" 2
 # 1 "./types.h" 1
 # 4 "./model.h" 2
-# 12 "./model.h"
+# 15 "./model.h"
 typedef struct
 {
+	int olderX;
+	int olderY;
 	int oldX;
 	int oldY;
 	int x;
@@ -308,7 +310,8 @@ typedef struct
 	int x;
 	int y;
 	bool alive;
-	bool undraw;
+	bool firstUndraw;
+	bool secondUndraw;
 } Brick;
 
 typedef struct
@@ -330,6 +333,8 @@ typedef struct {
 	int y;
 	int oldX;
 	int oldY;
+	int olderX;
+	int olderY;
 
 }Paddle;
 
@@ -352,8 +357,9 @@ typedef struct{
     Paddle paddle;
 	LifeLabel lifeLabel;
 	LifeCount lifeCount;
-    Brick bricks[25];
+    Brick bricks[35 ];
 	UINT32 ballChunk[32];
+	UINT32 oldBallChunk[32];
 	bool holdBall;
 	bool gameOver;
 }Screen;
@@ -403,21 +409,21 @@ void ballHitBottom(Screen *screen);
 # 7 "./brick.h" 2
 # 1 "./render.h" 1
 # 1 "./model.h" 1
-# 13 "./render.h" 2
+# 10 "./render.h" 2
 # 1 "./font.h" 1
 # 1 "./types.h" 1
 # 4 "./font.h" 2
 
 
 extern const UINT8 font[];
-# 14 "./render.h" 2
+# 11 "./render.h" 2
 # 1 "./balBit.h" 1
 # 1 "./types.h" 1
 # 4 "./balBit.h" 2
 
 
 extern const UINT16 ballBitmap[16];
-# 15 "./render.h" 2
+# 12 "./render.h" 2
 
 
 void printScreen(Screen screen, UINT32 *base);
@@ -429,8 +435,8 @@ void printLifeLabel(LifeLabel lifeCounterLabel, UINT8 *base);
 void printScoreLabel(ScoreLabel scoreLabel, UINT8 *base);
 void drawLives(LifeCount lives, UINT8 *base);
 void drawScore(ScoreNum scoreNum, UINT8 *base);
-void drawPaddle(UINT8 *base, Paddle paddle);
-void clearPaddle(UINT8 *base, Paddle paddle);
+void drawPaddle(UINT32 *base, Paddle paddle);
+void clearPaddle(UINT32 *base, Paddle paddle);
 void drawBall(Ball ball, UINT16 *base);
 void printChars(UINT8 *base, int x, int y, int length, char string[]);
 # 8 "./brick.h" 2
@@ -448,38 +454,42 @@ long getInput();
 
 
 
+
 UINT32 checkScreenClock();
+void swapScreenBuffers(UINT8** a, UINT8** b);
 # 1 "brick.c" 2
+# 1 "C:/c68/include/stdio.h" 1
+# 2 "brick.c" 2
+
+const UINT8 secondBuffer[32256];
+
 
 
 int main()
 {
+	UINT8 *defaultScreen = (void*)_trap_14_w((short)0x2) ;
+	UINT8 *frontScreen = defaultScreen;
+	UINT8 *backScreen = secondBuffer;
+	long tempUINT8 = (long)(backScreen);
 	Screen screen;
-	const UINT32 *base = (void*)_trap_14_w((short)0x2) ;
 	bool quit = 0 ;
 	long input;
 	UINT32 timeThen, timeNow, timeElapsed;
 
+	while ((tempUINT8 % 256) != 0)
+	{
+		tempUINT8++;
+	}
+	backScreen = (UINT8*)(tempUINT8);
+
 	printf("\033E\033f\n");
 	initialize(&screen);
-	printScreen(screen, base);
-
+	printScreen(screen, (UINT32*)(frontScreen));
+	printScreen(screen, (UINT32*)(backScreen));
 	timeThen = checkScreenClock();
 
 	while (!quit && !screen.gameOver)
 	{
-		timeNow = checkScreenClock();
-		if (timeNow - timeThen > 0)
-		{
-			timeNow = checkScreenClock();
-			timeThen = timeNow;
-			if (screen.holdBall == 0 )
-			{
-				moveBall(&screen);
-			}
-			refreshScreen(&screen, base);
-		}
-
 		if (checkInputBuffer())
 		{
 			input = getInput();
@@ -488,8 +498,30 @@ int main()
 			else
 			keyPress(&screen, input);
 		}
+		timeNow = checkScreenClock();
+		if (timeNow - timeThen > 0)
+		{
+			timeNow = checkScreenClock();
+			timeThen = timeNow;
+			if (screen.holdBall == 0 )
+			{
+
+			}
+			refreshScreen(&screen, (UINT32*)(backScreen));
+			(void)_trap_14_w((short)0x25) ;
+			swapScreenBuffers(&frontScreen, &backScreen);
+		}
+
 	}
+	(void)_trap_14_wllw((short)0x5,(long)(-1),(long)defaultScreen,(short)(-1)) ;
 	return 0;
+}
+void swapScreenBuffers(UINT8** front, UINT8** back)
+{
+	UINT8* swap = *front;
+	*front = *back;
+	*back = swap;
+	(void)_trap_14_wllw((short)0x5,(long)(-1),(long)*back,(short)(-1)) ;
 }
 
 UINT32 checkScreenClock()

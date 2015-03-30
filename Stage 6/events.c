@@ -35,12 +35,18 @@ Brick
 - up,down, left side and right side
 ******************************************************************************/
 
-void brickSmashed(Screen *screen, int i){
-/*If ball touches the brick remove the brick from the level*/
+void brickSmashed(Screen *screen, int i)
+{
 	screen->bricks[i].alive = FALSE;
-	screen->bricks[i].undraw = TRUE;
+	screen->bricks[i].firstUndraw = TRUE;
+	screen->bricks[i].secondUndraw = TRUE;
 	screen->scoreNum.score += 10;
-	} 
+	for (i = 0; i < 32; i++)
+	{
+		screen->ballChunk[i] = 0;
+		screen->oldBallChunk[i] = 0;
+	}
+} 
 
 /*
 ballHitV will change the path of the ball, flipping the vertical direction, and

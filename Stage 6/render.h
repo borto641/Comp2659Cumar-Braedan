@@ -4,9 +4,6 @@
 #define BRICK_HEIGHT 24
 #define BRICK_WIDTH 64
 #define TOP_BAR_HEIGHT 12
-#define PADDLE_HEIGHT 16
-#define PADDLE_WIDTH  72
-#define BALL_HEIGHT 16
 #define SCORE_WIDTH 24
 #define SCORE_HEIGHT 8
 
@@ -23,8 +20,8 @@ void printLifeLabel(LifeLabel lifeCounterLabel, UINT8 *base);
 void printScoreLabel(ScoreLabel scoreLabel, UINT8 *base);
 void drawLives(LifeCount lives, UINT8 *base);
 void drawScore(ScoreNum scoreNum, UINT8 *base);
-void drawPaddle(UINT8 *base, Paddle paddle);
-void clearPaddle(UINT8 *base, Paddle paddle);
+void drawPaddle(UINT32 *base, Paddle paddle);
+void clearPaddle(UINT32 *base, Paddle paddle);
 void drawBall(Ball ball, UINT16 *base);
 void printChars(UINT8 *base, int x, int y, int length, char string[]);
 #endif

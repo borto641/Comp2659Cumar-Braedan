@@ -1,59 +1,85 @@
 #include "RASTER.H"
 
-/*
-Plots a horizontal line to the screen buffer
-NOTE: Does NOT draw lines less than 8 bits wide properly, 
-	   as no lines this small need to be drawn in game.
-*/
-void plot_hor_line(UINT8 *base, int x, int y, int width)
+void plot_hor_line(UINT32 *base, int x, int y, int width, int lshift, int rshift)
 {
-	UINT8 *draw = base + (y * 80) + (x >> 3);
-	int lshift = (x % 8);                  /*amount of shift required on left side of line*/
-	int rshift = (8 - ((width - (8 - lshift)) % 8)); /*amount of shift required on right side of line*/
+	UINT32 *draw = base + (y * 20) + (x >> 5);
 	int i = 0;
 	
 	if (x < 640 && y < 400) /* in bounds */
 	{		
 		if (lshift > 0) /*if left shift needed*/
+		{
+			*draw |= (0xFFFFFFFF >> lshift);
+			draw++;
+		}
+		for (i = 0; i < ((width - lshift) >> 5) && (draw < (base + ((y + 1) * 20))); i++) /* for each four bytes draw FF */
+		{
+			*draw |= (0xFFFFFFFF);
+			draw++;
+		}		
+		if ((draw < base + ((y + 1) * 20)) && rshift > 0) /*if right shift needed*/
+			*draw |= (0xFFFFFFFF << rshift);
+	}
+	return;
+}
+
+
+/*
+Plots a horizontal line to the screen buffer
+NOTE: Does NOT draw lines less than 8 bits wide properly, 
+	   as no lines this small need to be drawn in game.
+
+void plot_hor_line(UINT8 *base, int x, int y, int width)
+{
+	UINT8 *draw = base + (y * 80) + (x >> 3);
+	int lshift = (x % 8);                  /*amount of shift required on left side of line
+	int rshift = (8 - ((width - (8 - lshift)) % 8)); /*amount of shift required on right side of line
+	int i = 0;
+	
+	if (x < 640 && y < 400) /* in bounds 
+	{		
+		if (lshift > 0) /*if left shift needed
 			{
 				*draw |= (0xFF >> lshift);
 				draw++;
 			}
-			for (i = 0; i < ((width - lshift) >> 3) && (draw < (base + ((y + 1) * 80))); i++) /* for each full byte draw FF */
+			for (i = 0; i < ((width - lshift) >> 3) && (draw < (base + ((y + 1) * 80))); i++) /* for each full byte draw FF 
 			{
 				*draw |= (0xFF);
 				draw++;
 			}		
-			if (draw < base + ((y + 1) * 80 && rshift > 0)) /*if right shift needed*/
+			if (draw < base + ((y + 1) * 80 && rshift > 0)) /*if right shift needed
 				*draw |= (0xFF << rshift);
 	}
 	return;
-}
+}*/
 				
 /*Plots a rectangle by calling plot_hor_line "height" times*/
-void plot_rectangle(UINT8 *base, int x, int y, int width, int height)
+void plot_rectangle(UINT32 *base, int x, int y, int width, int height)
 {
-	UINT8 *draw = base;
+	UINT32 *draw = base;
 	int i = 0;
-	
+	int lshift = (x % 32);              				    /*amount of shift required on left side of line*/
+	int rshift = (32 - ((width - (32 - lshift)) % 32)); 	/*amount of shift required on right side of line*/
+
 	for (i = 0; i < height; i++)
 	{
-		plot_hor_line(draw, x, y, width);
-		draw += 80;
+		plot_hor_line(draw, x, y, width, lshift, rshift);
+		draw += 20;
 	}
 
 	return;	
 }
 
-void clearRectangle(UINT8 *base, int x, int y, int width, int height)
+void clearRectangle(UINT32 *base, int x, int y, int width, int height)
 {
-	UINT8 *draw = base;
+	UINT32 *draw = base;
 	int i = 0;
 	
 	for (i = 0; i < height; i++)
 	{
 		clrHorLine(draw, x, y, width);
-		draw += 80;
+		draw += 20;
 	}
 
 	return;	
@@ -61,13 +87,13 @@ void clearRectangle(UINT8 *base, int x, int y, int width, int height)
 
 /*May need to address clearing only part of a byte if required
   by more than clear paddle*/
-void clrHorLine(UINT8 *base, int x, int y, int width)
+void clrHorLine(UINT32 *base, int x, int y, int width)
 {
-	UINT8 *draw = base + (y * 80) + (x >> 3);
+	UINT32 *draw = base + (y * 20) + (x >> 5);
 	int i = 0;
-	for (i = 0; i < (width >> 3) && (draw < (base + ((y + 1) * 80))); i++) /* for each full byte draw 00 */
+	for (i = 0; i < (width >> 5) + 1 && (draw < (base + ((y + 1) * 20))); i++) /* for each full byte draw 00 */
 		{
-			*draw = (0x00);
+			*draw = (0x00000000);
 			draw++;
 		}		
 	return;

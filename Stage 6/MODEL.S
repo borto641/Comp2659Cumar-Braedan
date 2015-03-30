@@ -14,113 +14,115 @@ _moveBall:
 	jsr	_checkBallCollision
 	addq.l	#4,a7
 	;line	21
-	tst.w	388(a3)
+	tst.w	674(a3)
 	bne	L1
-	tst.w	386(a3)
+	tst.w	672(a3)
 	bne	L1
 	;line	23
-	move.w	8(a3),d0
-	muls	14(a3),d0
-	add.w	d0,4(a3)
+	move.w	12(a3),d0
+	muls	18(a3),d0
+	add.w	d0,8(a3)
 	;line	24
-	move.w	10(a3),d0
-	muls	14(a3),d0
-	add.w	d0,6(a3)
+	move.w	14(a3),d0
+	muls	18(a3),d0
+	add.w	d0,10(a3)
 L1:
 	move.l	-4(a6),a3
 	unlk	a6
 	rts
 _checkBounces:
 	link	a6,#0
-	move.l	a3,-(a7)
+	movem.l	d3/d4/a3,-(a7)
 	move.l	8(a6),a3
-	;line	41
-	cmp.w	#100,12(a3)
+	moveq	#18,d3
+	moveq	#16,d4
+	;line	40
+	cmp.w	#100,0(a3,d4.l)
 	ble	L2
-	;line	43
-	move.w	#5,14(a3)
+	;line	42
+	move.w	#5,0(a3,d3.l)
 	bra	L3
 L2:
-	;line	45
-	cmp.w	#75,12(a3)
+	;line	44
+	cmp.w	#75,0(a3,d4.l)
 	ble	L4
-	;line	47
-	move.w	#4,14(a3)
+	;line	46
+	move.w	#4,0(a3,d3.l)
 	bra	L5
 L4:
-	;line	49
-	cmp.w	#50,12(a3)
+	;line	48
+	cmp.w	#50,0(a3,d4.l)
 	ble	L6
-	;line	51
-	move.w	#3,14(a3)
+	;line	50
+	move.w	#3,0(a3,d3.l)
 	bra	L7
 L6:
-	;line	53
-	cmp.w	#15,12(a3)
+	;line	52
+	cmp.w	#15,0(a3,d4.l)
 	ble	L8
-	;line	55
-	move.w	#2,14(a3)
+	;line	54
+	move.w	#2,0(a3,d3.l)
 	bra	L9
 L8:
-	;line	59
-	move.w	#1,14(a3)
+	;line	58
+	move.w	#1,0(a3,d3.l)
 L9:
 L7:
 L5:
 L3:
-	move.l	(a7)+,a3
+	movem.l	(a7)+,d3/d4/a3
 	unlk	a6
 	rts
 _checkBallCollision:
 	link	a6,#0
 	move.l	a3,-(a7)
 	move.l	8(a6),a3
-	;line	76
-	cmp.w	#125,6(a3)
+	;line	75
+	cmp.w	#188,10(a3)
 	bge	L10
-	;line	79
-	tst.w	8(a3)
+	;line	78
+	tst.w	12(a3)
 	ble	L11
-	;line	81
-	tst.w	10(a3)
+	;line	80
+	tst.w	14(a3)
 	bge	L12
-	;line	83
+	;line	82
 	move.l	a3,-(a7)
 	jsr	_uRCollDetect
 	bra	L13
 L12:
-	;line	87
+	;line	86
 	move.l	a3,-(a7)
 	jsr	_dRCollDetect
 L13:
 	bra	L14
 L11:
-	;line	90
-	tst.w	8(a3)
+	;line	89
+	tst.w	12(a3)
 	bge	L15
-	;line	92
-	tst.w	10(a3)
+	;line	91
+	tst.w	14(a3)
 	bge	L16
-	;line	94
+	;line	93
 	move.l	a3,-(a7)
 	jsr	_uLCollDetect
 	bra	L17
 L16:
-	;line	98
+	;line	97
 	move.l	a3,-(a7)
 	jsr	_dLCollDetect
 L17:
 	bra	L18
 L15:
-	;line	103
-	tst.w	10(a3)
+	;line	102
+	tst.w	14(a3)
 	ble	L19
-	;line	105
+	;line	104
 	move.l	a3,-(a7)
 	jsr	_downCollDetect
 	bra	L20
 L19:
-	;line	109
+	;line	108
 	move.l	a3,-(a7)
 	jsr	_upCollDetect
 L20:
@@ -128,28 +130,28 @@ L18:
 L14:
 	bra	L21
 L10:
-	;line	114
-	move.w	6(a3),d0
+	;line	113
+	move.w	10(a3),d0
 	add.w	#17,d0
 	cmp.w	#369,d0
 	ble	L22
-	;line	116
+	;line	115
 	move.l	a3,-(a7)
 	jsr	_paddleCollDetect
 	bra	L23
 L22:
-	;line	120
-	move.w	4(a3),d0
-	add.w	8(a3),d0
+	;line	119
+	move.w	8(a3),d0
+	add.w	12(a3),d0
 	sub.w	#-15,d0
 	cmp.w	#639,d0
 	bge	L25
-	move.w	4(a3),d0
-	add.w	8(a3),d0
+	move.w	8(a3),d0
+	add.w	12(a3),d0
 	tst.w	d0
 	bge	L24
 L25:
-	;line	123
+	;line	122
 	move.l	a3,-(a7)
 	jsr	_ballHitHor
 L24:
@@ -162,65 +164,60 @@ _upCollDetect:
 	link	a6,#-2
 	movem.l	d3/a3,-(a7)
 	move.l	8(a6),a3
-	;line	141
+	;line	140
 	moveq	#0,d3
 	bra	L27
 L26:
-	;line	143
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	142
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	cmp.w	#1,62(a0)
+	cmp.w	#1,70(a0)
 	bne	L30
-	;line	145
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	144
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	4(a3),d0
+	move.w	8(a3),d0
 	add.w	#15,d0
-	cmp.w	58(a0),d0
+	cmp.w	66(a0),d0
 	blt	L31
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	58(a0),d0
+	move.w	66(a0),d0
 	add.w	#64,d0
-	move.w	4(a3),d1
+	move.w	8(a3),d1
 	cmp.w	d0,d1
 	bge	L31
-	;line	148
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	147
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	60(a0),d0
+	move.w	68(a0),d0
 	add.w	#24,d0
-	move.w	6(a3),d1
-	add.w	10(a3),d1
+	move.w	10(a3),d1
+	add.w	14(a3),d1
 	cmp.w	d0,d1
 	bge	L32
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	6(a3),d0
-	add.w	10(a3),d0
-	cmp.w	60(a0),d0
+	move.w	10(a3),d0
+	add.w	14(a3),d0
+	cmp.w	68(a0),d0
 	blt	L32
-	;line	151
+	;line	150
 	move.w	d3,-(a7)
 	move.l	a3,-(a7)
 	jsr	_brickSmashed
 	addq.l	#6,a7
-	;line	152
+	;line	151
 	move.l	a3,-(a7)
 	jsr	_ballHitVert
 	addq.l	#4,a7
@@ -230,15 +227,15 @@ L30:
 L29:
 	addq.w	#1,d3
 L27:
-	cmp.w	#25,d3
+	cmp.w	#35,d3
 	blt	L26
 L28:
-	;line	157
-	move.w	6(a3),d0
-	add.w	10(a3),d0
+	;line	156
+	move.w	10(a3),d0
+	add.w	14(a3),d0
 	cmp.w	#12,d0
 	bge	L33
-	;line	158
+	;line	157
 	move.l	a3,-(a7)
 	jsr	_ballHitVert
 L33:
@@ -249,66 +246,61 @@ _downCollDetect:
 	link	a6,#-2
 	movem.l	d3/a3,-(a7)
 	move.l	8(a6),a3
-	;line	176
+	;line	174
 	moveq	#0,d3
 	bra	L35
 L34:
-	;line	178
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	176
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	cmp.w	#1,62(a0)
+	cmp.w	#1,70(a0)
 	bne	L38
-	;line	180
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	178
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	4(a3),d0
+	move.w	8(a3),d0
 	add.w	#15,d0
-	cmp.w	58(a0),d0
+	cmp.w	66(a0),d0
 	blt	L39
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	58(a0),d0
+	move.w	66(a0),d0
 	add.w	#64,d0
-	move.w	4(a3),d1
+	move.w	8(a3),d1
 	cmp.w	d0,d1
 	bge	L39
-	;line	183
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	181
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	6(a3),d0
-	add.w	10(a3),d0
+	move.w	10(a3),d0
+	add.w	14(a3),d0
 	sub.w	#-15,d0
-	cmp.w	60(a0),d0
+	cmp.w	68(a0),d0
 	blt	L40
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	60(a0),d0
+	move.w	68(a0),d0
 	add.w	#24,d0
-	move.w	6(a3),d1
-	add.w	10(a3),d1
+	move.w	10(a3),d1
+	add.w	14(a3),d1
 	cmp.w	d0,d1
 	bgt	L40
-	;line	186
+	;line	184
 	move.w	d3,-(a7)
 	move.l	a3,-(a7)
 	jsr	_brickSmashed
 	addq.l	#6,a7
-	;line	187
+	;line	185
 	move.l	a3,-(a7)
 	jsr	_ballHitVert
 	addq.l	#4,a7
@@ -318,7 +310,7 @@ L38:
 L37:
 	addq.w	#1,d3
 L35:
-	cmp.w	#25,d3
+	cmp.w	#35,d3
 	blt	L34
 L36:
 	movem.l	-10(a6),d3/a3
@@ -328,99 +320,92 @@ _dRCollDetect:
 	link	a6,#-2
 	movem.l	d3/a3,-(a7)
 	move.l	8(a6),a3
-	;line	210
+	;line	207
 	moveq	#0,d3
 	bra	L42
 L41:
-	;line	212
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	209
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	cmp.w	#1,62(a0)
+	cmp.w	#1,70(a0)
 	bne	L45
-	;line	214
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	211
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	4(a3),d0
-	add.w	8(a3),d0
+	move.w	8(a3),d0
+	add.w	12(a3),d0
 	sub.w	#-15,d0
-	cmp.w	58(a0),d0
+	cmp.w	66(a0),d0
 	blt	L46
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	58(a0),d0
+	move.w	66(a0),d0
 	sub.w	#-63,d0
-	move.w	4(a3),d1
-	add.w	8(a3),d1
+	move.w	8(a3),d1
+	add.w	12(a3),d1
 	cmp.w	d0,d1
 	bgt	L46
-	;line	217
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	214
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	6(a3),d0
-	add.w	10(a3),d0
+	move.w	10(a3),d0
+	add.w	14(a3),d0
 	sub.w	#-15,d0
-	cmp.w	60(a0),d0
+	cmp.w	68(a0),d0
 	blt	L47
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	60(a0),d0
+	move.w	68(a0),d0
 	add.w	#24,d0
-	move.w	6(a3),d1
-	add.w	10(a3),d1
+	move.w	10(a3),d1
+	add.w	14(a3),d1
 	cmp.w	d0,d1
 	bgt	L47
-	;line	220
-	move.w	6(a3),d0
-	add.w	10(a3),d0
-	ext.l	d3
-	move.l	d3,d1
-	asl.l	#3,d1
+	;line	217
+	move.w	10(a3),d0
+	add.w	14(a3),d0
+	move.w	d3,d1
+	muls	#10,d1
 	move.l	d1,a0
 	add.l	a3,a0
-	sub.w	60(a0),d0
+	sub.w	68(a0),d0
 	add.w	#15,d0
-	move.w	4(a3),d1
-	add.w	8(a3),d1
-	ext.l	d3
-	move.l	d3,d2
-	asl.l	#3,d2
+	move.w	8(a3),d1
+	add.w	12(a3),d1
+	move.w	d3,d2
+	muls	#10,d2
 	move.l	d2,a0
 	add.l	a3,a0
-	sub.w	58(a0),d1
+	sub.w	66(a0),d1
 	add.w	#15,d1
 	cmp.w	d0,d1
 	ble	L48
-	;line	225
+	;line	221
 	move.l	a3,-(a7)
 	jsr	_ballHitVert
 	addq.l	#4,a7
-	;line	226
+	;line	222
 	move.w	d3,-(a7)
 	move.l	a3,-(a7)
 	jsr	_brickSmashed
 	addq.l	#6,a7
 	bra	L49
 L48:
-	;line	231
+	;line	226
 	move.l	a3,-(a7)
 	jsr	_ballHitHor
 	addq.l	#4,a7
-	;line	232
+	;line	227
 	move.w	d3,-(a7)
 	move.l	a3,-(a7)
 	jsr	_brickSmashed
@@ -432,21 +417,21 @@ L45:
 L44:
 	addq.w	#1,d3
 L42:
-	cmp.w	#25,d3
+	cmp.w	#35,d3
 	blt	L41
 L43:
-	;line	238
-	move.w	4(a3),d0
-	add.w	8(a3),d0
+	;line	233
+	move.w	8(a3),d0
+	add.w	12(a3),d0
 	sub.w	#-15,d0
 	cmp.w	#639,d0
 	bge	L51
-	move.w	4(a3),d0
-	add.w	8(a3),d0
+	move.w	8(a3),d0
+	add.w	12(a3),d0
 	tst.w	d0
 	bge	L50
 L51:
-	;line	241
+	;line	236
 	move.l	a3,-(a7)
 	jsr	_ballHitHor
 L50:
@@ -457,100 +442,93 @@ _dLCollDetect:
 	link	a6,#-2
 	movem.l	d3/a3,-(a7)
 	move.l	8(a6),a3
-	;line	261
+	;line	255
 	moveq	#0,d3
 	bra	L53
 L52:
-	;line	263
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	257
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	cmp.w	#1,62(a0)
+	cmp.w	#1,70(a0)
 	bne	L56
-	;line	265
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	259
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	4(a3),d0
-	add.w	8(a3),d0
+	move.w	8(a3),d0
+	add.w	12(a3),d0
 	sub.w	#-15,d0
-	cmp.w	58(a0),d0
+	cmp.w	66(a0),d0
 	blt	L57
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	58(a0),d0
+	move.w	66(a0),d0
 	sub.w	#-63,d0
-	move.w	4(a3),d1
-	add.w	8(a3),d1
+	move.w	8(a3),d1
+	add.w	12(a3),d1
 	cmp.w	d0,d1
 	bgt	L57
-	;line	268
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	262
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	6(a3),d0
-	add.w	10(a3),d0
+	move.w	10(a3),d0
+	add.w	14(a3),d0
 	sub.w	#-15,d0
-	cmp.w	60(a0),d0
+	cmp.w	68(a0),d0
 	blt	L58
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	60(a0),d0
+	move.w	68(a0),d0
 	sub.w	#-23,d0
-	move.w	6(a3),d1
-	add.w	10(a3),d1
+	move.w	10(a3),d1
+	add.w	14(a3),d1
 	cmp.w	d0,d1
 	bgt	L58
-	;line	271
-	move.w	6(a3),d0
-	add.w	10(a3),d0
-	ext.l	d3
-	move.l	d3,d1
-	asl.l	#3,d1
+	;line	265
+	move.w	10(a3),d0
+	add.w	14(a3),d0
+	move.w	d3,d1
+	muls	#10,d1
 	move.l	d1,a0
 	add.l	a3,a0
-	sub.w	60(a0),d0
+	sub.w	68(a0),d0
 	add.w	#15,d0
-	ext.l	d3
-	move.l	d3,d1
-	asl.l	#3,d1
+	move.w	d3,d1
+	muls	#10,d1
 	move.l	d1,a0
 	add.l	a3,a0
-	move.w	58(a0),d1
-	move.w	4(a3),d2
-	add.w	8(a3),d2
+	move.w	66(a0),d1
+	move.w	8(a3),d2
+	add.w	12(a3),d2
 	sub.w	d2,d1
 	add.w	#63,d1
 	cmp.w	d0,d1
 	ble	L59
-	;line	276
+	;line	269
 	move.l	a3,-(a7)
 	jsr	_ballHitVert
 	addq.l	#4,a7
-	;line	277
+	;line	270
 	move.w	d3,-(a7)
 	move.l	a3,-(a7)
 	jsr	_brickSmashed
 	addq.l	#6,a7
 	bra	L60
 L59:
-	;line	282
+	;line	274
 	move.l	a3,-(a7)
 	jsr	_ballHitHor
 	addq.l	#4,a7
-	;line	283
+	;line	275
 	move.w	d3,-(a7)
 	move.l	a3,-(a7)
 	jsr	_brickSmashed
@@ -562,21 +540,21 @@ L56:
 L55:
 	addq.w	#1,d3
 L53:
-	cmp.w	#25,d3
+	cmp.w	#35,d3
 	blt	L52
 L54:
-	;line	289
-	move.w	4(a3),d0
-	add.w	8(a3),d0
+	;line	281
+	move.w	8(a3),d0
+	add.w	12(a3),d0
 	sub.w	#-15,d0
 	cmp.w	#639,d0
 	bge	L62
-	move.w	4(a3),d0
-	add.w	8(a3),d0
+	move.w	8(a3),d0
+	add.w	12(a3),d0
 	tst.w	d0
 	bge	L61
 L62:
-	;line	292
+	;line	284
 	move.l	a3,-(a7)
 	jsr	_ballHitHor
 L61:
@@ -587,100 +565,93 @@ _uLCollDetect:
 	link	a6,#-2
 	movem.l	d3/a3,-(a7)
 	move.l	8(a6),a3
-	;line	311
+	;line	303
 	moveq	#0,d3
 	bra	L64
 L63:
-	;line	313
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	305
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	cmp.w	#1,62(a0)
+	cmp.w	#1,70(a0)
 	bne	L67
-	;line	315
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	307
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	4(a3),d0
-	add.w	8(a3),d0
+	move.w	8(a3),d0
+	add.w	12(a3),d0
 	sub.w	#-15,d0
-	cmp.w	58(a0),d0
+	cmp.w	66(a0),d0
 	blt	L68
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	58(a0),d0
+	move.w	66(a0),d0
 	sub.w	#-63,d0
-	move.w	4(a3),d1
-	add.w	8(a3),d1
+	move.w	8(a3),d1
+	add.w	12(a3),d1
 	cmp.w	d0,d1
 	bgt	L68
-	;line	318
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	310
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	60(a0),d0
+	move.w	68(a0),d0
 	add.w	#24,d0
-	move.w	6(a3),d1
-	add.w	10(a3),d1
+	move.w	10(a3),d1
+	add.w	14(a3),d1
 	cmp.w	d0,d1
 	bge	L69
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	6(a3),d0
-	add.w	10(a3),d0
+	move.w	10(a3),d0
+	add.w	14(a3),d0
 	sub.w	#-15,d0
-	cmp.w	60(a0),d0
+	cmp.w	68(a0),d0
 	blt	L69
-	;line	321
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	313
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	60(a0),d0
-	sub.w	6(a3),d0
-	add.w	10(a3),d0
+	move.w	68(a0),d0
+	sub.w	10(a3),d0
+	add.w	14(a3),d0
 	add.w	#23,d0
-	ext.l	d3
-	move.l	d3,d1
-	asl.l	#3,d1
+	move.w	d3,d1
+	muls	#10,d1
 	move.l	d1,a0
 	add.l	a3,a0
-	move.w	58(a0),d1
-	move.w	4(a3),d2
-	add.w	8(a3),d2
+	move.w	66(a0),d1
+	move.w	8(a3),d2
+	add.w	12(a3),d2
 	sub.w	d2,d1
 	add.w	#63,d1
 	cmp.w	d0,d1
 	ble	L70
-	;line	326
+	;line	317
 	move.l	a3,-(a7)
 	jsr	_ballHitVert
 	addq.l	#4,a7
-	;line	327
+	;line	318
 	move.w	d3,-(a7)
 	move.l	a3,-(a7)
 	jsr	_brickSmashed
 	addq.l	#6,a7
 	bra	L71
 L70:
-	;line	332
+	;line	322
 	move.l	a3,-(a7)
 	jsr	_ballHitHor
 	addq.l	#4,a7
-	;line	333
+	;line	323
 	move.w	d3,-(a7)
 	move.l	a3,-(a7)
 	jsr	_brickSmashed
@@ -692,31 +663,31 @@ L67:
 L66:
 	addq.w	#1,d3
 L64:
-	cmp.w	#25,d3
+	cmp.w	#35,d3
 	blt	L63
 L65:
-	;line	339
-	move.w	4(a3),d0
-	add.w	8(a3),d0
+	;line	329
+	move.w	8(a3),d0
+	add.w	12(a3),d0
 	sub.w	#-15,d0
 	cmp.w	#639,d0
 	bge	L73
-	move.w	4(a3),d0
-	add.w	8(a3),d0
+	move.w	8(a3),d0
+	add.w	12(a3),d0
 	tst.w	d0
 	bge	L72
 L73:
-	;line	342
+	;line	332
 	move.l	a3,-(a7)
 	jsr	_ballHitHor
 	addq.l	#4,a7
 L72:
-	;line	344
-	move.w	6(a3),d0
-	add.w	10(a3),d0
+	;line	334
+	move.w	10(a3),d0
+	add.w	14(a3),d0
 	cmp.w	#12,d0
 	bgt	L74
-	;line	346
+	;line	336
 	move.l	a3,-(a7)
 	jsr	_ballHitVert
 L74:
@@ -727,99 +698,92 @@ _uRCollDetect:
 	link	a6,#-2
 	movem.l	d3/a3,-(a7)
 	move.l	8(a6),a3
-	;line	366
+	;line	355
 	moveq	#0,d3
 	bra	L76
 L75:
-	;line	368
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	357
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	cmp.w	#1,62(a0)
+	cmp.w	#1,70(a0)
 	bne	L79
-	;line	370
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	359
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	4(a3),d0
-	add.w	8(a3),d0
+	move.w	8(a3),d0
+	add.w	12(a3),d0
 	sub.w	#-15,d0
-	cmp.w	58(a0),d0
+	cmp.w	66(a0),d0
 	blt	L80
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	58(a0),d0
+	move.w	66(a0),d0
 	sub.w	#-63,d0
-	move.w	4(a3),d1
-	add.w	8(a3),d1
+	move.w	8(a3),d1
+	add.w	12(a3),d1
 	cmp.w	d0,d1
 	bgt	L80
-	;line	373
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	362
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	60(a0),d0
+	move.w	68(a0),d0
 	add.w	#24,d0
-	move.w	6(a3),d1
-	add.w	10(a3),d1
+	move.w	10(a3),d1
+	add.w	14(a3),d1
 	cmp.w	d0,d1
 	bge	L81
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	6(a3),d0
-	add.w	10(a3),d0
+	move.w	10(a3),d0
+	add.w	14(a3),d0
 	sub.w	#-15,d0
-	cmp.w	60(a0),d0
+	cmp.w	68(a0),d0
 	blt	L81
-	;line	376
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	;line	365
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	60(a0),d0
-	sub.w	6(a3),d0
-	add.w	10(a3),d0
+	move.w	68(a0),d0
+	sub.w	10(a3),d0
+	add.w	14(a3),d0
 	add.w	#23,d0
-	move.w	4(a3),d1
-	add.w	8(a3),d1
-	ext.l	d3
-	move.l	d3,d2
-	asl.l	#3,d2
+	move.w	8(a3),d1
+	add.w	12(a3),d1
+	move.w	d3,d2
+	muls	#10,d2
 	move.l	d2,a0
 	add.l	a3,a0
-	sub.w	58(a0),d1
+	sub.w	66(a0),d1
 	add.w	#15,d1
 	cmp.w	d0,d1
 	ble	L82
-	;line	381
+	;line	369
 	move.l	a3,-(a7)
 	jsr	_ballHitVert
 	addq.l	#4,a7
-	;line	382
+	;line	370
 	move.w	d3,-(a7)
 	move.l	a3,-(a7)
 	jsr	_brickSmashed
 	addq.l	#6,a7
 	bra	L83
 L82:
-	;line	387
+	;line	374
 	move.l	a3,-(a7)
 	jsr	_ballHitHor
 	addq.l	#4,a7
-	;line	388
+	;line	375
 	move.w	d3,-(a7)
 	move.l	a3,-(a7)
 	jsr	_brickSmashed
@@ -831,31 +795,31 @@ L79:
 L78:
 	addq.w	#1,d3
 L76:
-	cmp.w	#25,d3
+	cmp.w	#35,d3
 	blt	L75
 L77:
-	;line	394
-	move.w	4(a3),d0
-	add.w	8(a3),d0
+	;line	381
+	move.w	8(a3),d0
+	add.w	12(a3),d0
 	sub.w	#-15,d0
 	cmp.w	#639,d0
 	bge	L85
-	move.w	4(a3),d0
-	add.w	8(a3),d0
+	move.w	8(a3),d0
+	add.w	12(a3),d0
 	tst.w	d0
 	bge	L84
 L85:
-	;line	397
+	;line	384
 	move.l	a3,-(a7)
 	jsr	_ballHitHor
 	addq.l	#4,a7
 L84:
-	;line	399
-	move.w	6(a3),d0
-	add.w	10(a3),d0
+	;line	386
+	move.w	10(a3),d0
+	add.w	14(a3),d0
 	cmp.w	#12,d0
 	bgt	L86
-	;line	401
+	;line	388
 	move.l	a3,-(a7)
 	jsr	_ballHitVert
 L86:
@@ -866,57 +830,58 @@ _paddleCollDetect:
 	link	a6,#-2
 	movem.l	d3/a3,-(a7)
 	move.l	8(a6),a3
-	;line	418
-	move.w	4(a3),d0
-	add.w	8(a3),d0
+	;line	405
+	move.w	8(a3),d0
+	add.w	12(a3),d0
 	sub.w	#-15,d0
-	cmp.w	34(a3),d0
+	cmp.w	38(a3),d0
 	blt	L87
-	move.w	34(a3),d0
-	add.w	#71,d0
-	move.w	4(a3),d1
-	add.w	8(a3),d1
+	move.w	38(a3),d0
+	sub.w	#-127,d0
+	move.w	8(a3),d1
+	add.w	12(a3),d1
 	cmp.w	d0,d1
 	bgt	L87
-	;line	421
-	move.w	34(a3),d0
-	move.w	4(a3),d1
-	add.w	8(a3),d1
+	;line	408
+	move.w	38(a3),d0
+	move.w	8(a3),d1
+	add.w	12(a3),d1
 	sub.w	d1,d0
+	add.w	#-16,d0
 	move.w	d0,d3
-	;line	422
-	tst.w	d3
+	;line	409
+	cmp.w	#-26,d3
 	ble	L88
-	;line	425
+	;line	411
 	move.l	a3,-(a7)
 	jsr	_farLeftPaddleHit
 	bra	L89
 L88:
-	;line	427
-	cmp.w	#-14,d3
+	;line	413
+	cmp.w	#-51,d3
 	ble	L90
-	;line	430
+	;line	415
 	move.l	a3,-(a7)
 	jsr	_midLeftPaddleHit
 	bra	L91
 L90:
-	;line	432
-	cmp.w	#-29,d3
+	;line	417
+	cmp.w	#-77,d3
 	ble	L92
-	;line	435
+	;line	419
 	move.l	a3,-(a7)
 	jsr	_centrePaddleHit
 	bra	L93
 L92:
-	;line	437
-	cmp.w	#43,d3
+	;line	421
+	cmp.w	#-103,d3
 	ble	L94
-	;line	440
+	;line	423
 	move.l	a3,-(a7)
 	jsr	_midRightPaddleHit
 	bra	L95
 L94:
-	;line	445
+	;line	427
 	move.l	a3,-(a7)
 	jsr	_farRightPaddleHit
 L95:
@@ -925,14 +890,14 @@ L91:
 L89:
 	bra	L96
 L87:
-	;line	448
-	move.w	10(a3),d0
-	muls	14(a3),d0
-	add.w	6(a3),d0
+	;line	430
+	move.w	14(a3),d0
+	muls	18(a3),d0
+	add.w	10(a3),d0
 	sub.w	#-15,d0
 	cmp.w	#399,d0
 	blt	L97
-	;line	451
+	;line	433
 	move.l	a3,-(a7)
 	jsr	_ballHitBottom
 L97:
@@ -944,7 +909,7 @@ _scoreToChars:
 	link	a6,#0
 	move.l	a3,-(a7)
 	move.l	14(a6),a3
-	;line	466
+	;line	448
 	move.w	8(a6),d0
 	ext.l	d0
 	divs	#1000,d0
@@ -953,7 +918,7 @@ _scoreToChars:
 	divs	#100,d0
 	add.w	#48,d0
 	move.b	d0,(a3)
-	;line	467
+	;line	449
 	move.w	8(a6),d0
 	ext.l	d0
 	divs	#100,d0
@@ -962,7 +927,7 @@ _scoreToChars:
 	divs	#10,d0
 	add.w	#48,d0
 	move.b	d0,1(a3)
-	;line	468
+	;line	450
 	move.w	8(a6),d0
 	ext.l	d0
 	divs	#10,d0
@@ -974,148 +939,163 @@ _scoreToChars:
 	rts
 _scoreLPosition:
 	link	a6,#0
-	;line	476
+	;line	458
 	move.w	18(a6),8(a6)
-	;line	477
+	;line	459
 	move.w	20(a6),10(a6)
 	unlk	a6
 	rts
 _paddleLeft:
 	link	a6,#0
-	;line	483
-	move.l	8(a6),a0
-	move.w	(a0),d0
-	subq.w	#5,d0
-	tst.w	d0
+	move.l	a3,-(a7)
+	move.l	8(a6),a3
+	;line	465
+	cmp.w	#20,(a3)
 	blt	L98
-	;line	484
-	sub.w	#20,(a0)
+	;line	466
+	sub.w	#20,(a3)
+	bra	L99
 L98:
+	;line	469
+	clr.w	(a3)
+L99:
+	move.l	(a7)+,a3
 	unlk	a6
 	rts
 _paddleRight:
 	link	a6,#0
-	;line	491
-	move.l	8(a6),a0
-	move.w	(a0),d0
-	add.w	#72,d0
-	cmp.w	#640,d0
-	bgt	L99
-	;line	492
-	add.w	#20,(a0)
-L99:
+	move.l	a3,-(a7)
+	move.l	8(a6),a3
+	;line	476
+	move.w	#128,d0
+	add.w	(a3),d0
+	cmp.w	#620,d0
+	bgt	L100
+	;line	477
+	add.w	#20,(a3)
+	bra	L101
+L100:
+	;line	480
+	move.w	#512,(a3)
+L101:
+	move.l	(a7)+,a3
 	unlk	a6
 	rts
 _launchBall:
 	link	a6,#0
-	;line	501
+	;line	489
 	move.l	8(a6),a0
-	clr.w	386(a0)
+	clr.w	672(a0)
 	unlk	a6
 	rts
 _initialize:
 	link	a6,#-2
-	movem.l	d3/d4/a3,-(a7)
+	movem.l	d3/a3,-(a7)
 	move.l	8(a6),a3
-	moveq	#58,d4
-	;line	507
+	;line	495
+	move.w	#312,8(a3)
+	;line	496
+	move.w	#354,10(a3)
+	;line	497
 	move.w	#312,4(a3)
-	;line	508
+	;line	498
 	move.w	#354,6(a3)
-	;line	509
-	move.w	#312,(a3)
-	;line	510
+	;line	499
 	move.w	#354,2(a3)
-	;line	511
-	clr.w	8(a3)
-	;line	512
-	move.w	#-3,10(a3)
-	;line	513
-	move.w	#1,14(a3)
-	;line	514
+	;line	500
+	move.w	#312,(a3)
+	;line	501
 	clr.w	12(a3)
-	;line	515
+	;line	502
+	move.w	#-3,14(a3)
+	;line	503
+	move.w	#1,18(a3)
+	;line	504
 	clr.w	16(a3)
-	;line	517
-	clr.w	18(a3)
-	;line	518
-	move.w	#600,20(a3)
-	;line	519
-	move.w	#2,22(a3)
-	;line	521
-	move.w	#552,24(a3)
-	;line	522
+	;line	505
+	clr.w	20(a3)
+	;line	507
+	clr.w	22(a3)
+	;line	508
+	move.w	#600,24(a3)
+	;line	509
 	move.w	#2,26(a3)
+	;line	511
+	move.w	#552,28(a3)
+	;line	512
+	move.w	#2,30(a3)
+	;line	513
+	move.b	#83,32(a3)
+	;line	514
+	move.b	#99,33(a3)
+	;line	515
+	move.b	#111,34(a3)
+	;line	516
+	move.b	#114,35(a3)
+	;line	517
+	move.b	#101,36(a3)
+	;line	518
+	move.b	#58,37(a3)
+	;line	520
+	move.w	#16,50(a3)
+	;line	521
+	move.w	#2,52(a3)
+	;line	522
+	move.b	#76,54(a3)
 	;line	523
-	move.b	#83,28(a3)
+	move.b	#105,55(a3)
 	;line	524
-	move.b	#99,29(a3)
+	move.b	#118,56(a3)
 	;line	525
-	move.b	#111,30(a3)
+	move.b	#101,57(a3)
 	;line	526
-	move.b	#114,31(a3)
+	move.b	#115,58(a3)
 	;line	527
-	move.b	#101,32(a3)
-	;line	528
-	move.b	d4,33(a3)
+	move.b	#58,59(a3)
+	;line	529
+	move.w	#256,38(a3)
 	;line	530
-	move.w	#16,42(a3)
-	;line	531
-	move.w	#2,44(a3)
-	;line	532
-	move.b	#76,46(a3)
-	;line	533
-	move.b	#105,47(a3)
-	;line	534
-	move.b	#118,48(a3)
-	;line	535
-	move.b	#101,49(a3)
-	;line	536
-	move.b	#115,50(a3)
-	;line	537
-	move.b	d4,51(a3)
-	;line	539
-	move.w	#284,34(a3)
-	;line	540
-	move.w	#370,36(a3)
-	;line	541
-	move.w	#248,38(a3)
-	;line	542
 	move.w	#370,40(a3)
-	;line	544
-	move.w	#3,56(a3)
-	;line	545
-	move.w	#64,52(a3)
-	;line	546
-	move.w	#2,54(a3)
-	;line	548
-	move.w	#1,386(a3)
-	;line	549
-	clr.w	388(a3)
-	;line	550
+	;line	531
+	move.w	#256,42(a3)
+	;line	532
+	move.w	#370,44(a3)
+	;line	533
+	move.w	#256,46(a3)
+	;line	534
+	move.w	#370,48(a3)
+	;line	536
+	move.w	#3,64(a3)
+	;line	537
+	move.w	#64,60(a3)
+	;line	538
+	move.w	#2,62(a3)
+	;line	540
+	move.w	#1,672(a3)
+	;line	541
+	clr.w	674(a3)
+	;line	542
 	moveq	#0,d3
-	bra	L101
-L100:
-	;line	552
-	ext.l	d3
-	move.l	d3,d0
-	asl.l	#3,d0
+	bra	L103
+L102:
+	;line	544
+	move.w	d3,d0
+	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	#1,62(a0)
-	;line	553
+	move.w	#1,70(a0)
+	;line	545
 	move.w	d3,d0
 	ext.l	d0
 	divs	#5,d0
 	muls	#24,d0
 	add.w	#13,d0
-	ext.l	d3
-	move.l	d3,d1
-	asl.l	#3,d1
+	move.w	d3,d1
+	muls	#10,d1
 	move.l	d1,a0
 	add.l	a3,a0
-	move.w	d0,60(a0)
-	;line	555
+	move.w	d0,68(a0)
+	;line	547
 	move.w	d3,d0
 	ext.l	d0
 	divs	#5,d0
@@ -1123,83 +1103,96 @@ L100:
 	divs	#2,d0
 	swap	d0
 	tst.w	d0
-	bne	L104
-	;line	556
+	bne	L106
+	;line	548
 	move.w	d3,d0
 	ext.l	d0
 	divs	#5,d0
 	swap	d0
 	asl.w	#7,d0
-	ext.l	d3
-	move.l	d3,d1
-	asl.l	#3,d1
+	move.w	d3,d1
+	muls	#10,d1
 	move.l	d1,a0
 	add.l	a3,a0
-	move.w	d0,0(a0,d4.l)
-	bra	L105
-L104:
-	;line	558
+	move.w	d0,66(a0)
+	bra	L107
+L106:
+	;line	550
 	move.w	d3,d0
 	ext.l	d0
 	divs	#5,d0
 	swap	d0
 	asl.w	#7,d0
 	add.w	#64,d0
-	ext.l	d3
-	move.l	d3,d1
-	asl.l	#3,d1
+	move.w	d3,d1
+	muls	#10,d1
 	move.l	d1,a0
 	add.l	a3,a0
-	move.w	d0,0(a0,d4.l)
+	move.w	d0,66(a0)
+L107:
 L105:
-L103:
 	addq.w	#1,d3
-L101:
-	cmp.w	#25,d3
-	blt	L100
-L102:
-	;line	560
+L103:
+	cmp.w	#35,d3
+	blt	L102
+L104:
+	;line	552
 	moveq	#0,d3
-	bra	L107
-L106:
-	;line	562
+	bra	L109
+L108:
+	;line	554
 	ext.l	d3
 	move.l	d3,d0
 	asl.l	#2,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	clr.l	258(a0)
-L109:
+	clr.l	416(a0)
+L111:
 	addq.w	#1,d3
-L107:
+L109:
 	cmp.w	#32,d3
-	blt	L106
-L108:
-	movem.l	(a7)+,d3/d4/a3
+	blt	L108
+L110:
+	;line	556
+	moveq	#0,d3
+	bra	L113
+L112:
+	;line	558
+	ext.l	d3
+	move.l	d3,d0
+	asl.l	#2,d0
+	move.l	d0,a0
+	add.l	a3,a0
+	clr.l	544(a0)
+L115:
+	addq.w	#1,d3
+L113:
+	cmp.w	#32,d3
+	blt	L112
+L114:
+	movem.l	(a7)+,d3/a3
 	unlk	a6
 	rts
 _resetBall:
 	link	a6,#0
 	move.l	a3,-(a7)
 	move.l	8(a6),a3
-	;line	568
-	move.w	#314,4(a3)
-	;line	569
-	move.w	#354,6(a3)
-	;line	570
-	clr.w	8(a3)
-	;line	571
-	move.w	#-3,10(a3)
-	;line	572
-	move.w	#1,14(a3)
-	;line	573
+	;line	564
+	move.w	#314,8(a3)
+	;line	565
+	move.w	#354,10(a3)
+	;line	566
 	clr.w	12(a3)
-	;line	575
-	move.w	#284,34(a3)
-	;line	576
-	move.w	#370,36(a3)
-	;line	578
-	move.w	#1,386(a3)
+	;line	567
+	move.w	#-3,14(a3)
+	;line	568
+	move.w	#1,18(a3)
+	;line	569
+	clr.w	16(a3)
+	;line	571
+	move.w	#256,38(a3)
+	;line	573
+	move.w	#1,672(a3)
 	move.l	(a7)+,a3
 	unlk	a6
 	rts

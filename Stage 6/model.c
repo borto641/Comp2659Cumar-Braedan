@@ -35,7 +35,6 @@ void moveBall(Screen *screen)
 *	Output: The input Ball, representing the state after checking for speed increases
 *
 */
-
 void checkBounces(Ball *ball)
 {
 	if (ball->totalBounces > 100)
@@ -73,7 +72,7 @@ void checkBounces(Ball *ball)
 */
 void checkBallCollision(Screen *screen)
 {
-	if (screen->ball.y < 125)/*bricks, or the roof may be hit*/
+	if (screen->ball.y < 188)/*bricks, or the roof may be hit*/
 	{
 
 			if (screen->ball.dX > 0) /*moving right*/
@@ -138,7 +137,7 @@ void checkBallCollision(Screen *screen)
 void upCollDetect(Screen *screen)
 {
 	int i;
-	for (i = 0; i < 25; i++)
+	for (i = 0; i < NUM_BRICKS; i++)
 	{
 		if (screen->bricks[i].alive == TRUE)
 		{
@@ -169,11 +168,10 @@ void upCollDetect(Screen *screen)
 *	Output: The input Screen modified to represent the state after a Ball movement
 *
 */
-
 void downCollDetect(Screen *screen)
 {
 	int i;
-	for (i = 0; i < 25; i++)
+	for (i = 0; i < NUM_BRICKS; i++)
 	{
 		if (screen->bricks[i].alive == TRUE)
 		{
@@ -202,12 +200,11 @@ void downCollDetect(Screen *screen)
 *	Output: The input Screen modified to represent the state after a Ball movement
 *
 */
-
 void dRCollDetect(Screen *screen)
 {
 	int i;
 	
-	for (i = 0; i < 25; i++)
+	for (i = 0; i < NUM_BRICKS; i++)
 	{
 		if (screen->bricks[i].alive == TRUE)
 		{
@@ -220,14 +217,12 @@ void dRCollDetect(Screen *screen)
 					if ((screen->ball.x + screen->ball.dX + BALL_WIDTH - 1) - screen->bricks[i].x /*(rightmost x of ball) - (leftmost x of brick)*/
 						> 
 					   (screen->ball.y + screen->ball.dY + BALL_HEIGHT - 1) - screen->bricks[i].y) /*(bottommost y of ball) - (topmost y of brick)*/
-					{
-						/*ball entered from the top*/
+					{/*ball entered from the top*/
 						ballHitVert(&screen->ball);
 						brickSmashed(screen, i);
 					}
 					else 
-					{
-						/*ball entered from side*/
+					{/*ball entered from side*/
 						ballHitHor(&screen->ball);
 						brickSmashed(screen, i);
 					}
@@ -253,12 +248,11 @@ void dRCollDetect(Screen *screen)
 *	Output: The input Screen modified to represent the state after a Ball movement
 *
 */
-			
 void dLCollDetect(Screen *screen)
 {
 	int i;
 	
-	for (i = 0; i < 25; i++)
+	for (i = 0; i < NUM_BRICKS; i++)
 	{
 		if (screen->bricks[i].alive == TRUE)
 		{
@@ -271,14 +265,12 @@ void dLCollDetect(Screen *screen)
 					if ((screen->bricks[i].x + BRICK_WIDTH - 1) - (screen->ball.x + screen->ball.dX) /*(rightmost x of ball) - (leftmost x of brick)*/
 						> 
 					   (screen->ball.y + screen->ball.dY + BALL_HEIGHT - 1) - screen->bricks[i].y) /*(bottommost y of ball) - (topmost y of brick)*/
-					{
-						/*ball entered from the top*/
+					{/*ball entered from the top*/
 						ballHitVert(&screen->ball);
 						brickSmashed(screen, i);
 					}
 					else 
-					{
-						/*ball entered from side*/
+					{/*ball entered from side*/
 						ballHitHor(&screen->ball);
 						brickSmashed(screen, i);
 					}
@@ -308,7 +300,7 @@ void uLCollDetect(Screen *screen)
 {
 	int i;
 	
-	for (i = 0; i < 25; i++)
+	for (i = 0; i < NUM_BRICKS; i++)
 	{
 		if (screen->bricks[i].alive == TRUE)
 		{
@@ -321,14 +313,12 @@ void uLCollDetect(Screen *screen)
 					if ((screen->bricks[i].x + BRICK_WIDTH  - 1) - (screen->ball.x + screen->ball.dX) /*(rightmost x of brick) - (leftmost x of ball)*/ 
 						> 
 					   ((screen->bricks[i].y + BRICK_HEIGHT - 1) - screen->ball.y + screen->ball.dY)) /*(bottommost y of brick) - (topmost y of ball)*/
-					{
-						/*ball entered from the top*/
+					{/*ball entered from the top*/
 						ballHitVert(&screen->ball);
 						brickSmashed(screen, i);
 					}
 					else 
-					{
-						/*ball entered from side*/
+					{/*ball entered from side*/
 						ballHitHor(&screen->ball);
 						brickSmashed(screen, i);
 					}
@@ -358,12 +348,11 @@ void uLCollDetect(Screen *screen)
 *	Output: The input Screen modified to represent the state after a Ball movement
 *
 */
-
 void uRCollDetect(Screen *screen)
 {
 	int i;
 	
-	for (i = 0; i < 25; i++)
+	for (i = 0; i < NUM_BRICKS; i++)
 	{
 		if (screen->bricks[i].alive == TRUE)
 		{
@@ -376,14 +365,12 @@ void uRCollDetect(Screen *screen)
 					if ((screen->ball.x + screen->ball.dX + BALL_WIDTH - 1) - screen->bricks[i].x /*(rightmost x of ball) - (leftmost x of brick)*/
 						> 
 					   ((screen->bricks[i].y + BRICK_HEIGHT - 1) - screen->ball.y + screen->ball.dY)) /*(bottommost y of brick) - (topmost y of ball)*/
-					{
-						/*ball entered from the top*/
+					{/*ball entered from the top*/
 						ballHitVert(&screen->ball);
 						brickSmashed(screen, i);
 					}
 					else 
-					{
-						/*ball entered from side*/
+					{/*ball entered from side*/
 						ballHitHor(&screen->ball);
 						brickSmashed(screen, i);
 					}
@@ -416,32 +403,27 @@ void paddleCollDetect(Screen *screen)
 {
 	int paddleHitPosition;
 	if ((screen->ball.x + screen->ball.dX + BALL_WIDTH - 1) >= screen->paddle.x /*rightmost x of ball is past leftmost paddle x*/
-		&& (screen->ball.x + screen->ball.dX) <= (screen->paddle.x + 71))/*leftmost x of ball is before rightmost paddle x*/
+		&& (screen->ball.x + screen->ball.dX) <= (screen->paddle.x + PADDLE_WIDTH - 1))/*leftmost x of ball is before rightmost paddle x*/
 	{			
-			paddleHitPosition = screen->paddle.x - (screen->ball.x + screen->ball.dX);
-			if (paddleHitPosition > 0)
-			{
-			/*ball hit far left of paddle*/
+			paddleHitPosition = screen->paddle.x - (screen->ball.x + screen->ball.dX + BALL_WIDTH);
+			if (paddleHitPosition > -26)
+			{/*ball hit far left of paddle*/
 				farLeftPaddleHit(&screen->ball);
 			}
-			else if (paddleHitPosition > -14)
-			{
-			/*ball hit mid left of paddle*/
+			else if (paddleHitPosition > -51)
+			{/*ball hit mid left of paddle*/
 				midLeftPaddleHit(&screen->ball);
 			}
-			else if (paddleHitPosition > -29)
-			{
-			/*ball hit centre of paddle*/
+			else if (paddleHitPosition > -77)
+			{/*ball hit centre of paddle*/
 				centrePaddleHit(&screen->ball);
 			}
-			else if (paddleHitPosition > 43)
-			{
-			/*ball hit mid right of paddle*/
+			else if (paddleHitPosition > -103)
+			{/*ball hit mid right of paddle*/
 				midRightPaddleHit(&screen->ball);
 			}
 			else
-			{
-			/*ball hit far right of paddle*/
+			{/*ball hit far right of paddle*/
 				farRightPaddleHit(&screen->ball);
 			}
 	}
@@ -480,17 +462,23 @@ void scoreLPosition (ScoreLabel label, int x, int y)
 
 */
 void paddleLeft(Paddle *paddle){
-	  if ((paddle->x - 5) >= 0 ){
+	if ((paddle->x) >= 20 ){
             paddle->x -= 20;
     }
+	else{
+		paddle->x = 0;
+	}
 }
 /*
 
 */
 void paddleRight(Paddle *paddle){
-	 if ((paddle->x + 72) <= 640 ){
+	if ((paddle->x + PADDLE_WIDTH) <= 620 ){
 		paddle->x += 20;
     }
+	else{
+		paddle->x = 512;
+	}
 }
 
 /*
@@ -508,6 +496,8 @@ void initialize(Screen *screen)
 	screen->ball.y = 354;
 	screen->ball.oldX = 312;
 	screen->ball.oldY = 354;
+	screen->ball.olderY = 354;
+	screen->ball.olderX = 312;
 	screen->ball.dX = 0;
 	screen->ball.dY = -3;
 	screen->ball.speed = 1;
@@ -536,10 +526,12 @@ void initialize(Screen *screen)
 	screen->lifeLabel.label[4] = 's';
 	screen->lifeLabel.label[5] = ':';
 	
-	screen->paddle.x = 284;
+	screen->paddle.x = 256;
 	screen->paddle.y = 370;
-	screen->paddle.oldX = 248;
+	screen->paddle.oldX = 256;
 	screen->paddle.oldY = 370;
+	screen->paddle.olderX = 256;
+	screen->paddle.olderY = 370;
 	
 	screen->lifeCount.lives = 3;
 	screen->lifeCount.x = 64;
@@ -547,7 +539,7 @@ void initialize(Screen *screen)
 
 	screen->holdBall = TRUE;
 	screen->gameOver = FALSE;
-	for (i = 0; i < 25; i++)
+	for (i = 0; i < NUM_BRICKS; i++)
 	{
 		screen->bricks[i].alive = TRUE;
 		screen->bricks[i].y = (i / 5) * 24 + 13;
@@ -561,6 +553,10 @@ void initialize(Screen *screen)
 	{
 		screen->ballChunk[i] = 0;
 	}
+	for (i = 0; i < 32; i++)
+	{
+		screen->oldBallChunk[i] = 0;
+	}
 }
 
 void resetBall(Screen *screen)
@@ -572,8 +568,7 @@ void resetBall(Screen *screen)
 	screen->ball.speed = 1;
 	screen->ball.totalBounces = 0;
 	
-	screen->paddle.x = 284;
-	screen->paddle.y = 370;
+	screen->paddle.x = 256;
 	
 	screen->holdBall = TRUE;
 }

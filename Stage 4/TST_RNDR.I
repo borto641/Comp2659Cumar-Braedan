@@ -295,8 +295,7 @@ typedef struct
 	int dY;
 	int totalBounces;
 	int speed;
-	bool ballOut;
-
+	bool resetBall;
 } Ball;
 
 typedef struct
@@ -318,6 +317,7 @@ typedef struct
 {
 	int x;
 	int y;
+	char[] label;
 } ScoreLabel;
 
 typedef struct {
@@ -329,7 +329,14 @@ typedef struct {
 typedef struct{
 	int x;
 	int y;
+	char[] label;
 }LifeCounterLabel;
+
+typedef struct{
+	int x;
+	int y;
+	int amount;
+}LifeCount
 
 typedef struct{
 	Ball ball;
@@ -338,7 +345,7 @@ typedef struct{
     Paddle paddle;
     Brick bricks[25];
     LifeCounterLabel lifeCounter;
-	int lifeCount;
+	LifeCount lifeCount;
 	bool resetBall;
 }Screen;
 
@@ -363,6 +370,8 @@ void uLCollDetect(Screen *screen);
 void uRCollDetect(Screen *screen);
 void paddleCollDetect(Screen *screen);
 void checkBounces(Ball *ball);
+void initialize(Screen *screen);
+void resetBall(Screen *screen);
 # 3 "tst_rndr.c" 2
 # 1 "./events.h" 1
 # 1 "./model.h" 1
@@ -433,7 +442,7 @@ int main(){
 	screen.ball.x = 314;
 	screen.ball.y =  355;
 	screen.ball.dX = 1;
-	screen.ball.dY = -3;
+	screen.ball.dY = -8;
 
 	screen.scoreNum.score = 666;
 	screen.scoreNum.x = 610;
