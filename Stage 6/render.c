@@ -33,7 +33,8 @@ void printScreen(Screen screen, UINT32 *base)
 void refreshScreen(Screen *screen, UINT32 *base)
 {
 	int i;	
-	/*Ball and paddle refresh*/
+	
+	drawChunk(base, screen->ball.olderX, screen->ball.olderY, screen->oldBallChunk, BALL_HEIGHT); /*erase ball*/
 	for (i = 0; i < NUM_BRICKS; i++)
 	{
 		if (screen->bricks[i].firstUndraw == TRUE)
@@ -46,11 +47,11 @@ void refreshScreen(Screen *screen, UINT32 *base)
 			clearRectangle((UINT32*)(base), screen->bricks[i].x, screen->bricks[i].y, BRICK_WIDTH, BRICK_HEIGHT);
 		}
 	}
-	drawChunk(base, screen->ball.olderX, screen->ball.olderY, screen->oldBallChunk, BALL_HEIGHT); /*erase ball*/
 	for (i = 0; i < 32; i++)
 	{
 		screen->oldBallChunk[i] = screen->ballChunk[i];
 	}
+	
 	saveChunk(base, screen->ball.x, screen->ball.y, screen->ballChunk, BALL_HEIGHT); /*save ball's new background*/
 	screen->ball.olderX = screen->ball.oldX;
 	screen->ball.olderY = screen->ball.oldY;
@@ -71,7 +72,6 @@ void refreshScreen(Screen *screen, UINT32 *base)
 	
 	drawScore(screen->scoreNum, (UINT8*)(base));
 	drawLives(screen->lifeCount, (UINT8*)(base));
-	
 }
 /*
 *	Function: printChars
@@ -107,7 +107,7 @@ void saveChunk (UINT32 *base, int x, int y, UINT32 saved[], int height)
 {
 	int i;
 	int arraySize = height *2;
-	UINT32 *start =	base + (y * 20) + (x / 32);
+	UINT32 *start =	base + (y * 20) + (x >> 5);
 	
 	for (i = 0; i < arraySize; i++)
 	{
@@ -132,7 +132,7 @@ void drawChunk (UINT32 *base, int x, int y, UINT32 *saved, int height)
 {
 	int i;
 	int arraySize = height * 2;
-	UINT32 *start =	base + (y * 20) + (x / 32);
+	UINT32 *start =	base + (y * 20) + (x >> 5);
 	
 	for (i = 0; i < arraySize; i++)
 	{
@@ -186,7 +186,7 @@ void drawScore(ScoreNum scoreNum, UINT8 *base)
 
 void drawLives(LifeCount lives, UINT8 *base)
 {
-	clearRectangle((UINT32*)(base), lives.x, lives.y, 8, FONT_HEIGHT);
+	clearRectangle((UINT32*)(base), lives.x, lives.y, 9, FONT_HEIGHT);
 	bitmap8(base, lives.x, lives.y, GLYPH_START((char)(lives.lives + ZERO)), FONT_HEIGHT);
 }
 

@@ -285,7 +285,12 @@ void plotVertLine(UINT8 *base, int x, int y, int length);
 void plotPoints(UINT8 *base ,int cx, int cy, int x, int y);
 void plotCircle(UINT8 *base, int cx, int cy, int r);
 void clearRectangle(UINT32 *base, int x, int y, int width, int height);
-void clrHorLine(UINT32 *base, int x, int y, int width);
+void clearRectangle8(UINT8 *base, int x, int y, int width, int height);
+void clearRectangle16(UINT16 *base, int x, int y, int width, int height);
+void clearRectangle32(UINT32 *base, int x, int y, int width, int height);
+void clrHorLine8(UINT8 *base, int x, int y, int width);
+void clrHorLine16(UINT16 *base, int x, int y, int width);
+void clrHorLine32(UINT32 *base, int x, int y, int width);
 # 3 "./model.h" 2
 # 1 "./types.h" 1
 # 4 "./model.h" 2
@@ -496,7 +501,7 @@ int main()
 			if (input == 0x0001001BL )
 				quit = 1 ;
 			else
-			keyPress(&screen, input);
+				keyPress(&screen, input);
 		}
 		timeNow = checkScreenClock();
 		if (timeNow - timeThen > 0)
@@ -505,13 +510,12 @@ int main()
 			timeThen = timeNow;
 			if (screen.holdBall == 0 )
 			{
-
+				moveBall(&screen);
 			}
-			refreshScreen(&screen, (UINT32*)(backScreen));
 			(void)_trap_14_w((short)0x25) ;
+			refreshScreen(&screen, (UINT32*)(backScreen));
 			swapScreenBuffers(&frontScreen, &backScreen);
 		}
-
 	}
 	(void)_trap_14_wllw((short)0x5,(long)(-1),(long)defaultScreen,(short)(-1)) ;
 	return 0;
@@ -521,7 +525,7 @@ void swapScreenBuffers(UINT8** front, UINT8** back)
 	UINT8* swap = *front;
 	*front = *back;
 	*back = swap;
-	(void)_trap_14_wllw((short)0x5,(long)(-1),(long)*back,(short)(-1)) ;
+	(void)_trap_14_wllw((short)0x5,(long)(-1),(long)*front,(short)(-1)) ;
 }
 
 UINT32 checkScreenClock()

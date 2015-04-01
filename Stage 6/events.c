@@ -43,8 +43,8 @@ void brickSmashed(Screen *screen, int i)
 	screen->scoreNum.score += 10;
 	for (i = 0; i < 32; i++)
 	{
-		screen->ballChunk[i] = 0;
-		screen->oldBallChunk[i] = 0;
+	/*	screen->ballChunk[i] = 0;*/
+/*		screen->oldBallChunk[i] = 0;*/
 	}
 } 
 

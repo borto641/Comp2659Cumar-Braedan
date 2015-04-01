@@ -110,14 +110,14 @@ void checkBallCollision(Screen *screen)
 			}
 			
 	}
-	else if ((screen->ball.y + BALL_HEIGHT + 1) > 369) /*Ball is in range of the paddle*/
+	else if ((screen->ball.y + (screen->ball.dY * screen->ball.speed) + BALL_HEIGHT + 1) > 369) /*Ball is in range of the paddle*/
 	{
 		paddleCollDetect(screen);
 	}		
 	else /*cannot hit bricks or the paddle*/
 	{
-		if ((screen->ball.x + screen->ball.dX + BALL_WIDTH - 1 >= 639) /*wall detection*/
-		|| (screen->ball.x + screen->ball.dX < 0))
+		if ((screen->ball.x + (screen->ball.dX * screen->ball.speed) + BALL_WIDTH - 1 >= 639) /*wall detection*/
+		|| (screen->ball.x + (screen->ball.dX * screen->ball.speed) < 0))
 		{
 			ballHitHor(&screen->ball);
 		}	
@@ -153,7 +153,7 @@ void upCollDetect(Screen *screen)
 			}					
 		}		
 	}
-	if ((screen->ball.y + screen->ball.dY) < 12)/* topmost y of ball is past roof level*/
+	if ((screen->ball.y + (screen->ball.dY * screen->ball.speed)) < 12)/* topmost y of ball is past roof level*/
 		ballHitVert(&screen->ball);
 }
 
@@ -230,8 +230,8 @@ void dRCollDetect(Screen *screen)
 			}
 		}
 	}	
-	if ((screen->ball.x + screen->ball.dX + BALL_WIDTH - 1 >= 639) /*rightmost ball x past right bounds*/
-		|| (screen->ball.x + screen->ball.dX < 0)) /*leftmost ball x before left bounds*/
+	if ((screen->ball.x +  (screen->ball.dX * screen->ball.speed) + BALL_WIDTH - 1 >= 639) /*rightmost ball x past right bounds*/
+		|| (screen->ball.x + (screen->ball.dX * screen->ball.speed) < 0)) /*leftmost ball x before left bounds*/
 	{
 		ballHitHor(&screen->ball);
 	}		
@@ -278,8 +278,8 @@ void dLCollDetect(Screen *screen)
 			}
 		}
 	}	
-	if ((screen->ball.x + screen->ball.dX + BALL_WIDTH - 1) >= 639 /*rightmost ball x past right bounds*/
-		|| (screen->ball.x + screen->ball.dX) < 0) /*leftmost ball x before left bounds*/
+	if ((screen->ball.x +  (screen->ball.dX * screen->ball.speed) + BALL_WIDTH - 1) >= 639 /*rightmost ball x past right bounds*/
+		|| (screen->ball.x +  (screen->ball.dX * screen->ball.speed)) < 0) /*leftmost ball x before left bounds*/
 	{
 		ballHitHor(&screen->ball);
 	}		
@@ -326,7 +326,7 @@ void uLCollDetect(Screen *screen)
 			}
 		}
 	}	
-	if ((screen->ball.x + screen->ball.dX + BALL_WIDTH - 1) >= 639 /*rightmost ball x past right bounds*/
+	if ((screen->ball.x +  (screen->ball.dX * screen->ball.speed) + BALL_WIDTH - 1) >= 639 /*rightmost ball x past right bounds*/
 		|| (screen->ball.x + screen->ball.dX) < 0) /*leftmost ball x before left bounds*/
 	{
 		ballHitHor(&screen->ball);
@@ -378,8 +378,8 @@ void uRCollDetect(Screen *screen)
 			}
 		}
 	}	
-	if ((screen->ball.x + screen->ball.dX + BALL_WIDTH - 1) >= 639 /*rightmost ball x past right bounds*/
-		|| (screen->ball.x + screen->ball.dX) < 0) /*leftmost ball x before left bounds*/
+	if ((screen->ball.x + (screen->ball.dX * screen->ball.speed) + BALL_WIDTH - 1) >= 639 /*rightmost ball x past right bounds*/
+		|| (screen->ball.x + (screen->ball.dX * screen->ball.speed)) < 0) /*leftmost ball x before left bounds*/
 	{
 		ballHitHor(&screen->ball);
 	}
@@ -402,9 +402,15 @@ void uRCollDetect(Screen *screen)
 void paddleCollDetect(Screen *screen)
 {
 	int paddleHitPosition;
-	if ((screen->ball.x + screen->ball.dX + BALL_WIDTH - 1) >= screen->paddle.x /*rightmost x of ball is past leftmost paddle x*/
-		&& (screen->ball.x + screen->ball.dX) <= (screen->paddle.x + PADDLE_WIDTH - 1))/*leftmost x of ball is before rightmost paddle x*/
+	if ((screen->ball.x + (screen->ball.dX * screen->ball.speed) + BALL_WIDTH - 1) >= screen->paddle.x /*rightmost x of ball is past leftmost paddle x*/
+		&& (screen->ball.x + (screen->ball.dX * screen->ball.speed)) <= (screen->paddle.x + PADDLE_WIDTH - 1))/*leftmost x of ball is before rightmost paddle x*/
 	{			
+		if ((screen->ball.y + BALL_HEIGHT - 1) > screen->paddle.y)
+		{
+			ballHitHor(&screen->ball);
+		}
+		else
+		{
 			paddleHitPosition = screen->paddle.x - (screen->ball.x + screen->ball.dX + BALL_WIDTH);
 			if (paddleHitPosition > -26)
 			{/*ball hit far left of paddle*/
@@ -426,6 +432,7 @@ void paddleCollDetect(Screen *screen)
 			{/*ball hit far right of paddle*/
 				farRightPaddleHit(&screen->ball);
 			}
+		}
 	}
 	else if ((screen->ball.y + (screen->ball.dY * screen->ball.speed) + BALL_HEIGHT - 1) >= 399)
 	{
@@ -492,12 +499,12 @@ void launchBall(Screen *screen)
 void initialize(Screen *screen)
 {
 	int i;
-	screen->ball.x = 312;
+	screen->ball.x = 300;
 	screen->ball.y = 354;
-	screen->ball.oldX = 312;
+	screen->ball.oldX = 300;
 	screen->ball.oldY = 354;
 	screen->ball.olderY = 354;
-	screen->ball.olderX = 312;
+	screen->ball.olderX = 300;
 	screen->ball.dX = 0;
 	screen->ball.dY = -3;
 	screen->ball.speed = 1;
@@ -505,10 +512,10 @@ void initialize(Screen *screen)
 	screen->ball.ballOut = FALSE;
 	
 	screen->scoreNum.score = 0;
-	screen->scoreNum.x = 600;
+	screen->scoreNum.x = 608;
 	screen->scoreNum.y = 2;
 	
-	screen->scoreLabel.x = 552;
+	screen->scoreLabel.x = 559;
 	screen->scoreLabel.y = 2;
 	screen->scoreLabel.label[0] = 'S';
 	screen->scoreLabel.label[1] = 'c';

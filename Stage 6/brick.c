@@ -35,7 +35,7 @@ int main()
 			if (input == ESC)
 				quit = TRUE;
 			else
-			keyPress(&screen, input);
+				keyPress(&screen, input);
 		}
 		timeNow = checkScreenClock();
 		if (timeNow - timeThen > 0)
@@ -44,13 +44,12 @@ int main()
 			timeThen = timeNow;
 			if (screen.holdBall == FALSE)
 			{	
-/*				moveBall(&screen);*/
+				moveBall(&screen);
 			}
-			refreshScreen(&screen, (UINT32*)(backScreen));
 			Vsync();	
+			refreshScreen(&screen, (UINT32*)(backScreen));
 			swapScreenBuffers(&frontScreen, &backScreen);
 		}
-		/*Cnecin(); /*testing purposes*/
 	}
 	Setscreen(-1, defaultScreen, -1);
 	return 0;
@@ -60,7 +59,7 @@ void swapScreenBuffers(UINT8** front, UINT8** back)
 	UINT8* swap = *front;
 	*front = *back;
 	*back = swap;
-	Setscreen(-1, *back, -1);
+	Setscreen(-1, *front, -1);
 }
 
 UINT32 checkScreenClock()
