@@ -1,5 +1,8 @@
 #include "RASTER.H"
 
+/*
+Plots a horizontal line to the screen buffer
+*/
 void plot_hor_line(UINT32 *base, int x, int y, int width, int lshift, int rshift)
 {
 	UINT32 *draw = base + (y * 20) + (x >> 5);
@@ -22,37 +25,6 @@ void plot_hor_line(UINT32 *base, int x, int y, int width, int lshift, int rshift
 	}
 	return;
 }
-
-
-/*
-Plots a horizontal line to the screen buffer
-NOTE: Does NOT draw lines less than 8 bits wide properly, 
-	   as no lines this small need to be drawn in game.
-
-void plot_hor_line(UINT8 *base, int x, int y, int width)
-{
-	UINT8 *draw = base + (y * 80) + (x >> 3);
-	int lshift = (x % 8);                  /*amount of shift required on left side of line
-	int rshift = (8 - ((width - (8 - lshift)) % 8)); /*amount of shift required on right side of line
-	int i = 0;
-	
-	if (x < 640 && y < 400) /* in bounds 
-	{		
-		if (lshift > 0) /*if left shift needed
-			{
-				*draw |= (0xFF >> lshift);
-				draw++;
-			}
-			for (i = 0; i < ((width - lshift) >> 3) && (draw < (base + ((y + 1) * 80))); i++) /* for each full byte draw FF 
-			{
-				*draw |= (0xFF);
-				draw++;
-			}		
-			if (draw < base + ((y + 1) * 80 && rshift > 0)) /*if right shift needed
-				*draw |= (0xFF << rshift);
-	}
-	return;
-}*/
 				
 /*Plots a rectangle by calling plot_hor_line "height" times*/
 void plot_rectangle(UINT32 *base, int x, int y, int width, int height)
@@ -73,13 +45,58 @@ void plot_rectangle(UINT32 *base, int x, int y, int width, int height)
 
 void clearRectangle(UINT32 *base, int x, int y, int width, int height)
 {
+	if (width <= 8)
+	{
+		clearRectangle8((UINT8*)(base), x, y, width, height);
+	}
+	else if ( width <= 32)
+	{
+		clearRectangle16((UINT16*)(base), x, y, width, height);
+	}
+	else
+	{
+		clearRectangle32((UINT32*)(base), x, y, width, height);
+	}
+	return;	
+}
+
+void clearRectangle32(UINT32 *base, int x, int y, int width, int height)
+{
 	UINT32 *draw = base;
 	int i = 0;
 	
 	for (i = 0; i < height; i++)
 	{
-		clrHorLine(draw, x, y, width);
+		clrHorLine32(draw, x, y, width);
 		draw += 20;
+	}
+
+	return;	
+}
+
+void clearRectangle16(UINT16 *base, int x, int y, int width, int height)
+{
+	UINT16 *draw = base;
+	int i = 0;
+	
+	for (i = 0; i < height; i++)
+	{
+		clrHorLine16(draw, x, y, width);
+		draw += 40;
+	}
+
+	return;	
+}
+
+void clearRectangle8(UINT8 *base, int x, int y, int width, int height)
+{
+	UINT8 *draw = base;
+	int i = 0;
+	
+	for (i = 0; i < height; i++)
+	{
+		clrHorLine8(draw, x, y, width);
+		draw += 80;
 	}
 
 	return;	
@@ -87,13 +104,37 @@ void clearRectangle(UINT32 *base, int x, int y, int width, int height)
 
 /*May need to address clearing only part of a byte if required
   by more than clear paddle*/
-void clrHorLine(UINT32 *base, int x, int y, int width)
+void clrHorLine32(UINT32 *base, int x, int y, int width)
 {
 	UINT32 *draw = base + (y * 20) + (x >> 5);
 	int i = 0;
 	for (i = 0; i < (width >> 5) + 1 && (draw < (base + ((y + 1) * 20))); i++) /* for each full byte draw 00 */
 		{
 			*draw = (0x00000000);
+			draw++;
+		}		
+	return;
+}
+
+void clrHorLine16(UINT16 *base, int x, int y, int width)
+{
+	UINT16 *draw = base + (y * 40) + (x >> 4);
+	int i = 0;
+	for (i = 0; i < (width >> 4) + 1 && (draw < (base + ((y + 1) * 40))); i++) /* for each full byte draw 00 */
+	{
+		*draw = (0x0000);
+		draw++;
+	}		
+	return;
+}
+
+void clrHorLine8(UINT8 *base, int x, int y, int width)
+{
+	UINT8 *draw = base + (y * 80) + (x >> 5);
+	int i = 0;
+	for (i = 0; i < (width >> 3) + 1 && (draw < (base + ((y + 1) * 80))); i++) /* for each full byte draw 00 */
+		{
+			*draw = (0x00);
 			draw++;
 		}		
 	return;

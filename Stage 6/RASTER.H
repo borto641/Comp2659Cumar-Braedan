@@ -13,5 +13,10 @@ void plotVertLine(UINT8 *base, int x, int y, int length); 									/*Renamed fro
 void plotPoints(UINT8 *base ,int cx, int cy, int x, int y);	
 void plotCircle(UINT8 *base, int cx, int cy, int r);
 void clearRectangle(UINT32 *base, int x, int y, int width, int height);
-void clrHorLine(UINT32 *base, int x, int y, int width);
+void clearRectangle8(UINT8 *base, int x, int y, int width, int height);
+void clearRectangle16(UINT16 *base, int x, int y, int width, int height);
+void clearRectangle32(UINT32 *base, int x, int y, int width, int height);
+void clrHorLine8(UINT8 *base, int x, int y, int width);
+void clrHorLine16(UINT16 *base, int x, int y, int width);
+void clrHorLine32(UINT32 *base, int x, int y, int width);
 #endif

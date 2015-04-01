@@ -20,6 +20,7 @@ void centrePaddleHit(Ball *ball);
 void midLeftPaddleHit(Ball *ball);
 void farLeftPaddleHit(Ball *ball);
 void ballHitBottom(Screen *screen);
+void levelCleared(Screen *screen, UINT8* front, UINT8* back);
 
 #endif
 

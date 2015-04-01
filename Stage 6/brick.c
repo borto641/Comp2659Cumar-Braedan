@@ -1,8 +1,7 @@
 #include "brick.h"
 #include <stdio.h>
+
 const UINT8 secondBuffer[32256];
-
-
 
 int main()
 {
@@ -10,6 +9,7 @@ int main()
 	UINT8 *frontScreen = defaultScreen;
 	UINT8 *backScreen = secondBuffer;
 	long tempUINT8 = (long)(backScreen);
+	
 	Screen screen;
 	bool quit = FALSE;
 	long input;
@@ -35,22 +35,25 @@ int main()
 			if (input == ESC)
 				quit = TRUE;
 			else
-			keyPress(&screen, input);
+				keyPress(&screen, input);
 		}
 		timeNow = checkScreenClock();
-		if (timeNow - timeThen > 0)
+		if (timeNow - timeThen > 0 && !screen.holdBall)
 		{
 			timeNow = checkScreenClock();
 			timeThen = timeNow;
-			if (screen.holdBall == FALSE)
-			{	
-/*				moveBall(&screen);*/
+			moveBall(&screen);
+			if(screen.bricksLeft == 0)
+			{
+				levelCleared(&screen, frontScreen, backScreen);
 			}
-			refreshScreen(&screen, (UINT32*)(backScreen));
-			Vsync();	
-			swapScreenBuffers(&frontScreen, &backScreen);
+			else
+			{
+				Vsync();	 
+				refreshScreen(&screen, (UINT32*)(backScreen));
+				swapScreenBuffers(&frontScreen, &backScreen);
+			}
 		}
-		/*Cnecin(); /*testing purposes*/
 	}
 	Setscreen(-1, defaultScreen, -1);
 	return 0;
@@ -60,7 +63,7 @@ void swapScreenBuffers(UINT8** front, UINT8** back)
 	UINT8* swap = *front;
 	*front = *back;
 	*back = swap;
-	Setscreen(-1, *back, -1);
+	Setscreen(-1, *front, -1);
 }
 
 UINT32 checkScreenClock()
