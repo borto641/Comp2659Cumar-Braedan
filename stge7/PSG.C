@@ -94,30 +94,41 @@ void enable_channel(int channel, int tone_on, int noise_on){
     if(channel == 0){
         if(tone_on == 0 && noise_on == 1)
             write_psg(7, 0x3E);
+        else if(tone_on == 1 && noise_on == 0)
+            write_psg(7, 0x37);
     }
     else if (channel == 1){
-         if(tone_on == 0 && noise_on == 1)
-             write_psg(7, 0x3D);    
+        if(tone_on == 0 && noise_on == 1)
+             write_psg(7, 0x3D);  
+        else if(tone_on == 1 && noise_on == 0)
+            write_psg(7, 0x2F);
     }
     else if (channel == 2){
-         if(tone_on == 0 && noise_on == 1)
-             write_psg(7, 0x3B);
+        if(tone_on == 0 && noise_on == 1)
+            write_psg(7, 0x3B);
+        else if(tone_on == 1 && noise_on == 0)
+            write_psg(7, 0x1F);
     }
 }
 /*
 
 */
 void stop_sound(){    
-     write_psg(8, 0);		/* set channel A volume = 0 */
-     write_psg(9, 0);		/* set channel B volume = 0 */
-     write_psg(10, 0);		/* set channel C volume = 0 */
+    write_psg(8, 0);		/* set channel A volume = 0 */
+    write_psg(9, 0);		/* set channel B volume = 0 */
+    write_psg(10, 0);		/* set channel C volume = 0 */
 }
+/*
+
+*/
 void set_noise(int tuning){
-
-
+    write_psg(6, tuning);
 } 
+/*
 
+*/
 void set_envelope(int shape, unsigned int sustain){
-
-
+    write_psg(11, sustain);
+    write_psg(12, sustain);
+    write_psg(13, shape);
 }
