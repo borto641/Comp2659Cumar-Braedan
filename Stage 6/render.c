@@ -23,11 +23,8 @@ void printScreen(Screen screen, UINT32 *base)
 	drawLives(screen.lifeCount, (UINT8*)(base));
 	printScoreLabel(screen.scoreLabel, (UINT8*)(base));
 	printLifeLabel(screen.lifeLabel, (UINT8*)(base));
-	
-	/*saves the contents of the buffer where the ball will be printed to an array, as well as it's location*/
-	drawBall(screen.ball, (UINT16*)(base));
-	/*saves the contents of the buffer where the paddle will be printed to an array, as well as it's location*/
-	drawPaddle(base, screen.paddle);
+	drawBall(&screen.ball, (UINT16*)(base));
+	drawPaddle(base, &screen.paddle);
 }
 
 void refreshScreen(Screen *screen, UINT32 *base)
@@ -42,7 +39,7 @@ void refreshScreen(Screen *screen, UINT32 *base)
 			screen->bricks[i].firstUndraw = FALSE;
 			clearRectangle((UINT32*)(base), screen->bricks[i].x, screen->bricks[i].y, BRICK_WIDTH, BRICK_HEIGHT);
 		} else if (screen->bricks[i].secondUndraw == TRUE)
-		{ /*if any bricks have been hit since the last refresh, clear them from the buffer*/
+		{ /*if any bricks have been hit since the second last refresh, clear them from the buffer*/
 			screen->bricks[i].secondUndraw = FALSE;
 			clearRectangle((UINT32*)(base), screen->bricks[i].x, screen->bricks[i].y, BRICK_WIDTH, BRICK_HEIGHT);
 		}
@@ -51,25 +48,13 @@ void refreshScreen(Screen *screen, UINT32 *base)
 	{
 		screen->oldBallChunk[i] = screen->ballChunk[i];
 	}
-	
-	saveChunk(base, screen->ball.x, screen->ball.y, screen->ballChunk, BALL_HEIGHT); /*save ball's new background*/
-	screen->ball.olderX = screen->ball.oldX;
-	screen->ball.olderY = screen->ball.oldY;
-	screen->ball.oldX = screen->ball.x;
-	screen->ball.oldY = screen->ball.y;
-	drawBall(screen->ball, (UINT16*)(base));
-	
-	if (screen->paddle.olderX != screen->paddle.x)
-	{
+	if(screen->paddle.olderX != screen->paddle.x)
 		clearPaddle(base, screen->paddle);
-		drawPaddle(base, screen->paddle);
-		screen->paddle.olderX = screen->paddle.oldX;
-		screen->paddle.olderY = screen->paddle.oldY;
-		screen->paddle.oldX = screen->paddle.x;
-		screen->paddle.oldY = screen->paddle.y;
-		drawPaddle(base, screen->paddle);
-	}
 	
+	saveChunk(base, screen->ball.x, screen->ball.y, screen->ballChunk, BALL_HEIGHT); /*save ball's new background*/	
+	drawBall(&screen->ball, (UINT16*)(base));
+	
+	drawPaddle(base, &screen->paddle);
 	drawScore(screen->scoreNum, (UINT8*)(base));
 	drawLives(screen->lifeCount, (UINT8*)(base));
 }
@@ -152,9 +137,13 @@ void drawChunk (UINT32 *base, int x, int y, UINT32 *saved, int height)
 *	Input: A UINT16 representing the physical base of the screen buffer
 *		   A Ball object
 */
-void drawBall(Ball ball, UINT16 *base)
+void drawBall(Ball *ball, UINT16 *base)
 {
-	bitmap16(base, ball.x, ball.y, ballBitmap, 16);
+	ball->olderX = ball->oldX;
+	ball->olderY = ball->oldY;
+	ball->oldX = ball->x;
+	ball->oldY = ball->y;
+	bitmap16(base, ball->x, ball->y, ballBitmap, 16);
 }
 
 /*
@@ -165,9 +154,13 @@ void drawBall(Ball ball, UINT16 *base)
 *	Input: A UINT8 representing the physical base of the screen buffer
 *		   A Paddle object
 */
-void drawPaddle(UINT32 *base, Paddle paddle)
+void drawPaddle(UINT32 *base, Paddle *paddle)
 {
-	plot_rectangle(base, paddle.x, paddle.y, PADDLE_WIDTH, PADDLE_HEIGHT);
+	plot_rectangle(base, paddle->x, paddle->y, PADDLE_WIDTH, PADDLE_HEIGHT);
+	paddle->olderX = paddle->oldX;
+	paddle->olderY = paddle->oldY;
+	paddle->oldX = paddle->x;
+	paddle->oldY = paddle->y;
 }
 
 void clearPaddle(UINT32 *base, Paddle paddle)

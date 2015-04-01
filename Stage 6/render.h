@@ -20,8 +20,8 @@ void printLifeLabel(LifeLabel lifeCounterLabel, UINT8 *base);
 void printScoreLabel(ScoreLabel scoreLabel, UINT8 *base);
 void drawLives(LifeCount lives, UINT8 *base);
 void drawScore(ScoreNum scoreNum, UINT8 *base);
-void drawPaddle(UINT32 *base, Paddle paddle);
+void drawPaddle(UINT32 *base, Paddle *paddle);
 void clearPaddle(UINT32 *base, Paddle paddle);
-void drawBall(Ball ball, UINT16 *base);
+void drawBall(Ball *ball, UINT16 *base);
 void printChars(UINT8 *base, int x, int y, int length, char string[]);
 #endif

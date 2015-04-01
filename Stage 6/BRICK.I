@@ -340,7 +340,7 @@ typedef struct {
 	int oldY;
 	int olderX;
 	int olderY;
-
+	bool lock;
 }Paddle;
 
 typedef struct{
@@ -362,7 +362,8 @@ typedef struct{
     Paddle paddle;
 	LifeLabel lifeLabel;
 	LifeCount lifeCount;
-    Brick bricks[35 ];
+    Brick bricks[25 ];
+	int bricksLeft;
 	UINT32 ballChunk[32];
 	UINT32 oldBallChunk[32];
 	bool holdBall;
@@ -379,18 +380,19 @@ void paddleRight(Paddle *paddle);
 void launchBall(Screen *screen);
 void destroyBrick(int brick);
 int  getScore (ScoreNum score);
-void ballDirection(Ball *ball, Paddle *paddle);
-void checkBallCollision(Screen *screen);
-void upCollDetect(Screen *screen);
-void downCollDetect(Screen *screen);
-void dRCollDetect(Screen *screen);
-void dLCollDetect(Screen *screen);
-void uLCollDetect(Screen *screen);
-void uRCollDetect(Screen *screen);
-void paddleCollDetect(Screen *screen);
+void checkBallCollision(Screen *screen, int dX, int dY);
+void upCollDetect(Screen *screen, int dX, int dY);
+void downCollDetect(Screen *screen, int dX, int dY);
+void dRCollDetect(Screen *screen, int dX, int dY);
+void dLCollDetect(Screen *screen, int dX, int dY);
+void uLCollDetect(Screen *screen, int dX, int dY);
+void uRCollDetect(Screen *screen, int dX, int dY);
+void paddleCollDetect(Screen *screen, int dX, int dY);
 void checkBounces(Ball *ball);
 void scoreToChars (ScoreNum score, char scoreChars[]);
 void initialize(Screen *screen);
+void ballHitPaddle(Screen *screen, int dX, int dY);
+void resetLevel(Screen *screen);
 # 6 "./brick.h" 2
 # 1 "./events.h" 1
 # 1 "./model.h" 1
@@ -411,6 +413,7 @@ void centrePaddleHit(Ball *ball);
 void midLeftPaddleHit(Ball *ball);
 void farLeftPaddleHit(Ball *ball);
 void ballHitBottom(Screen *screen);
+void levelCleared(Screen *screen, UINT8* front, UINT8* back);
 # 7 "./brick.h" 2
 # 1 "./render.h" 1
 # 1 "./model.h" 1
@@ -440,9 +443,9 @@ void printLifeLabel(LifeLabel lifeCounterLabel, UINT8 *base);
 void printScoreLabel(ScoreLabel scoreLabel, UINT8 *base);
 void drawLives(LifeCount lives, UINT8 *base);
 void drawScore(ScoreNum scoreNum, UINT8 *base);
-void drawPaddle(UINT32 *base, Paddle paddle);
+void drawPaddle(UINT32 *base, Paddle *paddle);
 void clearPaddle(UINT32 *base, Paddle paddle);
-void drawBall(Ball ball, UINT16 *base);
+void drawBall(Ball *ball, UINT16 *base);
 void printChars(UINT8 *base, int x, int y, int length, char string[]);
 # 8 "./brick.h" 2
 # 1 "./input.h" 1
@@ -466,9 +469,8 @@ void swapScreenBuffers(UINT8** a, UINT8** b);
 # 1 "C:/c68/include/stdio.h" 1
 # 2 "brick.c" 2
 
+
 const UINT8 secondBuffer[32256];
-
-
 
 int main()
 {
@@ -476,6 +478,7 @@ int main()
 	UINT8 *frontScreen = defaultScreen;
 	UINT8 *backScreen = secondBuffer;
 	long tempUINT8 = (long)(backScreen);
+
 	Screen screen;
 	bool quit = 0 ;
 	long input;
@@ -504,17 +507,21 @@ int main()
 				keyPress(&screen, input);
 		}
 		timeNow = checkScreenClock();
-		if (timeNow - timeThen > 0)
+		if (timeNow - timeThen > 0 && !screen.holdBall)
 		{
 			timeNow = checkScreenClock();
 			timeThen = timeNow;
-			if (screen.holdBall == 0 )
+			moveBall(&screen);
+			if(screen.bricksLeft == 0)
 			{
-				moveBall(&screen);
+				levelCleared(&screen, frontScreen, backScreen);
 			}
-			(void)_trap_14_w((short)0x25) ;
-			refreshScreen(&screen, (UINT32*)(backScreen));
-			swapScreenBuffers(&frontScreen, &backScreen);
+			else
+			{
+				(void)_trap_14_w((short)0x25) ;
+				refreshScreen(&screen, (UINT32*)(backScreen));
+				swapScreenBuffers(&frontScreen, &backScreen);
+			}
 		}
 	}
 	(void)_trap_14_wllw((short)0x5,(long)(-1),(long)defaultScreen,(short)(-1)) ;

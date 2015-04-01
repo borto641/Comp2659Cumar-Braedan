@@ -1,8 +1,7 @@
 #include "brick.h"
 #include <stdio.h>
+
 const UINT8 secondBuffer[32256];
-
-
 
 int main()
 {
@@ -10,6 +9,7 @@ int main()
 	UINT8 *frontScreen = defaultScreen;
 	UINT8 *backScreen = secondBuffer;
 	long tempUINT8 = (long)(backScreen);
+	
 	Screen screen;
 	bool quit = FALSE;
 	long input;
@@ -38,17 +38,21 @@ int main()
 				keyPress(&screen, input);
 		}
 		timeNow = checkScreenClock();
-		if (timeNow - timeThen > 0)
+		if (timeNow - timeThen > 0 && !screen.holdBall)
 		{
 			timeNow = checkScreenClock();
 			timeThen = timeNow;
-			if (screen.holdBall == FALSE)
-			{	
-				moveBall(&screen);
+			moveBall(&screen);
+			if(screen.bricksLeft == 0)
+			{
+				levelCleared(&screen, frontScreen, backScreen);
 			}
-			Vsync();	
-			refreshScreen(&screen, (UINT32*)(backScreen));
-			swapScreenBuffers(&frontScreen, &backScreen);
+			else
+			{
+				Vsync();	 
+				refreshScreen(&screen, (UINT32*)(backScreen));
+				swapScreenBuffers(&frontScreen, &backScreen);
+			}
 		}
 	}
 	Setscreen(-1, defaultScreen, -1);

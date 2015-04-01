@@ -1,5 +1,5 @@
 #include "events.h"
-
+#include "render.h"
 
 
 /****************************************************************************
@@ -18,10 +18,10 @@ void keyPress(Screen *screen, long choice)
 		4D00 - Right arrow
 		3920 - Space key
 	*/
-		if(choice == LEFT_ARROW && screen->holdBall == FALSE){
+		if(choice == LEFT_ARROW && !screen->holdBall && !screen->paddle.lock){
 			paddleLeft(&(screen->paddle));
 		}
-		else if(choice == RIGHT_ARROW && screen->holdBall == FALSE){
+		else if(choice == RIGHT_ARROW && !screen->holdBall && !screen->paddle.lock){
 			paddleRight(&(screen->paddle));
 		}
 		else if(choice == SPACEBAR && screen->holdBall == TRUE){
@@ -41,11 +41,7 @@ void brickSmashed(Screen *screen, int i)
 	screen->bricks[i].firstUndraw = TRUE;
 	screen->bricks[i].secondUndraw = TRUE;
 	screen->scoreNum.score += 10;
-	for (i = 0; i < 32; i++)
-	{
-	/*	screen->ballChunk[i] = 0;*/
-/*		screen->oldBallChunk[i] = 0;*/
-	}
+	screen->bricksLeft--;
 } 
 
 /*
@@ -114,4 +110,13 @@ void ballHitBottom(Screen *screen)
 	{
 		screen->gameOver = TRUE;
 	}
+}
+
+void levelCleared(Screen *screen, UINT8* front, UINT8* back)
+{
+	resetLevel(screen);
+	clrScrn((UINT16*)(front));
+	clrScrn((UINT16*)(back));
+	printScreen(*screen, (UINT32*)(front));
+	printScreen(*screen, (UINT32*)(back));
 }

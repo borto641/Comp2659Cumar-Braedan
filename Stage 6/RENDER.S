@@ -4,7 +4,7 @@
 _printScreen:
 	link	a6,#-2
 	movem.l	d3/d4,-(a7)
-	move.l	684(a6),d3
+	move.l	588(a6),d3
 	;line	14
 	clr.w	-(a7)
 	clr.w	-(a7)
@@ -23,17 +23,17 @@ L1:
 	move.w	d4,d0
 	muls	#10,d0
 	add.l	d0,a0
-	cmp.w	#1,70(a0)
+	cmp.w	#1,72(a0)
 	bne	L5
 	;line	19
 	move.w	#24,-(a7)
 	move.w	#64,-(a7)
-	lea	74(a6),a0
+	lea	76(a6),a0
 	move.w	d4,d0
 	muls	#10,d0
 	add.l	d0,a0
 	move.w	2(a0),-(a7)
-	lea	74(a6),a0
+	lea	76(a6),a0
 	move.w	d4,d0
 	muls	#10,d0
 	add.l	d0,a0
@@ -45,7 +45,7 @@ L5:
 L4:
 	addq.w	#1,d4
 L2:
-	cmp.w	#35,d4
+	cmp.w	#25,d4
 	blt	L1
 L3:
 	;line	22
@@ -60,7 +60,7 @@ L3:
 	;line	23
 	move.l	d3,-(a7)
 	subq.l	#6,a7
-	lea	68(a6),a0
+	lea	70(a6),a0
 	move.l	a7,a1
 	move.l	(a0)+,(a1)+
 	move.w	(a0)+,(a1)+
@@ -79,33 +79,20 @@ L3:
 	;line	25
 	move.l	d3,-(a7)
 	lea	-10(a7),a7
-	lea	58(a6),a0
+	lea	60(a6),a0
 	move.l	a7,a1
 	move.l	(a0)+,(a1)+
 	move.l	(a0)+,(a1)+
 	move.w	(a0)+,(a1)+
 	jsr	_printLifeLabel
 	lea	14(a7),a7
-	;line	28
+	;line	26
 	move.l	d3,-(a7)
-	lea	-22(a7),a7
-	lea	8(a6),a0
-	move.l	a7,a1
-	move.l	(a0)+,(a1)+
-	move.l	(a0)+,(a1)+
-	move.l	(a0)+,(a1)+
-	move.l	(a0)+,(a1)+
-	move.l	(a0)+,(a1)+
-	move.w	(a0)+,(a1)+
+	pea	8(a6)
 	jsr	_drawBall
-	lea	26(a7),a7
-	;line	30
-	lea	-12(a7),a7
-	lea	46(a6),a0
-	move.l	a7,a1
-	move.l	(a0)+,(a1)+
-	move.l	(a0)+,(a1)+
-	move.l	(a0)+,(a1)+
+	addq.l	#8,a7
+	;line	27
+	pea	46(a6)
 	move.l	d3,-(a7)
 	jsr	_drawPaddle
 	movem.l	-10(a6),d3/d4
@@ -113,13 +100,12 @@ L3:
 	rts
 _refreshScreen:
 	link	a6,#-2
-	movem.l	d3/d4/d5/a3,-(a7)
+	movem.l	d3/d4/a3,-(a7)
 	move.l	8(a6),a3
 	move.l	12(a6),d4
-	moveq	#38,d5
-	;line	37
+	;line	34
 	move.w	#16,-(a7)
-	lea	544,a0
+	lea	448,a0
 	add.l	a3,a0
 	pea	(a0)
 	move.w	2(a3),-(a7)
@@ -127,67 +113,67 @@ _refreshScreen:
 	move.l	d4,-(a7)
 	jsr	_drawChunk
 	lea	14(a7),a7
-	;line	38
+	;line	35
 	moveq	#0,d3
 	bra	L7
 L6:
-	;line	40
-	move.w	d3,d0
-	muls	#10,d0
-	move.l	d0,a0
-	add.l	a3,a0
-	cmp.w	#1,72(a0)
-	bne	L10
-	;line	42
-	move.w	d3,d0
-	muls	#10,d0
-	move.l	d0,a0
-	add.l	a3,a0
-	clr.w	72(a0)
-	;line	43
-	move.w	#24,-(a7)
-	move.w	#64,-(a7)
-	move.w	d3,d0
-	muls	#10,d0
-	move.l	d0,a0
-	add.l	a3,a0
-	move.w	68(a0),-(a7)
-	move.w	d3,d0
-	muls	#10,d0
-	move.l	d0,a0
-	add.l	a3,a0
-	move.w	66(a0),-(a7)
-	move.l	d4,-(a7)
-	jsr	_clearRectangle
-	lea	12(a7),a7
-	bra	L11
-L10:
-	;line	44
+	;line	37
 	move.w	d3,d0
 	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
 	cmp.w	#1,74(a0)
-	bne	L12
-	;line	46
+	bne	L10
+	;line	39
 	move.w	d3,d0
 	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
 	clr.w	74(a0)
-	;line	47
+	;line	40
 	move.w	#24,-(a7)
 	move.w	#64,-(a7)
 	move.w	d3,d0
 	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	68(a0),-(a7)
+	move.w	70(a0),-(a7)
 	move.w	d3,d0
 	muls	#10,d0
 	move.l	d0,a0
 	add.l	a3,a0
-	move.w	66(a0),-(a7)
+	move.w	68(a0),-(a7)
+	move.l	d4,-(a7)
+	jsr	_clearRectangle
+	lea	12(a7),a7
+	bra	L11
+L10:
+	;line	41
+	move.w	d3,d0
+	muls	#10,d0
+	move.l	d0,a0
+	add.l	a3,a0
+	cmp.w	#1,76(a0)
+	bne	L12
+	;line	43
+	move.w	d3,d0
+	muls	#10,d0
+	move.l	d0,a0
+	add.l	a3,a0
+	clr.w	76(a0)
+	;line	44
+	move.w	#24,-(a7)
+	move.w	#64,-(a7)
+	move.w	d3,d0
+	muls	#10,d0
+	move.l	d0,a0
+	add.l	a3,a0
+	move.w	70(a0),-(a7)
+	move.w	d3,d0
+	muls	#10,d0
+	move.l	d0,a0
+	add.l	a3,a0
+	move.w	68(a0),-(a7)
 	move.l	d4,-(a7)
 	jsr	_clearRectangle
 	lea	12(a7),a7
@@ -196,14 +182,14 @@ L11:
 L9:
 	addq.w	#1,d3
 L7:
-	cmp.w	#35,d3
+	cmp.w	#25,d3
 	blt	L6
 L8:
-	;line	50
+	;line	47
 	moveq	#0,d3
 	bra	L14
 L13:
-	;line	52
+	;line	49
 	ext.l	d3
 	move.l	d3,d0
 	asl.l	#2,d0
@@ -214,16 +200,33 @@ L13:
 	asl.l	#2,d0
 	move.l	d0,a1
 	add.l	a3,a1
-	move.l	416(a0),544(a1)
+	move.l	320(a0),448(a1)
 L16:
 	addq.w	#1,d3
 L14:
 	cmp.w	#32,d3
 	blt	L13
 L15:
-	;line	55
+	;line	51
+	move.w	46(a3),d0
+	cmp.w	38(a3),d0
+	beq	L17
+	;line	52
+	lea	-14(a7),a7
+	lea	38,a0
+	add.l	a3,a0
+	move.l	a7,a1
+	move.l	(a0)+,(a1)+
+	move.l	(a0)+,(a1)+
+	move.l	(a0)+,(a1)+
+	move.w	(a0)+,(a1)+
+	move.l	d4,-(a7)
+	jsr	_clearPaddle
+	lea	18(a7),a7
+L17:
+	;line	54
 	move.w	#16,-(a7)
-	lea	416,a0
+	lea	320,a0
 	add.l	a3,a0
 	pea	(a0)
 	move.w	10(a3),-(a7)
@@ -231,74 +234,19 @@ L15:
 	move.l	d4,-(a7)
 	jsr	_saveChunk
 	lea	14(a7),a7
-	;line	56
-	move.w	4(a3),(a3)
-	;line	57
-	move.w	6(a3),2(a3)
-	;line	58
-	move.w	8(a3),4(a3)
-	;line	59
-	move.w	10(a3),6(a3)
-	;line	60
+	;line	55
 	move.l	d4,-(a7)
-	lea	-22(a7),a7
-	move.l	a3,a0
-	move.l	a7,a1
-	move.l	(a0)+,(a1)+
-	move.l	(a0)+,(a1)+
-	move.l	(a0)+,(a1)+
-	move.l	(a0)+,(a1)+
-	move.l	(a0)+,(a1)+
-	move.w	(a0)+,(a1)+
+	move.l	a3,-(a7)
 	jsr	_drawBall
-	lea	26(a7),a7
-	;line	62
-	move.w	46(a3),d0
-	cmp.w	0(a3,d5.l),d0
-	beq	L17
-	;line	64
-	lea	-12(a7),a7
-	move.l	a3,a0
-	add.l	d5,a0
-	move.l	a7,a1
-	move.l	(a0)+,(a1)+
-	move.l	(a0)+,(a1)+
-	move.l	(a0)+,(a1)+
-	move.l	d4,-(a7)
-	jsr	_clearPaddle
-	lea	16(a7),a7
-	;line	65
-	lea	-12(a7),a7
-	move.l	a3,a0
-	add.l	d5,a0
-	move.l	a7,a1
-	move.l	(a0)+,(a1)+
-	move.l	(a0)+,(a1)+
-	move.l	(a0)+,(a1)+
+	addq.l	#8,a7
+	;line	57
+	moveq	#38,d0
+	add.l	a3,d0
+	move.l	d0,-(a7)
 	move.l	d4,-(a7)
 	jsr	_drawPaddle
-	lea	16(a7),a7
-	;line	66
-	move.w	42(a3),46(a3)
-	;line	67
-	move.w	44(a3),48(a3)
-	;line	68
-	move.w	0(a3,d5.l),42(a3)
-	;line	69
-	move.w	40(a3),44(a3)
-	;line	70
-	lea	-12(a7),a7
-	move.l	a3,a0
-	add.l	d5,a0
-	move.l	a7,a1
-	move.l	(a0)+,(a1)+
-	move.l	(a0)+,(a1)+
-	move.l	(a0)+,(a1)+
-	move.l	d4,-(a7)
-	jsr	_drawPaddle
-	lea	16(a7),a7
-L17:
-	;line	73
+	addq.l	#8,a7
+	;line	58
 	move.l	d4,-(a7)
 	subq.l	#6,a7
 	lea	22,a0
@@ -308,26 +256,26 @@ L17:
 	move.w	(a0)+,(a1)+
 	jsr	_drawScore
 	lea	10(a7),a7
-	;line	74
+	;line	59
 	move.l	d4,-(a7)
 	subq.l	#6,a7
-	lea	60,a0
+	lea	62,a0
 	add.l	a3,a0
 	move.l	a7,a1
 	move.l	(a0)+,(a1)+
 	move.w	(a0)+,(a1)+
 	jsr	_drawLives
-	movem.l	-18(a6),d3/d4/d5/a3
+	movem.l	-14(a6),d3/d4/a3
 	unlk	a6
 	rts
 _printChars:
 	link	a6,#-2
 	move.l	d3,-(a7)
-	;line	90
+	;line	75
 	moveq	#0,d3
 	bra	L19
 L18:
-	;line	92
+	;line	77
 	move.w	#8,-(a7)
 	move.l	18(a6),a0
 	ext.l	d3
@@ -359,7 +307,7 @@ L20:
 _saveChunk:
 	link	a6,#-8
 	movem.l	d3/a3,-(a7)
-	;line	112
+	;line	97
 	move.w	20(a6),d0
 	add.w	d0,d0
 	move.w	d0,-4(a6)
@@ -374,11 +322,11 @@ _saveChunk:
 	asl.l	#2,d1
 	add.l	d1,d0
 	move.l	d0,a3
-	;line	112
+	;line	97
 	moveq	#0,d3
 	bra	L23
 L22:
-	;line	114
+	;line	99
 	ext.l	d3
 	move.l	d3,d0
 	asl.l	#2,d0
@@ -386,9 +334,9 @@ L22:
 	move.l	16(a6),d0
 	add.l	d0,a0
 	move.l	(a3),(a0)
-	;line	115
+	;line	100
 	addq.w	#1,d3
-	;line	116
+	;line	101
 	ext.l	d3
 	move.l	d3,d0
 	asl.l	#2,d0
@@ -396,7 +344,7 @@ L22:
 	move.l	16(a6),d0
 	add.l	d0,a0
 	move.l	4(a3),(a0)
-	;line	117
+	;line	102
 	lea	80(a3),a3
 L25:
 	addq.w	#1,d3
@@ -410,7 +358,7 @@ L24:
 _drawChunk:
 	link	a6,#-8
 	movem.l	d3/a3,-(a7)
-	;line	137
+	;line	122
 	move.w	20(a6),d0
 	add.w	d0,d0
 	move.w	d0,-4(a6)
@@ -425,11 +373,11 @@ _drawChunk:
 	asl.l	#2,d1
 	add.l	d1,d0
 	move.l	d0,a3
-	;line	137
+	;line	122
 	moveq	#0,d3
 	bra	L27
 L26:
-	;line	139
+	;line	124
 	ext.l	d3
 	move.l	d3,d0
 	asl.l	#2,d0
@@ -437,11 +385,11 @@ L26:
 	move.l	16(a6),d0
 	add.l	d0,a0
 	move.l	(a0),(a3)
-	;line	140
+	;line	125
 	addq.l	#4,a3
-	;line	141
+	;line	126
 	addq.w	#1,d3
-	;line	142
+	;line	127
 	ext.l	d3
 	move.l	d3,d0
 	asl.l	#2,d0
@@ -449,7 +397,7 @@ L26:
 	move.l	16(a6),d0
 	add.l	d0,a0
 	move.l	(a0),(a3)
-	;line	143
+	;line	128
 	lea	76(a3),a3
 L29:
 	addq.w	#1,d3
@@ -462,29 +410,51 @@ L28:
 	rts
 _drawBall:
 	link	a6,#0
-	;line	157
+	move.l	a3,-(a7)
+	move.l	8(a6),a3
+	;line	142
+	move.w	4(a3),(a3)
+	;line	143
+	move.w	6(a3),2(a3)
+	;line	144
+	move.w	8(a3),4(a3)
+	;line	145
+	move.w	10(a3),6(a3)
+	;line	146
 	move.w	#16,-(a7)
 	pea	_ballBitmap
-	move.w	18(a6),-(a7)
-	move.w	16(a6),-(a7)
-	move.l	30(a6),-(a7)
+	move.w	10(a3),-(a7)
+	move.w	8(a3),-(a7)
+	move.l	12(a6),-(a7)
 	jsr	_bitmap16
+	move.l	-4(a6),a3
 	unlk	a6
 	rts
 _drawPaddle:
 	link	a6,#0
-	;line	170
+	move.l	a3,-(a7)
+	move.l	12(a6),a3
+	;line	159
 	move.w	#16,-(a7)
 	move.w	#128,-(a7)
-	move.w	14(a6),-(a7)
-	move.w	12(a6),-(a7)
+	move.w	2(a3),-(a7)
+	move.w	(a3),-(a7)
 	move.l	8(a6),-(a7)
 	jsr	_plot_rectangle
+	;line	160
+	move.w	4(a3),8(a3)
+	;line	161
+	move.w	6(a3),10(a3)
+	;line	162
+	move.w	(a3),4(a3)
+	;line	163
+	move.w	2(a3),6(a3)
+	move.l	-4(a6),a3
 	unlk	a6
 	rts
 _clearPaddle:
 	link	a6,#0
-	;line	175
+	;line	168
 	move.w	#16,-(a7)
 	move.w	#128,-(a7)
 	move.w	22(a6),-(a7)
@@ -495,7 +465,7 @@ _clearPaddle:
 	rts
 _drawScore:
 	link	a6,#-4
-	;line	182
+	;line	175
 	pea	-3(a6)
 	subq.l	#6,a7
 	lea	8(a6),a0
@@ -504,7 +474,7 @@ _drawScore:
 	move.w	(a0)+,(a1)+
 	jsr	_scoreToChars
 	lea	10(a7),a7
-	;line	183
+	;line	176
 	move.w	#8,-(a7)
 	move.w	#24,-(a7)
 	move.w	12(a6),-(a7)
@@ -512,7 +482,7 @@ _drawScore:
 	move.l	14(a6),-(a7)
 	jsr	_clearRectangle
 	lea	12(a7),a7
-	;line	184
+	;line	177
 	pea	-3(a6)
 	move.w	#3,-(a7)
 	move.w	12(a6),-(a7)
@@ -523,7 +493,7 @@ _drawScore:
 	rts
 _drawLives:
 	link	a6,#0
-	;line	189
+	;line	182
 	move.w	#8,-(a7)
 	move.w	#9,-(a7)
 	move.w	10(a6),-(a7)
@@ -531,7 +501,7 @@ _drawLives:
 	move.l	14(a6),-(a7)
 	jsr	_clearRectangle
 	lea	12(a7),a7
-	;line	190
+	;line	183
 	move.w	#8,-(a7)
 	move.w	12(a6),d0
 	add.w	#48,d0
@@ -549,7 +519,7 @@ _drawLives:
 	rts
 _printScoreLabel:
 	link	a6,#0
-	;line	195
+	;line	188
 	pea	12(a6)
 	move.w	#6,-(a7)
 	move.w	10(a6),-(a7)
@@ -560,7 +530,7 @@ _printScoreLabel:
 	rts
 _printLifeLabel:
 	link	a6,#0
-	;line	200
+	;line	193
 	pea	12(a6)
 	move.w	#6,-(a7)
 	move.w	10(a6),-(a7)
