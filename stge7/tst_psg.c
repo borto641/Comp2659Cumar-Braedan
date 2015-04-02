@@ -1,6 +1,8 @@
 #include <osbind.h>
 #include <stdio.h>
 #include "psg.h"
+#include "music.h"
+#include "effects.h"
 
 int main()
 {
@@ -24,26 +26,23 @@ int main()
     }
     */
     i = 0;
-    while(i < 16){
-        write_psg(i, 0);
+    while(i <255){
+    /*
+        ballHitsPaddleSound();
+        ballHitsWallSound();
+      
+      ballHitsBrickSound();
+      */
+         ballHitsWallSound();
+      
+        while(!Cconis())
+            ;
+        Cnecin();
+    
         i++;
     }
-    
-     write_psg(0, 100);
-     write_psg(1, 0);
-     write_psg(7, 0x3E);
-     write_psg(8, 11);
-     
-     while(i < 16){
-        write_psg(i, 0);
-        i++;
-    }
-    
-    write_psg(13, 150);
-    write_psg(14, 150);
-    write_psg(15, 10);
-   
     stop_sound();
+    Cnecin();
 	Super(old_ssp);
 	return 0;
 }
