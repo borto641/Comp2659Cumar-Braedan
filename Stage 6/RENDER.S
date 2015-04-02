@@ -12,7 +12,7 @@ _printScreen:
 	move.w	#12,-(a7)
 	clr.w	-(a7)
 	move.l	d3,-(a7)
-	jsr	_plot_hor_line
+	jsr	_plotHorLine
 	lea	14(a7),a7
 	;line	15
 	moveq	#0,d4
@@ -39,7 +39,7 @@ L1:
 	add.l	d0,a0
 	move.w	(a0),-(a7)
 	move.l	d3,-(a7)
-	jsr	_plot_rectangle
+	jsr	_plotRectangle
 	lea	12(a7),a7
 L5:
 L4:
@@ -435,12 +435,12 @@ _drawPaddle:
 	move.l	a3,-(a7)
 	move.l	12(a6),a3
 	;line	159
-	move.w	#16,-(a7)
+	move.w	#8,-(a7)
 	move.w	#128,-(a7)
 	move.w	2(a3),-(a7)
 	move.w	(a3),-(a7)
 	move.l	8(a6),-(a7)
-	jsr	_plot_rectangle
+	jsr	_plotRectangle
 	;line	160
 	move.w	4(a3),8(a3)
 	;line	161
@@ -455,7 +455,7 @@ _drawPaddle:
 _clearPaddle:
 	link	a6,#0
 	;line	168
-	move.w	#16,-(a7)
+	move.w	#8,-(a7)
 	move.w	#128,-(a7)
 	move.w	22(a6),-(a7)
 	move.w	20(a6),-(a7)

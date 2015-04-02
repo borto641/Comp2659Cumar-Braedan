@@ -11,12 +11,12 @@
 void printScreen(Screen screen, UINT32 *base)
 {
 	int i;
-	plot_hor_line(base, 0, TOP_BAR_HEIGHT, 640, 0, 0);
+	plotHorLine(base, 0, TOP_BAR_HEIGHT, 640, 0, 0);
 	for (i = 0; i < NUM_BRICKS; i++)
 	{
 		if (screen.bricks[i].alive == TRUE)
 		{
-			plot_rectangle(base, screen.bricks[i].x, screen.bricks[i].y, BRICK_WIDTH, BRICK_HEIGHT);
+			plotRectangle(base, screen.bricks[i].x, screen.bricks[i].y, BRICK_WIDTH, BRICK_HEIGHT);
 		}
 	}
 	drawScore(screen.scoreNum, (UINT8*)(base));
@@ -156,7 +156,7 @@ void drawBall(Ball *ball, UINT16 *base)
 */
 void drawPaddle(UINT32 *base, Paddle *paddle)
 {
-	plot_rectangle(base, paddle->x, paddle->y, PADDLE_WIDTH, PADDLE_HEIGHT);
+	plotRectangle(base, paddle->x, paddle->y, PADDLE_WIDTH, PADDLE_HEIGHT);
 	paddle->olderX = paddle->oldX;
 	paddle->olderY = paddle->oldY;
 	paddle->oldX = paddle->x;

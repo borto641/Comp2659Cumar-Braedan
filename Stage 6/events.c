@@ -8,6 +8,17 @@ Paddle:
 - left  key: 		move paddle left
 - space bar key:    launch ball if beginning of level
 ****************************************************************************/
+/*
+*	Function: keyPress
+*
+*	Purpose: To interpret the key pressed, and call an appropriate function
+*
+*	Input:	A Screen structure representing the game state by reference
+*			A longword representing the key pressed
+*
+*	Output: A Screen structure representing the game state
+*
+*/
 void keyPress(Screen *screen, long choice)
 {
 /*do appropriate actions corresponding to key pressed*/
@@ -29,12 +40,17 @@ void keyPress(Screen *screen, long choice)
 		}
 }
 
-/* *****************************************************************************
-Brick
-- when the ball touches the brick from any side
-- up,down, left side and right side
-******************************************************************************/
-
+/*
+*	Function: brickSmashed
+*
+*	Purpose: To change the game state to show a brick being smashed by the ball
+*
+*	Input:	A Screen structure representing the game state by reference
+*			An integer representing the brick being smashed
+*
+*	Output: A Screen structure representing the game state 
+*
+*/
 void brickSmashed(Screen *screen, int i)
 {
 	screen->bricks[i].alive = FALSE;
@@ -45,8 +61,15 @@ void brickSmashed(Screen *screen, int i)
 } 
 
 /*
-ballHitV will change the path of the ball, flipping the vertical direction, and
-	preserving the horizontal direction
+*	Function: ballHitVert
+*
+*	Purpose: To change the game state to show the ball hitting an object
+*			 on the side by reversing it's horizontal trajectory
+*
+*	Input:	A Ball structure by reference
+*
+*	Output: A Ball structure by reference
+*
 */
 void ballHitVert(Ball *ball)
 {
@@ -55,8 +78,15 @@ void ballHitVert(Ball *ball)
 }
 
 /*
-ballHitH will change the path of the ball, flipping the horizontal direction, and
-	preserving the vertical direction
+*	Function: ballHitVert
+*
+*	Purpose: To change the game state to show the ball hitting an object
+*			 on the top or bottom by reversing it's vertical trajectory
+*
+*	Input:	A Ball structure by reference
+*
+*	Output: A Ball structure by reference
+*
 */
 void ballHitHor(Ball *ball)
 {
@@ -64,6 +94,17 @@ void ballHitHor(Ball *ball)
 	ball->dX -= (ball->dX + ball->dX);
 }
 
+/*
+*	Function: farLeftPaddleHit
+*
+*	Purpose: To change the game state to show the ball hitting the paddle
+*			 on the the far left by adjusting it's trajectory
+*
+*	Input:	A Ball structure by reference
+*
+*	Output: A Ball structure by reference
+*
+*/
 void farLeftPaddleHit(Ball *ball)
 {
 	ball->totalBounces++;
@@ -71,6 +112,17 @@ void farLeftPaddleHit(Ball *ball)
 	ball->dY = -1;
 }
 
+/*
+*	Function: midLeftPaddleHit
+*
+*	Purpose: To change the game state to show the ball hitting the paddle
+*			 on the the middle left by adjusting it's trajectory
+*
+*	Input:	A Ball structure by reference
+*
+*	Output: A Ball structure by reference
+*
+*/
 void midLeftPaddleHit(Ball *ball)
 {
 	ball->totalBounces++;
@@ -78,6 +130,17 @@ void midLeftPaddleHit(Ball *ball)
 	ball->dY = -3;
 }
 
+/*
+*	Function: centrePaddleHit
+*
+*	Purpose: To change the game state to show the ball hitting the paddle
+*			 in the centre by adjusting it's trajectory
+*
+*	Input:	A Ball structure by reference
+*
+*	Output: A Ball structure by reference
+*
+*/
 void centrePaddleHit(Ball *ball)
 {
 	ball->totalBounces++;
@@ -85,6 +148,17 @@ void centrePaddleHit(Ball *ball)
 	ball->dY = -4;
 }
 
+/*
+*	Function: midRightPaddleHit
+*
+*	Purpose: To change the game state to show the ball hitting the paddle
+*			 on the the middle right by adjusting it's trajectory
+*
+*	Input:	A Ball structure by reference
+*
+*	Output: A Ball structure by reference
+*
+*/
 void midRightPaddleHit(Ball *ball)
 {
 	ball->totalBounces++;
@@ -92,6 +166,17 @@ void midRightPaddleHit(Ball *ball)
 	ball->dY = -3;
 }
 
+/*
+*	Function: farRightPaddleHit
+*
+*	Purpose: To change the game state to show the ball hitting the paddle
+*			 on the the far right by adjusting it's trajectory
+*
+*	Input:	A Ball structure by reference
+*
+*	Output: A Ball structure by reference
+*
+*/
 void farRightPaddleHit(Ball *ball)
 {
 	ball->totalBounces++;
@@ -99,6 +184,17 @@ void farRightPaddleHit(Ball *ball)
 	ball->dY = -1;
 }
 
+/*
+*	Function: ballHitBottom
+*
+*	Purpose: To change the game state to show the ball hitting the bottom of the 
+*			 screen by calling a function to reset the ball and lose a life
+*
+*	Input:	A Screen structure by reference
+*
+*	Output: A Screen structure by reference
+*
+*/
 void ballHitBottom(Screen *screen)
 {
 	screen->lifeCount.lives--;
@@ -112,6 +208,17 @@ void ballHitBottom(Screen *screen)
 	}
 }
 
+/*
+*	Function: levelCleared
+*
+*	Purpose: To call functions to reset the screen to a state where all the bricks
+*			 exist and the ball and paddle are reset
+*
+*	Input:	A Screen structure by reference
+*
+*	Output: A Screen structure by reference
+*
+*/
 void levelCleared(Screen *screen, UINT8* front, UINT8* back)
 {
 	resetLevel(screen);

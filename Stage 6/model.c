@@ -440,29 +440,44 @@ void paddleCollDetect(Screen *screen, int dX, int dY)
 		ballHitHor(&screen->ball);
 	}
 }
+
+/*
+*	Function: ballHitPaddle
+*
+*	Purpose: This function calculates which portion of the paddle that has colided with the ball,
+*				and deflects at the appropriate angle
+*
+*	Input:	A Screen structure by reference
+*			An integer representing the horizontal travel
+*			An integer representing the vertical travel
+*
+*	Output: A Screen structure by reference
+*
+*/
 void ballHitPaddle(Screen *screen, int dX, int dY)
 {
 	int paddleHitPosition;
 	
+	/* Calculates how far from the leftmost edge the rightmost edge of the ball hit*/
 	paddleHitPosition = screen->paddle.x - (screen->ball.x + dX + BALL_WIDTH);
 	if (paddleHitPosition > -26)
-	{/*ball hit far left of paddle*/
+	{
 		farLeftPaddleHit(&screen->ball);
 	}
 	else if (paddleHitPosition > -51)
-	{/*ball hit mid left of paddle*/
+	{
 		midLeftPaddleHit(&screen->ball);
 	}
-	else if (paddleHitPosition > -77)
-	{/*ball hit centre of paddle*/
+	else if (paddleHitPosition > -82)
+	{
 		centrePaddleHit(&screen->ball);
 	}
-	else if (paddleHitPosition > -103)
-	{/*ball hit mid right of paddle*/
+	else if (paddleHitPosition > -98)
+	{
 		midRightPaddleHit(&screen->ball);
 	}
 	else
-	{/*ball hit far right of paddle*/
+	{
 		farRightPaddleHit(&screen->ball);
 	}		
 }	
@@ -483,16 +498,15 @@ void scoreToChars (ScoreNum score, char scoreChars[3])
 	scoreChars[2] = (score.score % 10)           + ZERO;    /*ones*/
 }
 
-/* 
-ScoreLPosition sets the X:Y position of the given ScoreLabel
-*/
-void scoreLPosition (ScoreLabel label, int x, int y)
-{
-	label.x = x;
-	label.y = y;
-}
 /*
-
+*	Function: paddleLeft
+*
+*	Purpose: Moves the paddle to the left the correct number of pixels
+*
+*	Input:	A Paddle structure by reference
+*
+*	Output: A Paddle structure by reference
+*
 */
 void paddleLeft(Paddle *paddle){
 	if ((paddle->x) >= 20 ){
@@ -503,7 +517,14 @@ void paddleLeft(Paddle *paddle){
 	}
 }
 /*
-
+*	Function: paddleRight
+*
+*	Purpose: Moves the paddle to the right the correct number of pixels
+*
+*	Input:	A Paddle structure by reference
+*
+*	Output: A Paddle structure by reference
+*
 */
 void paddleRight(Paddle *paddle){
 	if ((paddle->x + PADDLE_WIDTH) <= 620 ){
@@ -514,14 +535,17 @@ void paddleRight(Paddle *paddle){
 	}
 }
 
-/*
-
-*/
 void launchBall(Screen *screen)
 {
 	 screen->holdBall = FALSE;
 }
 
+/*
+*	Function: initialize
+*
+*	Purpose: To set the Screen structure to the default state before the game begins
+*
+*/
 void initialize(Screen *screen)
 {
 	int i;
@@ -594,6 +618,13 @@ void initialize(Screen *screen)
 	}
 }
 
+/*
+*	Function: resetBall
+*
+*	Purpose: To set the Screen to a state where the paddle is centred in the middle
+*			 of the screen, the ball is centred in the middle of the paddle, and the life
+*			 counter is decremented by one
+*/
 void resetBall(Screen *screen)
 {
 	screen->ball.x = 314;
@@ -609,6 +640,15 @@ void resetBall(Screen *screen)
 	screen->holdBall = TRUE;
 }
 
+/*
+*	Function: resetLevel
+*
+*	Purpose: To reset the Screen to a state where the bricks exists, the paddle
+*			 is centred in the middle of the screen, and the ball is centred in the 
+*			 in the centre of the paddle.
+*
+*	Input/Output:	A Screen structure representing the game state
+*/
 void resetLevel(Screen *screen)
 {
 	int i;
@@ -640,11 +680,6 @@ void resetLevel(Screen *screen)
 		screen->bricks[i].firstUndraw = FALSE;
 		screen->bricks[i].secondUndraw = FALSE;
 		screen->bricks[i].y = (i / 5) * 24 + 13;
-		
-		if ((i / 5) % 2 == 0)
-			screen->bricks[i].x = (i % 5) * 128;
-		else 
-			screen->bricks[i].x = (i % 5) * 128 + 64;
 	}
 	for (i = 0; i < 32; i++)
 	{

@@ -1,9 +1,19 @@
 #include "RASTER.H"
 
 /*
-Plots a horizontal line to the screen buffer
+*	Function: plotHorLine
+*
+*	Purpose: To plot a horizontal line to the given screen buffer
+*
+*	Input:	 A UINT32 pointer to the beginning of a screen buffer
+*			 An integer representing the starting x value
+*			 An integer representing the starting y value
+*			 An integer representing the width of the line
+*			 An integer representing the shift on the left side of the line
+*			 An integer representing the shift on the right side of the line
+*
 */
-void plot_hor_line(UINT32 *base, int x, int y, int width, int lshift, int rshift)
+void plotHorLine(UINT32 *base, int x, int y, int width, int lshift, int rshift)
 {
 	UINT32 *draw = base + (y * 20) + (x >> 5);
 	int i = 0;
@@ -25,9 +35,20 @@ void plot_hor_line(UINT32 *base, int x, int y, int width, int lshift, int rshift
 	}
 	return;
 }
-				
-/*Plots a rectangle by calling plot_hor_line "height" times*/
-void plot_rectangle(UINT32 *base, int x, int y, int width, int height)
+
+/*
+*	Function: plotRectangle
+*
+*	Purpose: To plot a rectangle to the given screen buffer by repeatedly plottng lines
+*
+*	Input:	 A UINT32 pointer to the beginning of a screen buffer
+*			 An integer representing the starting x value
+*			 An integer representing the starting y value
+*			 An integer representing the width of the rectangle
+*			 An integer representing the height of the rectangle
+*
+*/
+void plotRectangle(UINT32 *base, int x, int y, int width, int height)
 {
 	UINT32 *draw = base;
 	int i = 0;
@@ -36,13 +57,25 @@ void plot_rectangle(UINT32 *base, int x, int y, int width, int height)
 
 	for (i = 0; i < height; i++)
 	{
-		plot_hor_line(draw, x, y, width, lshift, rshift);
+		plotHorLine(draw, x, y, width, lshift, rshift);
 		draw += 20;
 	}
 
 	return;	
 }
 
+/*
+*	Function: clearRectangle
+*
+*	Purpose: To choose the correct function for clearing a rectangle from a given screen buffer
+*
+*	Input:	 A UINT32 pointer to the beginning of a screen buffer
+*			 An integer representing the starting x value
+*			 An integer representing the starting y value
+*			 An integer representing the width of the rectangle
+*			 An integer representing the height of the rectangle
+*
+*/
 void clearRectangle(UINT32 *base, int x, int y, int width, int height)
 {
 	if (width <= 8)
@@ -60,6 +93,18 @@ void clearRectangle(UINT32 *base, int x, int y, int width, int height)
 	return;	
 }
 
+/*
+*	Function: clearRectangle32
+*
+*	Purpose: To clear a rectangle from the given screen buffer
+*
+*	Input:	 A UINT32 pointer to the beginning of a screen buffer
+*			 An integer representing the starting x value
+*			 An integer representing the starting y value
+*			 An integer representing the width of the rectangle
+*			 An integer representing the height of the rectangle
+*
+*/
 void clearRectangle32(UINT32 *base, int x, int y, int width, int height)
 {
 	UINT32 *draw = base;
@@ -74,6 +119,18 @@ void clearRectangle32(UINT32 *base, int x, int y, int width, int height)
 	return;	
 }
 
+/*
+*	Function: clearRectangle16
+*
+*	Purpose: To clear a rectangle from the given screen buffer
+*
+*	Input:	 A UINT16 pointer to the beginning of a screen buffer
+*			 An integer representing the starting x value
+*			 An integer representing the starting y value
+*			 An integer representing the width of the rectangle
+*			 An integer representing the height of the rectangle
+*
+*/
 void clearRectangle16(UINT16 *base, int x, int y, int width, int height)
 {
 	UINT16 *draw = base;
@@ -88,6 +145,18 @@ void clearRectangle16(UINT16 *base, int x, int y, int width, int height)
 	return;	
 }
 
+/*
+*	Function: clearRectangle8
+*
+*	Purpose: To clear a rectangle from the given screen buffer
+*
+*	Input:	 A UINT8 pointer to the beginning of a screen buffer
+*			 An integer representing the starting x value
+*			 An integer representing the starting y value
+*			 An integer representing the width of the rectangle
+*			 An integer representing the height of the rectangle
+*
+*/
 void clearRectangle8(UINT8 *base, int x, int y, int width, int height)
 {
 	UINT8 *draw = base;
@@ -102,8 +171,17 @@ void clearRectangle8(UINT8 *base, int x, int y, int width, int height)
 	return;	
 }
 
-/*May need to address clearing only part of a byte if required
-  by more than clear paddle*/
+/*
+*	Function: clearHorLine32
+*
+*	Purpose: To clear a line from the given screen buffer
+*
+*	Input:	 A UINT32 pointer to the beginning of a screen buffer
+*			 An integer representing the starting x value
+*			 An integer representing the starting y value
+*			 An integer representing the width of the rectangle
+*
+*/
 void clrHorLine32(UINT32 *base, int x, int y, int width)
 {
 	UINT32 *draw = base + (y * 20) + (x >> 5);
@@ -116,6 +194,17 @@ void clrHorLine32(UINT32 *base, int x, int y, int width)
 	return;
 }
 
+/*
+*	Function: clearHorLine16
+*
+*	Purpose: To clear a line from the given screen buffer
+*
+*	Input:	 A UINT16 pointer to the beginning of a screen buffer
+*			 An integer representing the starting x value
+*			 An integer representing the starting y value
+*			 An integer representing the width of the rectangle
+*
+*/
 void clrHorLine16(UINT16 *base, int x, int y, int width)
 {
 	UINT16 *draw = base + (y * 40) + (x >> 4);
@@ -128,6 +217,17 @@ void clrHorLine16(UINT16 *base, int x, int y, int width)
 	return;
 }
 
+/*
+*	Function: clearHorLine8
+*
+*	Purpose: To clear a line from the given screen buffer
+*
+*	Input:	 A UINT8 pointer to the beginning of a screen buffer
+*			 An integer representing the starting x value
+*			 An integer representing the starting y value
+*			 An integer representing the width of the rectangle
+*
+*/
 void clrHorLine8(UINT8 *base, int x, int y, int width)
 {
 	UINT8 *draw = base + (y * 80) + (x >> 5);
@@ -139,20 +239,18 @@ void clrHorLine8(UINT8 *base, int x, int y, int width)
 		}		
 	return;
 }
-/*
-plots a single pixel to the correct location
-Formula supplied by Paul Pospisil
-*/
-void plot_pixel(UINT8 *base, int x, int y)
-{
-	if (((x >= 0) && (x < 640)) && ((y >= 0) && (y < 400))) /*within screen bounds*/
-		*(base + (y * 80) + (x >> 3)) |= (1 << (7 - (x & 7)));
-	
-	return;
-}
 
 /*
-Plots a 16 bit wide bitmap to a specific location on the screen
+*	Function: bitmap16
+*
+*	Purpose: To plot a 16 bit wide bitmap to a given screen buffer
+*
+*	Input:	 A UINT16 pointer to the beginning of a screen buffer
+*			 An integer representing the starting x value
+*			 An integer representing the starting y value
+*			 A constant UINT16 pointer to a given bitmap
+*			 An integer representing the height of the bitmap
+*
 */
 void bitmap16(UINT16 *base, int x, int y, const UINT16 *bitmap, unsigned int height)
 {
@@ -180,6 +278,18 @@ void bitmap16(UINT16 *base, int x, int y, const UINT16 *bitmap, unsigned int hei
 	return;
 }
 
+/*
+*	Function: bitmap8
+*
+*	Purpose: To plot a 8 bit wide bitmap to a given screen buffer
+*
+*	Input:	 A UINT8 pointer to the beginning of a screen buffer
+*			 An integer representing the starting x value
+*			 An integer representing the starting y value
+*			 A constant UINT8 pointer to a given bitmap
+*			 An integer representing the height of the bitmap
+*
+*/
 void bitmap8(UINT8 *base, int x, int y, const UINT8 *bitmap, unsigned int height)
 {
 	UINT8 *draw = base + y * 80 + (x / 8);
@@ -205,9 +315,15 @@ void bitmap8(UINT8 *base, int x, int y, const UINT8 *bitmap, unsigned int height
 	}
 	return;
 }
+
 /*
- *	Clears the screen.
- */
+*	Function: clrScrn
+*
+*	Purpose: To clear a 32000 byte long screen buffer
+*
+*	Input:	 A UINT16 pointer to the beginning of a screen buffer
+*			 
+*/
 void clrScrn(UINT16 *base){
 	int x, y;
 	for(x = 0; x < 40; x++){
@@ -215,55 +331,4 @@ void clrScrn(UINT16 *base){
 				*(base + y * 40 + x) = 0x0000;
 			}
 		}
-}
-
-
-/* Purpose: Draws a circle to the screen
- *
- * Method:  Bresenhams circle algorithm is used to locate where to plot
-			the shape of a circle. This is done by plotting pixels in each
-			of the 8 octants of the circle, since a circle is symmetric
-			about the x-axis.
-	Input:  UINT8 *base    - the starting point of the frame buffer
-			Int    centerX - the x-axis of the center of the circle
-			Int    centerY - the y-axis of the center of the circle
-			Int    radius  - how big the circle will be
-	
-	Output: NO OUTPUT
- *
- */
-void plotCircle(UINT8 *base, int centerX, int centerY, int radius){
-	int y, decisionParam, x = 0;  /*600 + 39 = 639 and 344 + 39 != 400 but that's the max height*/
-	y = radius;
-	decisionParam =  1 - radius; 
- 
-	plotPoints(base, centerX, centerY, x, y);	
-	while (x < y){
-		x++;
-		if (decisionParam < 0){
-			decisionParam = decisionParam + 4 * x + 6;
-		}
-		else{
-			y--;
-			decisionParam = decisionParam + 4 * (x - y) + 10;
-		}
-		plotPoints(base, centerX, centerY, x, y);
-	}
-}
-
-void plotPoints(UINT8 *base, int cx, int cy, int x, int y){ 	
-	*(base + (cy - x) * 80 + ((cx - y) >> 3)) |= 1 << 7 -((cx - y) & 7);
-	*(base + (cy - x) * 80 + ((cx + y) >> 3)) |= 1 << 7 -((cx + y) & 7);
-	*(base + (cy + x) * 80 + ((cx - y) >> 3)) |= 1 << 7 -((cx - y) & 7);
-	*(base + (cy + x) * 80 + ((cx + y) >> 3)) |= 1 << 7 -((cx + y) & 7);
-	*(base + (cy - y) * 80 + ((cx - x) >> 3)) |= 1 << 7 -((cx - x) & 7);
-	*(base + (cy - y) * 80 + ((cx + x) >> 3)) |= 1 << 7 -((cx + x) & 7);
-	*(base + (cy + y) * 80 + ((cx - x) >> 3)) |= 1 << 7 -((cx - x) & 7);
-	*(base + (cy + y) * 80 + ((cx + x) >> 3)) |= 1 << 7 -((cx + x) & 7);
-}
-void plotVertLine(UINT8 *base, int startX, int startY, int height){
-	int i;
-	for(i = 0; i < height; i++){
-		*(base + (startY + i) * 80 + (startX >> 3)) |= 1 << 7 -((startX & 7));
-	}
 }

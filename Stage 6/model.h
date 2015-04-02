@@ -8,7 +8,7 @@
 #define BRICK_WIDTH 64
 #define BRICK_HEIGHT 24
 #define PADDLE_WIDTH 128
-#define PADDLE_HEIGHT 16
+#define PADDLE_HEIGHT 8
 #define NUM_BRICKS 25
 #define ZERO 48
 
@@ -95,8 +95,6 @@ void scoreLPosition (ScoreLabel label, int x, int y);
 void paddleLeft(Paddle *paddle);
 void paddleRight(Paddle *paddle);
 void launchBall(Screen *screen);
-void destroyBrick(int brick);
-int  getScore (ScoreNum score);
 void checkBallCollision(Screen *screen, int dX, int dY);
 void upCollDetect(Screen *screen, int dX, int dY);
 void downCollDetect(Screen *screen, int dX, int dY);

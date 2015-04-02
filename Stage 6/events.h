@@ -10,7 +10,6 @@
 #define ESC         0x0001001BL 
 
 void keyPress(Screen *screen, long choice);
-void level_lost();
 void brickSmashed(Screen *screen, int i);
 void ballHitVert(Ball *ball);
 void ballHitHor(Ball *ball);

@@ -24,4 +24,5 @@ void drawPaddle(UINT32 *base, Paddle *paddle);
 void clearPaddle(UINT32 *base, Paddle paddle);
 void drawBall(Ball *ball, UINT16 *base);
 void printChars(UINT8 *base, int x, int y, int length, char string[]);
+
 #endif
