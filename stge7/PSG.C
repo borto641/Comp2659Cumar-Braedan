@@ -36,9 +36,15 @@ void ball_hits_wall_sound(){
 void write_psg(int reg, UINT8 val){
     volatile char *PSG_reg_select = 0xFF8800;
     volatile char *PSG_reg_write  = 0xFF8802;
+    long old_ssp;
+		
+    old_ssp = Super(0);
+		
+		
     
     *PSG_reg_select = reg;
     *PSG_reg_write  = val;
+    Super(old_ssp);
 }
 /*
 
@@ -96,18 +102,24 @@ void enable_channel(int channel, int tone_on, int noise_on){
             write_psg(7, 0x3E);
         else if(tone_on == 1 && noise_on == 0)
             write_psg(7, 0x37);
+        else if(tone_on == 0 && noise_on == 0)
+            write_psg(7, 0x36);
     }
     else if (channel == 1){
         if(tone_on == 0 && noise_on == 1)
              write_psg(7, 0x3D);  
         else if(tone_on == 1 && noise_on == 0)
             write_psg(7, 0x2F);
+        else if(tone_on == 0 && noise_on == 0)
+            write_psg(7, 0x2D);
     }
     else if (channel == 2){
         if(tone_on == 0 && noise_on == 1)
             write_psg(7, 0x3B);
         else if(tone_on == 1 && noise_on == 0)
             write_psg(7, 0x1F);
+        else if(tone_on == 0 && noise_on == 0)
+            write_psg(7, 0x1B);
     }
 }
 /*

@@ -3,46 +3,39 @@
 #include "psg.h"
 #include "music.h"
 #include "effects.h"
+#define SCREEN_CLOCK 0x462
+
+UINT32 checkScreenClock();
 
 int main()
 {
     int i,w,x,y,z;
-	long old_ssp = Super(0);
-    /*
-    w = 0;
-    while(w < 1){
-        ball_hits_paddle_sound();
-        music (0, 111, 5000);
-        music (0, 100, 5000);
-        music (0, 74,  5000);
-        music (0, 100, 5000);
-        ball_hits_wall_sound();
-        music (1, 148, 5000);
-        music (1, 137, 5000);
-        music (1, 122, 5000);
-        music (1, 137, 5000);
-        ball_hits_paddle_sound();
-        w++;
-    }
-    */
-    i = 0;
-    while(i <255){
-    /*
-        ballHitsPaddleSound();
-        ballHitsWallSound();
-      
-      ballHitsBrickSound();
-      */
-         ballHitsWallSound();
-      
-        while(!Cconis())
-            ;
-        Cnecin();
+    UINT32 timeThen, timeNow, timeElapsed;
     
-        i++;
+    start_music();
+    timeThen =  checkScreenClock();
+    
+    while(!Cconis()){
+        timeNow      = checkScreenClock();
+        timeElapsed  = timeNow - timeThen;
+        
+        if(update_music(timeElapsed) == 1)
+            timeThen = timeNow;
+            
     }
     stop_sound();
     Cnecin();
-	Super(old_ssp);
+
 	return 0;
+}
+
+UINT32 checkScreenClock()
+{
+		UINT32 time;
+		long old_ssp;
+		long *clock = SCREEN_CLOCK;
+		old_ssp = Super(0);
+		time = *clock;
+		Super(old_ssp);
+		return time;
 }

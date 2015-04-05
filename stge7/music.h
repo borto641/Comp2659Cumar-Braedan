@@ -1,12 +1,8 @@
-#ifndef PSG_H
-#define PSG_H
-#include <osbind.h>
-#include <stdio.h>
+#ifndef MUSIC_H
+#define MUSIC_H
 #include "types.h"
 
 void start_music();
-void update_music(UINT32 time_elapsed);
- 
-
+int update_music(UINT32 time_elapsed);
 
 #endif
