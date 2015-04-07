@@ -11,17 +11,24 @@ int main()
 {
     int i,w,x,y,z;
     UINT32 timeThen, timeNow, timeElapsed;
+    UINT32 timeThen2, timeNow2, timeElapsed2;
     
     start_music();
     timeThen =  checkScreenClock();
+    timeThen2 = checkScreenClock();
     
     while(!Cconis()){
         timeNow      = checkScreenClock();
-        timeElapsed  = timeNow - timeThen;
+        timeElapsed  = timeNow - timeThen;    
+        timeElapsed2  = timeNow - timeThen2;
         
-        if(update_music(timeElapsed) == 1)
+        if(update_music(timeElapsed) == 1){
             timeThen = timeNow;
-            
+        }
+        else if(timeElapsed2 > 50){
+            timeThen2 = timeNow;
+            update_music(timeElapsed2);
+        }
     }
     stop_sound();
     Cnecin();

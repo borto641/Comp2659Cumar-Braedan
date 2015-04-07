@@ -4,6 +4,7 @@
 #include "events.h"
 #include "raster.h"
 #include "render.h"
+#include "music.h"
 
 int main(){
 	
@@ -66,9 +67,24 @@ int main(){
 	key_pressed = Cnecin();
 	old_ssp = Super(0);
 	c_time = *timer;
- 
+    start_music();
+    timeThen =  c_time;
+    timeThen2 = c_time;
+    
 	  while (TRUE)
-	  {		  
+	  {		
+        timeNow      = checkScreenClock();
+        timeElapsed  = timeNow - timeThen;    
+        timeElapsed2  = timeNow - timeThen2;
+        
+        if(update_music(timeElapsed) == 1){
+            timeThen = timeNow;
+        }
+        else if(timeElapsed2 > 50){
+            timeThen2 = timeNow;
+            update_music(timeElapsed2);
+        }
+        
 		for (i = 0; i < NUM_BRICKS; i++)
 		{
 			if (screen.bricks[i].undraw)
@@ -90,7 +106,7 @@ int main(){
 		}
 		Vsync();
 	  }
-  
+  stop_sound();
   Super(old_ssp);
 	
 

@@ -1,4 +1,6 @@
 #include "brick.h"
+#include "music.h"
+#include "psg.h"
 #include <stdio.h>
 
 const UINT8 secondBuffer[32256];
@@ -9,11 +11,12 @@ int main()
 	UINT8 *frontScreen = defaultScreen;
 	UINT8 *backScreen = secondBuffer;
 	long tempUINT8 = (long)(backScreen);
-	
 	Screen screen;
 	bool quit = FALSE;
 	long input;
 	UINT32 timeThen, timeNow, timeElapsed;
+    UINT32 timeThen2, timeNow2, timeElapsed2;
+    UINT32 timeThen3, timeNow3, timeElapsed3;
 	
 	while ((tempUINT8 % 256) != 0)
 	{
@@ -25,7 +28,10 @@ int main()
 	initialize(&screen);
 	printScreen(screen, (UINT32*)(frontScreen));
 	printScreen(screen, (UINT32*)(backScreen));
-	timeThen = checkScreenClock();
+	start_music();
+    timeThen  =  checkScreenClock();
+    timeThen2 =  checkScreenClock();
+    timeThen3 =  checkScreenClock();
 	
 	while (!quit && !screen.gameOver)
 	{	
@@ -37,7 +43,19 @@ int main()
 			else
 				keyPress(&screen, input);
 		}
-		timeNow = checkScreenClock();
+        timeNow       = checkScreenClock();
+        timeNow2      = checkScreenClock();
+        timeElapsed2  = timeNow2 - timeThen2;    
+        timeElapsed3  = timeNow2 - timeThen3;
+        
+        if(update_music(timeElapsed2) == 1){
+            timeThen2 = timeNow2;
+        }
+        else if(timeElapsed3 > 50){
+            timeThen3 = timeNow2;
+            update_music(timeElapsed3);
+        }
+        
 		if (timeNow - timeThen > 0 && !screen.holdBall)
 		{
 			timeNow = checkScreenClock();
@@ -46,6 +64,9 @@ int main()
 			if(screen.bricksLeft == 0)
 			{
 				levelCleared(&screen, frontScreen, backScreen);
+                start_music();
+                timeThen2 =  checkScreenClock();
+                timeThen3 =  checkScreenClock();
 			}
 			else
 			{
@@ -56,6 +77,7 @@ int main()
 		}
 	}
 	Setscreen(-1, defaultScreen, -1);
+    stop_sound();
 	return 0;
 }
 void swapScreenBuffers(UINT8** front, UINT8** back)

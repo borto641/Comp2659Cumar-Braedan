@@ -4,47 +4,48 @@ L1:
 	dc.b	27,69,27,102,10,0
 	even
 _main:
-	link	a6,#-614
+	link	a6,#-638
 	movem.l	d3/d4/d5/d6/d7/a3/a4/a5,-(a7)
+	lea	_checkScreenClock,a3
 	lea	-596(a6),a0
-	move.l	a0,d4
-	lea	-12(a6),a3
-	lea	-8(a6),a4
-	;line	18
+	move.l	a0,d7
+	lea	-12(a6),a4
+	lea	-8(a6),a5
+	;line	21
 	move.w	#2,-(a7)
 	jsr	__trap_14_w
 	addq.l	#2,a7
 	move.l	d0,-4(a6)
-	move.l	-4(a6),(a4)
-	move.l	#_secondBuffer,(a3)
-	move.l	(a3),d5
-	sub.l	a5,a5
-	;line	18
+	move.l	-4(a6),(a5)
+	move.l	#_secondBuffer,(a4)
+	move.l	(a4),-16(a6)
+	clr.w	-598(a6)
+	;line	21
 	bra	L3
 L2:
-	;line	20
-	addq.l	#1,d5
+	;line	23
+	addq.l	#1,-16(a6)
 L3:
 	pea	256
-	move.l	d5,-(a7)
+	move.l	-16(a6),-(a7)
 	jsr	.Xlrem
 	tst.l	d0
 	bne	L2
 L4:
-	;line	22
-	move.l	d5,(a3)
-	;line	24
+	;line	25
+	move.l	-16(a6),(a4)
+	;line	27
 	pea	L1
 	jsr	_printf
 	addq.l	#4,a7
-	;line	25
-	move.l	d4,-(a7)
+	;line	28
+	move.l	d7,-(a7)
 	jsr	_initialize
 	addq.l	#4,a7
-	;line	26
-	move.l	(a4),-(a7)
+	;line	29
+	move.l	(a5),-(a7)
 	lea	-580(a7),a7
-	move.l	d4,a0
+	move.l	d7,a0
 	move.l	a7,a1
 	move.w	#144,d0
 L5:
@@ -52,10 +53,10 @@ L5:
 	dbra	d0,L5
 	jsr	_printScreen
 	lea	584(a7),a7
-	;line	27
-	move.l	(a3),-(a7)
+	;line	30
+	move.l	(a4),-(a7)
 	lea	-580(a7),a7
-	move.l	d4,a0
+	move.l	d7,a0
 	move.l	a7,a1
 	move.w	#144,d0
 L6:
@@ -63,111 +64,162 @@ L6:
 	dbra	d0,L6
 	jsr	_printScreen
 	lea	584(a7),a7
-	;line	28
-	jsr	_checkScreenClock
-	move.l	d0,d7
-	;line	30
+	;line	31
+	jsr	_start_music
+	;line	32
+	jsr	(a3)
+	move.l	d0,-606(a6)
+	;line	33
+	jsr	(a3)
+	move.l	d0,d6
+	;line	34
+	jsr	(a3)
+	move.l	d0,d5
+	;line	36
 	bra	L8
 L7:
-	;line	32
+	;line	38
 	jsr	_checkInputBuffer
 	tst.w	d0
 	beq	L10
-	;line	34
+	;line	40
 	jsr	_getInput
-	move.l	d0,d6
-	;line	35
-	cmp.l	#65563,d6
+	move.l	d0,-602(a6)
+	;line	41
+	cmp.l	#65563,-602(a6)
 	bne	L11
-	;line	36
-	move.w	#1,a5
+	;line	42
+	move.w	#1,-598(a6)
 	bra	L12
 L11:
-	;line	38
-	move.l	d6,-(a7)
-	move.l	d4,-(a7)
+	;line	44
+	move.l	-602(a6),-(a7)
+	move.l	d7,-(a7)
 	jsr	_keyPress
 	addq.l	#8,a7
 L12:
 L10:
-	;line	40
-	jsr	_checkScreenClock
+	;line	46
+	jsr	(a3)
+	move.l	d0,d4
+	;line	47
+	jsr	(a3)
 	move.l	d0,d3
-	;line	41
+	;line	48
 	move.l	d3,d0
-	sub.l	d7,d0
-	tst.l	d0
-	bls	L13
-	tst.w	-20(a6)
+	sub.l	d6,d0
+	move.l	d0,-626(a6)
+	;line	49
+	move.l	d3,d0
+	sub.l	d5,d0
+	move.l	d0,-638(a6)
+	;line	51
+	move.l	-626(a6),-(a7)
+	jsr	_update_music
+	addq.l	#4,a7
+	cmp.w	#1,d0
 	bne	L13
-	;line	43
-	jsr	_checkScreenClock
-	move.l	d0,d3
-	;line	44
-	move.l	d3,d7
-	;line	45
-	move.l	d4,-(a7)
+	;line	52
+	move.l	d3,d6
+	bra	L14
+L13:
+	;line	54
+	cmp.l	#50,-638(a6)
+	bls	L15
+	;line	55
+	move.l	d3,d5
+	;line	56
+	move.l	-638(a6),-(a7)
+	jsr	_update_music
+	addq.l	#4,a7
+L15:
+L14:
+	;line	59
+	move.l	d4,d0
+	sub.l	-606(a6),d0
+	tst.l	d0
+	bls	L16
+	tst.w	-20(a6)
+	bne	L16
+	;line	61
+	jsr	(a3)
+	move.l	d0,d4
+	;line	62
+	move.l	d4,-606(a6)
+	;line	63
+	move.l	d7,-(a7)
 	jsr	_moveBall
 	addq.l	#4,a7
-	;line	46
+	;line	64
 	tst.w	-278(a6)
-	bne	L14
-	;line	48
-	move.l	(a3),-(a7)
+	bne	L17
+	;line	66
 	move.l	(a4),-(a7)
-	move.l	d4,-(a7)
+	move.l	(a5),-(a7)
+	move.l	d7,-(a7)
 	jsr	_levelCleared
 	lea	12(a7),a7
-	bra	L15
-L14:
-	;line	52
+	;line	67
+	jsr	_start_music
+	;line	68
+	jsr	(a3)
+	move.l	d0,d6
+	;line	69
+	jsr	(a3)
+	move.l	d0,d5
+	bra	L18
+L17:
+	;line	73
 	move.w	#37,-(a7)
 	jsr	__trap_14_w
 	addq.l	#2,a7
-	;line	53
-	move.l	(a3),-(a7)
-	move.l	d4,-(a7)
+	;line	74
+	move.l	(a4),-(a7)
+	move.l	d7,-(a7)
 	jsr	_refreshScreen
 	addq.l	#8,a7
-	;line	54
-	move.l	a3,-(a7)
+	;line	75
 	move.l	a4,-(a7)
+	move.l	a5,-(a7)
 	jsr	_swapScreenBuffers
 	addq.l	#8,a7
-L15:
-L13:
+L18:
+L16:
 L8:
-	move.w	a5,d0
-	bne	L16
+	tst.w	-598(a6)
+	bne	L19
 	tst.w	-18(a6)
 	beq	L7
-L16:
+L19:
 L9:
-	;line	58
+	;line	79
 	move.w	#-1,-(a7)
 	move.l	-4(a6),-(a7)
 	pea	-1
 	move.w	#5,-(a7)
 	jsr	__trap_14_wllw
-	;line	59
+	lea	12(a7),a7
+	;line	80
+	jsr	_stop_sound
+	;line	81
 	moveq	#0,d0
-L17:
-	movem.l	-646(a6),d3/d4/d5/d6/d7/a3/a4/a5
+L20:
+	movem.l	-670(a6),d3/d4/d5/d6/d7/a3/a4/a5
 	unlk	a6
 	rts
 _swapScreenBuffers:
 	link	a6,#-4
 	move.l	a3,-(a7)
 	move.l	8(a6),a3
-	;line	64
+	;line	86
 	move.l	(a3),-4(a6)
-	;line	64
+	;line	86
 	move.l	12(a6),a0
 	move.l	(a0),(a3)
-	;line	65
+	;line	87
 	move.l	12(a6),a0
 	move.l	-4(a6),(a0)
-	;line	66
+	;line	88
 	move.w	#-1,-(a7)
 	move.l	(a3),-(a7)
 	pea	-1
@@ -178,24 +230,24 @@ _swapScreenBuffers:
 	rts
 _checkScreenClock:
 	link	a6,#-12
-	;line	74
+	;line	96
 	move.l	#1122,-12(a6)
-	;line	74
+	;line	96
 	pea	0
 	move.w	#32,-(a7)
 	jsr	__trap_1_wl
 	addq.l	#6,a7
 	move.l	d0,-8(a6)
-	;line	75
+	;line	97
 	move.l	-12(a6),a0
 	move.l	(a0),-4(a6)
-	;line	76
+	;line	98
 	move.l	-8(a6),-(a7)
 	move.w	#32,-(a7)
 	jsr	__trap_1_wl
-	;line	77
+	;line	99
 	move.l	-4(a6),d0
-L18:
+L21:
 	unlk	a6
 	rts
 	globl	_checkScreenClock

@@ -99,7 +99,7 @@ Channel C :
 void enable_channel(int channel, int tone_on, int noise_on){    
     if(channel == 0){
         if(tone_on == 0 && noise_on == 1)
-            write_psg(7, 0x3E);
+            write_psg(7, 0x08);/* used to be 3E but opened channel a and b */
         else if(tone_on == 1 && noise_on == 0)
             write_psg(7, 0x37);
         else if(tone_on == 0 && noise_on == 0)

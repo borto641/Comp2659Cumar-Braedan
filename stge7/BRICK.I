@@ -466,8 +466,36 @@ long getInput();
 UINT32 checkScreenClock();
 void swapScreenBuffers(UINT8** a, UINT8** b);
 # 1 "brick.c" 2
-# 1 "C:/c68/include/stdio.h" 1
+# 1 "./music.h" 1
+# 1 "./types.h" 1
+# 3 "./music.h" 2
+
+
+void start_music();
+int update_music(UINT32 time_elapsed);
 # 2 "brick.c" 2
+# 1 "./psg.h" 1
+# 1 "C:/c68/include/osbind.h" 1
+# 3 "./psg.h" 2
+# 1 "C:/c68/include/stdio.h" 1
+# 4 "./psg.h" 2
+# 1 "./types.h" 1
+# 5 "./psg.h" 2
+
+
+void write_psg(int reg, UINT8 val);
+void set_tone(int channel, int tuning);
+void set_volume(int channel, int volume);
+void enable_channel(int channel, int tone_on, int noise_on);
+void stop_sound();
+void set_noise(int tuning);
+void set_envelope(int shape, unsigned int sustain);
+void ball_hits_paddle_sound();
+void ball_hits_wall_sound();
+void music (int channel, int tuning, int duration);
+# 3 "brick.c" 2
+# 1 "C:/c68/include/stdio.h" 1
+# 4 "brick.c" 2
 
 
 const UINT8 secondBuffer[32256];
@@ -478,11 +506,12 @@ int main()
 	UINT8 *frontScreen = defaultScreen;
 	UINT8 *backScreen = secondBuffer;
 	long tempUINT8 = (long)(backScreen);
-
 	Screen screen;
 	bool quit = 0 ;
 	long input;
 	UINT32 timeThen, timeNow, timeElapsed;
+    UINT32 timeThen2, timeNow2, timeElapsed2;
+    UINT32 timeThen3, timeNow3, timeElapsed3;
 
 	while ((tempUINT8 % 256) != 0)
 	{
@@ -494,7 +523,10 @@ int main()
 	initialize(&screen);
 	printScreen(screen, (UINT32*)(frontScreen));
 	printScreen(screen, (UINT32*)(backScreen));
-	timeThen = checkScreenClock();
+	start_music();
+    timeThen  =  checkScreenClock();
+    timeThen2 =  checkScreenClock();
+    timeThen3 =  checkScreenClock();
 
 	while (!quit && !screen.gameOver)
 	{
@@ -506,7 +538,19 @@ int main()
 			else
 				keyPress(&screen, input);
 		}
-		timeNow = checkScreenClock();
+        timeNow       = checkScreenClock();
+        timeNow2      = checkScreenClock();
+        timeElapsed2  = timeNow2 - timeThen2;
+        timeElapsed3  = timeNow2 - timeThen3;
+
+        if(update_music(timeElapsed2) == 1){
+            timeThen2 = timeNow2;
+        }
+        else if(timeElapsed3 > 50){
+            timeThen3 = timeNow2;
+            update_music(timeElapsed3);
+        }
+
 		if (timeNow - timeThen > 0 && !screen.holdBall)
 		{
 			timeNow = checkScreenClock();
@@ -515,6 +559,9 @@ int main()
 			if(screen.bricksLeft == 0)
 			{
 				levelCleared(&screen, frontScreen, backScreen);
+                start_music();
+                timeThen2 =  checkScreenClock();
+                timeThen3 =  checkScreenClock();
 			}
 			else
 			{
@@ -525,6 +572,7 @@ int main()
 		}
 	}
 	(void)_trap_14_wllw((short)0x5,(long)(-1),(long)defaultScreen,(short)(-1)) ;
+    stop_sound();
 	return 0;
 }
 void swapScreenBuffers(UINT8** front, UINT8** back)
