@@ -2,9 +2,10 @@
 
 const UINT8 secondBuffer[32256];
 
+
 int main()
 {
-	UINT8 *defaultScreen = Physbase();
+	UINT8 *defaultScreen = getScreenBase();
 	UINT8 *frontScreen = defaultScreen;
 	UINT8 *backScreen = secondBuffer;
 	long tempUINT8 = (long)(backScreen);
@@ -17,6 +18,7 @@ int main()
     UINT32 timeThen3, timeNow3, timeElapsed3;
 	
     result = splashScreenLoop();
+	
     if(result == 0){
         while ((tempUINT8 % 256) != 0)
         {
@@ -47,7 +49,7 @@ int main()
 				keyPress(&screen, input);
 		}
         timeNow       = checkScreenClock();
-        timeNow2      = checkScreenClock();
+        timeNow2      = timeNow;
         timeElapsed2  = timeNow2 - timeThen2;    
         timeElapsed3  = timeNow2 - timeThen3;
         
@@ -83,13 +85,6 @@ int main()
     stop_sound();
     printf("\033E\033f\n"); 
 	return 0;
-}
-void swapScreenBuffers(UINT8** front, UINT8** back)
-{
-	UINT8* swap = *front;
-	*front = *back;
-	*back = swap;
-	Setscreen(-1, *front, -1);
 }
 
 UINT32 checkScreenClock()

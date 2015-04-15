@@ -79,8 +79,8 @@ void farLeftPaddleHit(Ball *ball)
 {
     ballHitsPaddleSound();
 	ball->totalBounces++;
-	ball->dX = -3;
-	ball->dY = -1;
+	ball->dX = -2;
+	ball->dY = -2;
 }
 
 void midLeftPaddleHit(Ball *ball)
@@ -96,7 +96,7 @@ void centrePaddleHit(Ball *ball)
     ballHitsPaddleSound();
 	ball->totalBounces++;
 	ball->dX = 0;
-	ball->dY = -4;
+	ball->dY = -3;
 }
 
 void midRightPaddleHit(Ball *ball)
@@ -111,8 +111,8 @@ void farRightPaddleHit(Ball *ball)
 {
     ballHitsPaddleSound();
 	ball->totalBounces++;
-	ball->dX = 3;
-	ball->dY = -1;
+	ball->dX = 2;
+	ball->dY = -2;
 }
 
 void ballHitBottom(Screen *screen)

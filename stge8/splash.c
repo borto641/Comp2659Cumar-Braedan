@@ -55,9 +55,9 @@ int splashScreenLoop(){
     return result;
 }
 void initializeSplashScreen(UINT8 *base8, char playerOneLabel[], char playerTwoLabel[], char quitLabel[]){
-    plot_rectangleLines(base8, 220, 80, 180, 50);
-    plot_rectangleLines(base8, 220, 180, 180, 50);
-    plot_rectangleLines(base8, 220, 280, 180, 50);   
+    plot_rectangleLines(base8, 220, 80, 200, 50);
+    plot_rectangleLines(base8, 220, 180, 200, 50);
+    plot_rectangleLines(base8, 220, 280, 200, 50);   
  
     printCharsV2(base8, 280, 100, 10, playerOneLabel);
     printChars(base8, 280, 200, 10, playerTwoLabel);

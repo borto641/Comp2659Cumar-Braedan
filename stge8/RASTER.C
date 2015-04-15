@@ -308,3 +308,34 @@ void plot_rectangleLines(UINT8 *base, int startX, int startY, int width, int hei
     plotVertLine (base, startX, startY, height);
     plotVertLine (base, (startX + width), startY, (height + 1));
 }
+
+UINT8* getScreenBase()
+{
+	UINT8 *highByte = 0xFFFF8201L;
+	UINT8 *loByte = 0xFFFF8203L;
+	long address;
+	long oldSSP;
+	
+	oldSSP = Super(0);
+	
+	address = (long)(*highByte);
+	address = address << 8;
+	address += (long)(*loByte);
+	address = address << 8;
+	
+	Super(oldSSP);
+	
+	return (UINT8*)(address);
+}
+
+
+void swapScreenBuffers(UINT8** front, UINT8** back)
+{
+	long old_ssp;
+	UINT8* swap = *front;
+	*front = *back;
+	*back = swap;
+	old_ssp = Super(0);
+	setScrn(*front);
+	Super(old_ssp);
+}

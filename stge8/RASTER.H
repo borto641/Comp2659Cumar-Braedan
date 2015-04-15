@@ -23,4 +23,6 @@ void clrHorLine32(UINT32 *base, int x, int y, int width);
 void plotHorizLine(UINT8 *base, int startX, int startY, int width);
 void plot_rectangleLines(UINT8 *base, int startX, int startY, int width, int height);
 void bitmap8V2(UINT8 *base, int x, int y, const UINT8 *bitmap, unsigned int height);
+UINT8* getScreenBase();
+void setScrn(UINT8* newBase);
 #endif
