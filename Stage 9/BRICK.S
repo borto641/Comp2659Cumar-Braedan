@@ -2,7 +2,7 @@
 	data
 	even
 _vbFlag:
-	dc.w	0
+	dc.l	0
 	text
 L1:
 	dc.b	27,69,27,102,10,0
@@ -14,7 +14,7 @@ _main:
 	move.l	a0,d3
 	lea	-16(a6),a3
 	lea	-12(a6),a4
-	;line	21
+	;line	22
 	pea	_vbl_isr
 	move.w	#28,-(a7)
 	jsr	_installVector
@@ -27,16 +27,16 @@ _main:
 	move.l	(a3),d5
 	moveq	#0,d4
 	sub.l	a5,a5
-	;line	21
+	;line	22
 	jsr	_splashScreenLoop
 	move.w	d0,d7
-	;line	23
+	;line	24
 	tst.w	d7
 	bne	L2
-	;line	24
+	;line	25
 	bra	L4
 L3:
-	;line	26
+	;line	27
 	addq.l	#1,d5
 L4:
 	pea	256
@@ -45,17 +45,17 @@ L4:
 	tst.l	d0
 	bne	L3
 L5:
-	;line	28
+	;line	29
 	move.l	d5,(a3)
-	;line	30
+	;line	31
 	pea	L1
 	jsr	_printf
 	addq.l	#4,a7
-	;line	31
+	;line	32
 	move.l	d3,-(a7)
 	jsr	_initialize
 	addq.l	#4,a7
-	;line	32
+	;line	33
 	move.l	(a4),-(a7)
 	lea	-580(a7),a7
 	move.l	d3,a0
@@ -66,7 +66,7 @@ L6:
 	dbra	d0,L6
 	jsr	_printScreen
 	lea	584(a7),a7
-	;line	33
+	;line	34
 	move.l	(a3),-(a7)
 	lea	-580(a7),a7
 	move.l	d3,a0
@@ -77,18 +77,18 @@ L7:
 	dbra	d0,L7
 	jsr	_printScreen
 	lea	584(a7),a7
-	;line	34
+	;line	35
 	jsr	_start_music
 	bra	L8
 L2:
-	;line	36
+	;line	37
 	cmp.w	#3,d7
 	bne	L9
-	;line	37
+	;line	38
 	moveq	#1,d4
 L9:
 L8:
-	;line	39
+	;line	40
 	bra	L11
 L10:
 	;line	42
@@ -113,10 +113,14 @@ L14:
 L15:
 L13:
 	;line	51
-	cmp.w	#1,_vbFlag
-	bne	L16
+	cmp.l	#1,_vbFlag
+	bne	L18
 	tst.w	-24(a6)
-	bne	L16
+	beq	L17
+L18:
+	tst.w	-24(a6)
+	beq	L16
+L17:
 	;line	53
 	move.w	a5,-(a7)
 	jsr	_update_music
@@ -128,7 +132,7 @@ L13:
 	addq.l	#4,a7
 	;line	55
 	tst.w	-282(a6)
-	bne	L17
+	bne	L19
 	;line	57
 	move.l	(a3),-(a7)
 	move.l	(a4),-(a7)
@@ -137,30 +141,28 @@ L13:
 	lea	12(a7),a7
 	;line	58
 	jsr	_start_music
-	bra	L18
-L17:
+	bra	L20
+L19:
 	;line	62
-	move.w	#37,-(a7)
-	jsr	__trap_14_w
-	addq.l	#2,a7
-	;line	63
 	move.l	(a3),-(a7)
 	move.l	d3,-(a7)
 	jsr	_refreshScreen
 	addq.l	#8,a7
-	;line	64
+	;line	63
 	move.l	a3,-(a7)
 	move.l	a4,-(a7)
 	jsr	_swapScreenBuffers
 	addq.l	#8,a7
-L18:
+L20:
+	;line	65
+	clr.l	_vbFlag
 L16:
 L11:
 	tst.w	d4
-	bne	L19
+	bne	L21
 	tst.w	-22(a6)
 	beq	L10
-L19:
+L21:
 L12:
 	;line	68
 	move.w	#-1,-(a7)
@@ -181,7 +183,7 @@ L12:
 	jsr	_printf
 	;line	72
 	moveq	#0,d0
-L20:
+L22:
 	movem.l	-654(a6),d3/d4/d5/d6/d7/a3/a4/a5
 	unlk	a6
 	rts
@@ -204,13 +206,13 @@ _checkScreenClock:
 	jsr	__trap_1_wl
 	;line	83
 	move.l	-4(a6),d0
-L21:
+L23:
 	unlk	a6
 	rts
 	globl	_checkScreenClock
+	globl	_vbFlag
 	bss
 _secondBuffer:
 	ds.b	32256
 	globl	_secondBuffer
-	globl	_vbFlag
 	globl	_main

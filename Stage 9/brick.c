@@ -2,11 +2,12 @@
 
 const UINT8 secondBuffer[32256];
 
-bool vbFlag = FALSE;
+long vbFlag = FALSE;
 
 int main()
 {
 	Vector orig_vector = installVector(VBL_VECT, vbl_isr);
+
 	UINT8 *defaultScreen = getScreenBase();
 	UINT8 *frontScreen = defaultScreen;
 	UINT8 *backScreen = secondBuffer;
@@ -38,7 +39,6 @@ int main()
     
 	while (!quit && !screen.gameOver)
 	{	
-
 		if (checkInputBuffer())
 		{
 			input = getInput();
@@ -48,7 +48,7 @@ int main()
 				keyPress(&screen, input);
 		}
         
-		if (vbFlag == TRUE && !screen.holdBall)
+		if (vbFlag == TRUE && !screen.holdBall || screen.holdBall)
 		{
 			musicCounter = update_music(musicCounter);
 			moveBall(&screen);
@@ -59,10 +59,10 @@ int main()
 			}
 			else
 			{
-				Vsync();	 
 				refreshScreen(&screen, (UINT32*)(backScreen));
 				swapScreenBuffers(&frontScreen, &backScreen);
 			}
+			vbFlag = FALSE;
 		}
 	}
 	Setscreen(-1, defaultScreen, -1);

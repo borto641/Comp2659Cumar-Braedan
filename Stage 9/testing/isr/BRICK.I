@@ -549,58 +549,19 @@ int main()
 	long input;
     int result;
 	UINT32 timeThen, timeNow, timeElapsed;
-    int musicCounter = 0;
 
-    result = splashScreenLoop();
-
-    if(result == 0){
-        while ((tempUINT8 % 256) != 0)
-        {
-            tempUINT8++;
-        }
-        backScreen = (UINT8*)(tempUINT8);
-
-        printf("\033E\033f\n");
-        initialize(&screen);
-        printScreen(screen, (UINT32*)(frontScreen));
-        printScreen(screen, (UINT32*)(backScreen));
-        start_music();
-	}
-    else if (result == 3)
-        quit = 1 ;
-
-	while (!quit && !screen.gameOver)
+	while (!quit)
 	{
-		if (checkInputBuffer())
-		{
-			input = getInput();
-			if (input == 0x0001001BL )
-				quit = 1 ;
-			else
-				keyPress(&screen, input);
-		}
 
 		if (vbFlag == 1  && !screen.holdBall || screen.holdBall)
 		{
-			musicCounter = update_music(musicCounter);
-			moveBall(&screen);
-			if(screen.bricksLeft == 0)
-			{
-				levelCleared(&screen, frontScreen, backScreen);
-                start_music();
-			}
-			else
-			{
-				refreshScreen(&screen, (UINT32*)(backScreen));
-				swapScreenBuffers(&frontScreen, &backScreen);
-			}
+			printf("TRUE\n");
 			vbFlag = 0 ;
+			printf("%i", vbFlag);
 		}
 	}
 	(void)_trap_14_wllw((short)0x5,(long)(-1),(long)defaultScreen,(short)(-1)) ;
-    stop_sound();
 	installVector(28 , orig_vector);
-    printf("\033E\033f\n");
 	return 0;
 }
 
