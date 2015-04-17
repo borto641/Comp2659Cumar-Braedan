@@ -4,6 +4,20 @@ const UINT8 secondBuffer[32256];
 
 long vbFlag = FALSE;
 
+
+/*
+*	Program: BBreaker
+*
+*	Purpose: BBreaker is a 2D video game revolving around bouncing a ball into rows of bricks in an attempt to get a high score
+*
+*	Group: Braedan Orton
+*		   Cumar Yusef
+*
+*	Instructor: Paul Pospisil
+*
+*	Class: COMP 2659, Section 1
+*
+*/
 int main()
 {
 	Vector orig_vector = installVector(VBL_VECT, vbl_isr);
@@ -70,6 +84,7 @@ int main()
     stop_sound();
 	installVector(VBL_VECT, orig_vector);
     printf("\033E\033f\n"); 
+	printf("Game Over");
 	return 0;
 }
 

@@ -40,11 +40,7 @@ void moveBall(Screen *screen)
 */
 void checkBounces(Ball *ball)
 {
-	if (ball->totalBounces > 50)
-	{
-		ball->speed = 3;
-	}
-	else if (ball->totalBounces > 15)
+	if (ball->totalBounces > 25)
 	{
 		ball->speed = 2;
 	}
@@ -484,16 +480,15 @@ void scoreToChars (ScoreNum score, char scoreChars[3])
 	scoreChars[2] = (score.score % 10)           + ZERO;    /*ones*/
 }
 
-/* 
-ScoreLPosition sets the X:Y position of the given ScoreLabel
-*/
-void scoreLPosition (ScoreLabel label, int x, int y)
-{
-	label.x = x;
-	label.y = y;
-}
 /*
-
+*	Function: paddleLeft
+*
+*	Purpose: Attempts to move the paddle's x value up to 20 left, stopping if it hits the wall
+*
+*	Input:	A Paddle structure by reference
+*
+*	Output: A Paddle structure by reference
+*
 */
 void paddleLeft(Paddle *paddle){
 	if ((paddle->x) >= 20 ){
@@ -503,8 +498,16 @@ void paddleLeft(Paddle *paddle){
 		paddle->x = 0;
 	}
 }
-/*
 
+/*
+*	Function: paddleRight
+*
+*	Purpose: Attempts to move the paddle's x value up to 20 right, stopping if it hits the wall
+*
+*	Input:	A Paddle structure by reference
+*
+*	Output: A Paddle structure by reference
+*
 */
 void paddleRight(Paddle *paddle){
 	if ((paddle->x + PADDLE_WIDTH) <= 620 ){
@@ -516,13 +519,31 @@ void paddleRight(Paddle *paddle){
 }
 
 /*
-
+*	Function: launchBall
+*
+*	Purpose: Allows the ball to move on game cycles
+*
+*	Input:	A Screen structure by reference
+*
+*	Output: A Screen structure by reference
+*
 */
 void launchBall(Screen *screen)
 {
 	 screen->holdBall = FALSE;
 }
 
+/*
+*	Function: initialize
+*
+*	Purpose: loads the default values to the fields of the Screen structure, with all bricks unsmashed,
+*			  the paddle and ball centred, and the score and life counters at correct values
+*
+*	Input:	A Screen structure by reference
+*
+*	Output: A Screen structure by reference
+*
+*/
 void initialize(Screen *screen)
 {
 	int i;
@@ -595,6 +616,16 @@ void initialize(Screen *screen)
 	}
 }
 
+/*
+*	Function: resetBall
+*
+*	Purpose: Resets the ball and paddle to the centre of the screen, and resets the speed of the ball
+*
+*	Input:	A Screen structure by reference
+*
+*	Output: A Screen structure by reference
+*
+*/
 void resetBall(Screen *screen)
 {
 	screen->ball.x = 314;
@@ -610,6 +641,16 @@ void resetBall(Screen *screen)
 	screen->holdBall = TRUE;
 }
 
+/*
+*	Function: resetLevel
+*
+*	Purpose: Sets all bricks to unsmashed, centres the ball and paddle, increments the lives, but does not affect the score
+*
+*	Input:	A Screen structure by reference
+*
+*	Output: A Screen structure by reference
+*
+*/
 void resetLevel(Screen *screen)
 {
 	int i;

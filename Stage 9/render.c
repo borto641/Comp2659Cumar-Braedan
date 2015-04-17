@@ -26,7 +26,14 @@ void printScreen(Screen screen, UINT32 *base)
 	drawBall(&screen.ball, (UINT16*)(base));
 	drawPaddle(base, &screen.paddle);
 }
-
+/*
+*	Function: refreshScreen
+*
+*	Purpose: Redraws the ball, paddle, and score, as well as undrawing any smashed bricks
+*
+*	Input: A Screen structure by reference
+*		   A UINT32 pointer to the screen buffer base
+*/
 void refreshScreen(Screen *screen, UINT32 *base)
 {
 	int i;	
@@ -78,8 +85,15 @@ void printChars(UINT8 *base, int x, int y, int length, char string[])
 	}    
 }
 /*
-
-
+*	Function: printCharsV2
+*
+*	Purpose: To print a given array of characters to a location in the screen buffer inverted in colour
+*
+*	Input: A UINT8 representing the physical base of the screen buffer
+*		   An integer representing the beginning x location of the string
+*		   An integer representing the y location of the string
+*		   An integer representing the length of the array
+*		   A character array
 */
 void printCharsV2(UINT8 *base, int x, int y, int length, char string[])
 {

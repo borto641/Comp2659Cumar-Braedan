@@ -1,3 +1,13 @@
+;-----SUBROUTINE: _vbl_isr
+;
+; PURPOSE: Sets the vertical blank flag, and updates the music
+;
+;
+; INPUT: none
+;
+; OUTPUT: none
+;
+
 				xdef		_vbl_isr
 				xref		_update_music
 				xref		_vbFlag

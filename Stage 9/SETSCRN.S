@@ -7,7 +7,7 @@
 ;
 ; OUTPUT: none
 ;
-; NOTES: Must be in supervisor mode, or cause a bus error
+; NOTES: Must be in supervisor mode, or will cause a bus error
 
 						xdef		_setScrn
 				
