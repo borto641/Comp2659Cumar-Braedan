@@ -1,0 +1,29 @@
+#ifndef RENDER_H
+#define RENDER_H
+
+#define BRICK_HEIGHT 24
+#define BRICK_WIDTH 64
+#define TOP_BAR_HEIGHT 12
+#define SCORE_WIDTH 24
+#define SCORE_HEIGHT 8
+
+#include "model.h"
+#include "font.h"
+#include "balBit.h"
+#include "raster.h"
+
+void printScreen(Screen screen, UINT32 *base);
+void refreshScreen(Screen *screen, UINT32 *base);
+void drawChunk(UINT32 *base, int x, int y, UINT32 *saved, int height);
+void saveChunk(UINT32 *base, int x, int y, UINT32 *saved, int height);
+void clrBrick(Brick *brick, UINT8 *base);
+void printLifeLabel(LifeLabel lifeCounterLabel, UINT8 *base);
+void printScoreLabel(ScoreLabel scoreLabel, UINT8 *base);
+void drawLives(LifeCount lives, UINT8 *base);
+void drawScore(ScoreNum scoreNum, UINT8 *base);
+void drawPaddle(UINT32 *base, Paddle *paddle);
+void clearPaddle(UINT32 *base, Paddle paddle);
+void drawBall(Ball *ball, UINT16 *base);
+void printChars(UINT8 *base, int x, int y, int length, char string[]);
+void printCharsV2(UINT8 *base, int x, int y, int length, char string[]);
+#endif

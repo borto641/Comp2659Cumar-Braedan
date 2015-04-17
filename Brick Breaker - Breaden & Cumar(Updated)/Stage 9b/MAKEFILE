@@ -1,0 +1,11 @@
+BBreaker: ikbd.o vector.o ikbd_isr.o
+	cc68x -g ikbd.o vector.o ikbd_isr.o -o BBreaker
+	
+ikbd.o: ikbd.c ikbd.h
+	cc68x -g -c ikbd.c
+
+vector.o: vector.c vector.h
+	cc68x -g -c vector.c
+    
+ikbd_isr.o: ikbd_isr.s
+	gen -D -L2 ikbd_isr.s
