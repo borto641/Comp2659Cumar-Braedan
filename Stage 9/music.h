@@ -3,6 +3,10 @@
 #include "types.h"
 
 void start_music();
-int update_music(int musicCounter);
+void update_music();
+
+extern int musicIndex;
+extern int musicCounter;
+extern bool musicStarted;
 
 #endif

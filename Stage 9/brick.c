@@ -15,13 +15,15 @@ int main()
 	Screen screen;
 	bool quit = FALSE;
 	long input;
+	long oldSSP;
     int result;
-	UINT32 timeThen, timeNow, timeElapsed;
-    int musicCounter = 0;
+    unsigned int musicCounter = 0;
+
 	
     result = splashScreenLoop();
 	
-    if(result == 0){
+    if(result == 0)
+	{
         while ((tempUINT8 % 256) != 0)
         {
             tempUINT8++;
@@ -32,7 +34,7 @@ int main()
         initialize(&screen);
         printScreen(screen, (UINT32*)(frontScreen));
         printScreen(screen, (UINT32*)(backScreen));
-        start_music();
+		start_music();
 	}
     else if (result == 3)
         quit = TRUE;
@@ -48,14 +50,13 @@ int main()
 				keyPress(&screen, input);
 		}
         
-		if (vbFlag == TRUE && !screen.holdBall || screen.holdBall)
-		{
-			musicCounter = update_music(musicCounter);
+		if (vbFlag == TRUE && !screen.holdBall)
+		{		
 			moveBall(&screen);
 			if(screen.bricksLeft == 0)
 			{
 				levelCleared(&screen, frontScreen, backScreen);
-                start_music();
+				start_music();
 			}
 			else
 			{

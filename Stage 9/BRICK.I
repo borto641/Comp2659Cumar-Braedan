@@ -490,7 +490,11 @@ int splashScreenLoop();
 
 
 void start_music();
-int update_music(int musicCounter);
+void update_music();
+
+extern int musicIndex;
+extern int musicCounter;
+extern bool musicStarted;
 # 11 "./brick.h" 2
 # 1 "./psg.h" 1
 # 1 "C:/c68/include/osbind.h" 1
@@ -547,13 +551,15 @@ int main()
 	Screen screen;
 	bool quit = 0 ;
 	long input;
+	long oldSSP;
     int result;
-	UINT32 timeThen, timeNow, timeElapsed;
-    int musicCounter = 0;
+    unsigned int musicCounter = 0;
+
 
     result = splashScreenLoop();
 
-    if(result == 0){
+    if(result == 0)
+	{
         while ((tempUINT8 % 256) != 0)
         {
             tempUINT8++;
@@ -564,7 +570,7 @@ int main()
         initialize(&screen);
         printScreen(screen, (UINT32*)(frontScreen));
         printScreen(screen, (UINT32*)(backScreen));
-        start_music();
+		start_music();
 	}
     else if (result == 3)
         quit = 1 ;
@@ -580,14 +586,13 @@ int main()
 				keyPress(&screen, input);
 		}
 
-		if (vbFlag == 1  && !screen.holdBall || screen.holdBall)
+		if (vbFlag == 1  && !screen.holdBall)
 		{
-			musicCounter = update_music(musicCounter);
 			moveBall(&screen);
 			if(screen.bricksLeft == 0)
 			{
 				levelCleared(&screen, frontScreen, backScreen);
-                start_music();
+				start_music();
 			}
 			else
 			{

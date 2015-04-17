@@ -9,14 +9,10 @@ void write_psg(int reg, UINT8 val){
     volatile char *PSG_reg_select = 0xFF8800;
     volatile char *PSG_reg_write  = 0xFF8802;
     long old_ssp;
-		
-    old_ssp = Super(0);
-		
-		
-    
+	
     *PSG_reg_select = reg;
     *PSG_reg_write  = val;
-    Super(old_ssp);
+   
 }
 /*
 
@@ -98,10 +94,13 @@ void enable_channel(int channel, int tone_on, int noise_on){
 /*
 
 */
-void stop_sound(){    
+void stop_sound()
+{    
+	long oldSSP = Super(0);
     write_psg(8, 0);		/* set channel A volume = 0 */
     write_psg(9, 0);		/* set channel B volume = 0 */
     write_psg(10, 0);		/* set channel C volume = 0 */
+	Super(oldSSP);
 }
 /*
 
